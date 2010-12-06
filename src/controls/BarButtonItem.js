@@ -19,32 +19,39 @@
   coherent.BarButtonSystemItem= {
     Add: {
       'class': BUTTON,
-      text: _('Add')
+      title: _('Add'),
+      action: 'add'
     },
     Edit: {
       style: BUTTON,
-      text: _('Edit')
+      title: _('Edit'),
+      action: 'edit'
     },
     Done: {
       style: BUTTON,
       'class': 'ui-primary',
-      text: _('Done')
+      title: _('Done'),
+      action: 'done'
     },
     Cancel: {
       style: BUTTON,
-      text: _('Cancel')
+      title: _('Cancel'),
+      action: 'cancel'
     },
     Save: {
       style: BUTTON,
-      text: _('Save')
+      title: _('Save'),
+      action: 'save'
     },
     Undo: {
       style: BUTTON,
-      text: _('Undo')
+      title: _('Undo'),
+      action: 'undo'
     },
     Redo: {
       style: BUTTON,
-      text: _('Redo')
+      title: _('Redo'),
+      action: 'redo'
     },
 
     Title: {
@@ -54,28 +61,33 @@
     Compose: {
       'class': 'ui-icon-compose',
       style: ICON,
-      text: _('Compose')
+      title: _('Compose'),
+      action: 'compose'
     },
     Reply: {
       'class': 'ui-icon-reply',
       style: ICON,
-      text: _('Reply')
+      title: _('Reply'),
+      action: 'reply'
     },
     // @TODO: find icon
     Action: {
       'class': 'ui-icon-action',
       style: ICON,
-      text: _('Action')
+      title: _('Action'),
+      action: 'action'
     },
     Organize: {
       'class': 'ui-icon-organize',
       style: ICON,
-      text: _('Organize')
+      title: _('Organize'),
+      action: 'organize'
     },
     Trash: {
       'class': 'ui-icon-trash',
       style: ICON,
-      text: _('Trash')
+      title: _('Trash'),
+      action: 'trash'
     },
 
   
@@ -92,24 +104,24 @@
     Bookmarks: {
       'class': 'ui-icon-bookmarks',
       style: ICON,
-      text: _('Bookmarks')
+      title: _('Bookmarks')
     },
     Search: {
       'class': 'ui-icon-search',
       style: ICON,
-      text: _('Search'),
+      title: _('Search'),
       action: 'search'
     },
     Refresh: {
       'class': 'ui-icon-refresh',
       style: ICON,
-      text: _('Refresh'),
+      title: _('Refresh'),
       action: 'refresh'
     },
     Stop: {
       'class': 'ui-icon-stop',
       style: ICON,
-      text: _('Stop'),
+      title: _('Stop'),
       action: 'stop'
     },
   
@@ -117,7 +129,7 @@
     Camera: {
       'class': 'ui-icon-camera',
       style: ICON,
-      text: _('Camera')
+      title: _('Camera')
     },
   
 
@@ -125,22 +137,22 @@
     Play: {
       'class': 'ui-icon-play',
       style: ICON,
-      text: _('Play')
+      title: _('Play')
     },
     Pause: {
       'class': 'ui-icon-pause',
       style: ICON,
-      text: _('Pause')
+      title: _('Pause')
     },
     Rewind: {
       'class': 'ui-icon-rewind',
       style: ICON,
-      text: _('Rewind')
+      title: _('Rewind')
     },
     FastForward: {
       'class': 'ui-icon-fastforward',
       style: ICON,
-      text: _('Fast Forward')
+      title: _('Fast Forward')
     }
   };
 
