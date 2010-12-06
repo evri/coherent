@@ -1,0 +1,295 @@
+.in,
+.out {
+  -webkit-animation-timing-function: ease-in-out;
+  -webkit-animation-duration: 250ms;
+}
+
+.ui-slide.in {
+  -webkit-transform: translate3D(0,0,0);
+  -webkit-animation-name: slideinfromright;
+}
+
+.ui-slide.out {
+  -webkit-transform: translate3D(-100%,0,0);
+  -webkit-animation-name: slideouttoleft;
+}
+
+.ui-slide.in.reverse {
+  -webkit-transform: translate3D(0,0,0);
+  -webkit-animation-name: slideinfromleft;
+}
+
+.ui-slide.out.reverse {
+  -webkit-transform: translate3D(100%,0,0);
+  -webkit-animation-name: slideouttoright;
+}
+
+
+
+
+.ui-slideup.in {
+  -webkit-transform: translate3D(0,0,0);
+  -webkit-animation-name: slideinfrombottom;
+}
+
+.ui-slideup.in.reverse {
+  -webkit-transform: translate3D(0,100%,0);
+  -webkit-animation-name: slideouttobottom;
+}
+
+
+.ui-slideup.out {
+  -webkit-animation-name: dontmove;
+}
+
+.ui-slideup.out.reverse {
+  -webkit-transform: translate3D(0,100%,0);
+  -webkit-animation-name: slideouttobottom;
+}
+
+
+
+
+
+.slidedown.in {
+  -webkit-transform: translate3D(0,0,0);
+  -webkit-animation-name: slideinfromtop;
+}
+
+.slidedown.out {
+  -webkit-animation-name: dontmove;
+}
+
+.slidedown.out.reverse {
+  -webkit-transform: translate3D(0,-100%,0);
+  -webkit-animation-name: slideouttotop;
+}
+
+.slidedown.in.reverse {
+  -webkit-animation-name: dontmove;
+}
+
+@-webkit-keyframes slideinfromright {
+    from {
+      -webkit-transform: translate3D(100%,0,0);
+    }
+    to {
+      -webkit-transform: translate3D(0,0,0);
+    }
+}
+
+@-webkit-keyframes slideinfromleft {
+    from {
+      -webkit-transform: translate3D(-100%,0,0);
+    }
+    to {
+      -webkit-transform: translate3D(0,0,0);
+    }
+}
+
+@-webkit-keyframes slideouttoleft {
+    from {
+      -webkit-transform: translate3D(0,0,0);
+    }
+    to {
+      -webkit-transform: translate3D(-100%,0,0);
+    }
+}
+
+@-webkit-keyframes slideouttoright {
+    from {
+      -webkit-transform: translate3D(0,0,0);
+    }
+    to {
+      -webkit-transform: translate3D(100%,0,0);
+    }
+}
+
+
+@-webkit-keyframes slideinfromtop {
+    from {
+      -webkit-transform: translate3D(0,-100%,0);
+    }
+    to {
+      -webkit-transform: translate3D(0,0,0);
+    }
+
+}
+
+@-webkit-keyframes slideinfrombottom {
+    from {
+      -webkit-transform: translate3D(0,100%,0);
+    }
+    to {
+      -webkit-transform: translate3D(0,0,0);
+    }
+}
+
+@-webkit-keyframes slideouttobottom {
+    from {
+      -webkit-transform: translate3D(0,0,0);
+    }
+    to {
+      -webkit-transform: translate3D(0,100%,0);
+    }
+}
+
+@-webkit-keyframes slideouttotop {
+    from {
+      -webkit-transform: translate3D(0,0,0);
+    }
+    to {
+      -webkit-transform: translate3D(0,-100%,0);
+    }
+}
+
+@-webkit-keyframes fadein {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+}
+
+@-webkit-keyframes fadeout {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+}
+
+.ui-fade.in {
+  opacity: 1;
+  -webkit-animation-name: fadein;
+}
+
+.ui-fade.in.reverse {
+  opacity: 0;
+  -webkit-animation-name: fadeout;
+}
+
+.ui-fade.out {
+}
+
+
+
+.ui-flip {
+  -webkit-animation-duration: .65s;
+  -webkit-backface-visibility: hidden;
+  -webkit-transform: translate3D(0,0,0); /* Needed to work around an iOS 3.1 bug that causes listview thumbs to disappear when -webkit-visibility:hidden is used. */
+}
+
+.ui-flip.in {
+  -webkit-transform: rotateY(0) scale(1);
+  -webkit-animation-name: flipinfromleft;
+}
+
+.ui-flip.out {
+  -webkit-transform: rotateY(-180deg) scale(.8);
+  -webkit-animation-name: flipouttoleft;
+}
+
+/* Shake it all about */
+
+.ui-flip.in.reverse {
+  -webkit-transform: rotateY(0) scale(1);
+  -webkit-animation-name: flipinfromright;
+}
+
+.ui-flip.out.reverse {
+  -webkit-transform: rotateY(180deg) scale(.8);
+  -webkit-animation-name: flipouttoright;
+}
+
+@-webkit-keyframes flipinfromright {
+    from {
+      -webkit-transform: rotateY(-180deg) scale(.8);
+    }
+    to {
+      -webkit-transform: rotateY(0) scale(1);
+    }
+}
+
+@-webkit-keyframes flipinfromleft {
+    from {
+      -webkit-transform: rotateY(180deg) scale(.8);
+    }
+    to {
+      -webkit-transform: rotateY(0) scale(1);
+    }
+}
+
+@-webkit-keyframes flipouttoleft {
+    from {
+      -webkit-transform: rotateY(0) scale(1);
+    }
+    to {
+      -webkit-transform: rotateY(-180deg) scale(.8);
+    }
+}
+
+@-webkit-keyframes flipouttoright {
+    from {
+      -webkit-transform: rotateY(0) scale(1);
+    }
+    to {
+      -webkit-transform: rotateY(180deg) scale(.8);
+    }
+}
+
+
+/* Hackish, but reliable. */
+
+@-webkit-keyframes dontmove {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 1;
+    }
+}
+
+.pop {
+  -webkit-transform-origin: 50% 50%;
+}
+
+.pop.in {
+  -webkit-transform: scale(1);
+  opacity: 1;
+  -webkit-animation-name: popin;
+}
+
+.pop.out.reverse {
+  -webkit-transform: scale(.2);
+  opacity: 0;
+  -webkit-animation-name: popout;
+}
+
+.pop.in.reverse {
+  -webkit-animation-name: dontmove;
+}
+
+@-webkit-keyframes popin {
+    from {
+      -webkit-transform: scale(.2);
+      opacity: 0;
+    }
+    to {
+      -webkit-transform: scale(1);
+      opacity: 1;
+    }
+}
+
+@-webkit-keyframes popout {
+    from {
+      -webkit-transform: scale(1);
+      opacity: 1;
+    }
+    to {
+      -webkit-transform: scale(.2);
+      opacity: 0;
+    }
+}

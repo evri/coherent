@@ -504,10 +504,7 @@ coherent.Page= Class.create(coherent.Responder, {
   _ontouchend: function(event)
   {
     if (!this._touchstartView)
-    {
-      console.log('no start view');
       return;
-    }
       
     this._touchstartView.ontouchend(event);
 

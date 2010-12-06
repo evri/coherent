@@ -480,6 +480,16 @@ coherent.View= Class.create(coherent.Responder, {
     container.appendChild(subview.node);
   },
 
+  removeSubview: function(subview)
+  {
+    var node= this.node;
+    var subviewNode= subview.node;
+    
+    if (!node.contains(subviewNode))
+      return;
+    subviewNode.parentNode.removeChild(subviewNode);
+  },
+  
   /** Find the first view that matches the given CSS selector. If no views
       match the selector, this method returns `null`.
       @param {String} selector - A CSS selector rooted at the node for this

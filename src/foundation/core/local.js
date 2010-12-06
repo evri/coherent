@@ -1,4 +1,5 @@
 /*jsl:import base.js*/
+/*jsl:declare _*/
 
 /** Localised marker strings used by various views
     @namespace
@@ -52,4 +53,4 @@ coherent.localisedString= function(key)
     @param {String} key - The string key that should be looked up and returned.
     @returns {String} The localised version of the string or the key itself.
  */
-var _= coherent.localisedString;
+window._= coherent.localisedString;

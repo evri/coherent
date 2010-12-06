@@ -73,7 +73,7 @@ coherent.ScrollView= Class.create(coherent.View, {
     this.__refreshTimer= Function.delay(this.refresh, 100, this);
 
     if (this.scrollsToTopOnDOMChanges && (this.x!==0 || this.y!==0))
-      this.scrollTo(0,0,'0');
+      this.scrollTo(0,0,0);
   },
 
   refresh: function()

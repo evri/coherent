@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="user-scalable=no; width=device-width; initial-scale=1.0; maximum-scale=1.0;">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-transparent">
+    <style type="text/css" media="screen">
+      body
+      {
+        padding: 0;
+        margin: 0;
+        font: 12px helvetica;
+        -webkit-tap-highlight-color:rgba(0,0,0,0);
+      }
+    </style>
+    <link rel="stylesheet" href="../build/debug/coherent-debug.css" type="text/css" media="screen" title="no title" charset="utf-8">
+    <script src="../build/debug/distil-sync.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../build/debug/coherent-debug.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../build/debug/src/controls/BarButtonItem.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../build/debug/src/controls/Toolbar.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+
+  <body>
+    <div class="demo">
+      <div class="ui-bar">
+      </div>
+    </div>
+  
+    <script>
+      distil.onready(function(){
+  
+        NIB('demo', {
+        
+          main: VIEW('.demo', {
+          
+            '.ui-bar': coherent.Toolbar({
+              barStyle: coherent.BarStyle.Default,
+              items: [
+                coherent.BarButtonItem({ text: "Foo", style: 'ui-bar-back' }),
+                coherent.BarButtonItem({ text: "Booger", style: 'ui-bar-button ui-primary' }),
+                coherent.BarButtonItem({ text: "Baz" }),
+                coherent.BarButtonSystemItem.FlexibleSpace,
+                coherent.BarButtonSystemItem.Compose
+              ]
+            })
+          
+          }),
+        
+          owner: {
+            view: REF('main')
+          }
+        
+        });
+      
+        var controller= new coherent.ViewController({
+          nibName: 'demo'
+        });
+      
+        coherent.Page.shared.setRootViewController(controller);
+      });
+    </script>  
+  </body>
+</html>

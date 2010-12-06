@@ -1,0 +1,59 @@
+.ui-modal-view-wrapper
+{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  display: -webkit-box;
+  -webkit-box-pack: center;
+  -webkit-box-align: center;
+  z-index: 10;
+}
+
+.ui-formsheet
+{
+  width: 480px;
+  height: 480px;
+  background-color: #ccc;
+  border-radius: 5px;
+  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,0.85);
+}
+
+.ui-fullscreen
+{
+  width: 100%;
+  height: 100%;
+  background-color: #ccc;
+}
+
+.ui-navigation-view
+{
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
+
+.ui-navigation-content
+{
+  position: relative;
+  -webkit-box-flex: 1;
+}
+
+.ui-navigation-subview
+{
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.ui-content
+{
+  padding: 10px;
+}

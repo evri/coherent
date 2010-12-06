@@ -5,7 +5,8 @@ coherent.Nib= Class._create({
 
   SPECIAL_KEYS: {
     'owner': true,
-    'application': true
+    'application': true,
+    'page': true
   },
 
   constructor: function(name, def)
@@ -59,7 +60,8 @@ coherent.Nib= Class._create({
     
     model.setValueForKey(owner, 'owner');
     model.setValueForKey(coherent.Application.shared, 'application');
-  
+    model.setValueForKey(coherent.Page.shared, 'page');
+    
     var v;
     var p;
     var ignore= coherent.KVO.typesOfKeyValuesToIgnore;

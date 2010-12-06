@@ -31,6 +31,10 @@ coherent.Browser= {
   /** Is the browser Mobile Safari (iPhone, iPod Touch, or iPad) */
   MobileSafari: !!navigator.userAgent.match(/Apple.*Mobile.*Safari/),
   /** Is the browser Mobile Safari on the iPad? */
-  iPad: -1!=navigator.userAgent.indexOf('iPad')
+  iPad: -1!=navigator.userAgent.indexOf('iPad'),
+  
+  /** Is this a standalone browser like Mobile Safari added to the desktop or an
+      application running in PhoneGap? */
+  StandAlone: !!window.navigator.standalone || window.device
 
 };

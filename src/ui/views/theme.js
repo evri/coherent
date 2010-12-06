@@ -49,7 +49,14 @@ coherent.Style= {
   
   NavigationView: 'ui-navigation-view',
   NavigationSubview: 'ui-navigation-subview',
-  
-  ToolbarItem: 'ui-toolbar-item'
+  NavigationAtRoot: 'ui-navigation-at-root',
+
+  Toolbar: 'ui-bar',
+  ToolbarItem: 'ui-bar-item',
+  ToolbarTitleItem: 'ui-bar-title',
+  ToolbarButtonItem: 'ui-bar-button',
+  ToolbarIconItem: 'ui-bar-icon',
+  ToolbarFixedSpace: 'ui-bar-fixed-space',
+  ToolbarFlexSpace: 'ui-bar-flex-space'
   
 };

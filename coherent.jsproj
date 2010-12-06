@@ -19,3 +19,8 @@ source:
   - src/ui
   - src/model.js
   - src/model
+  
+  - src/css/toolbar.css
+  - src/css/animation.css
+  - src/css/layouts.css
+  

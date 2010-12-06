@@ -1,16 +1,23 @@
 /*jsl:import coherent*/
 
+coherent.BarStyle= {
+  Default: null,
+  Black: 'ui-bar-black',
+  BlackTranslucent: 'ui-bar-black-translucent'
+};
+
 coherent.Toolbar= Class.create(coherent.View, {
 
   constructor: function(node, params)
   {
     this.base(node, params);
     this.node.setAttribute('role', 'toolbar');
-  },
-  
-  items: function()
-  {
-    return this.__items;
+    
+    var classes= [coherent.Style.Toolbar];
+    if (this.barStyle)
+      classes.push(this.barStyle);
+    
+    Element.updateClass(this.node, classes, []);
   },
 
   templateNode: function()
@@ -65,14 +72,16 @@ coherent.Toolbar= Class.create(coherent.View, {
     coherent.dataModel= item;
 
     item.setValueForKey(barItem, 'representedObject');
-    
+    if (barItem.id)
+      node.id= barItem.id;
+      
     var view= new coherent.View(node, {
                     barItem: barItem,
                     enabledBinding: 'representedObject.enabled',
-                    textBinding: 'representedObject.text',
+                    textBinding: 'representedObject.title',
                     classBinding: 'representedObject._class',
-                    action: 'toolbarButtonClicked',
-                    target: this
+                    action: barItem.action,
+                    target: barItem.target
                   });
 
     coherent.dataModel= oldDataModel;
@@ -80,6 +89,11 @@ coherent.Toolbar= Class.create(coherent.View, {
     return view;
   },
   
+  items: function()
+  {
+    return this.__items;
+  },
+
   setItems: function(items)
   {
     if (!items || !items.length)
@@ -92,7 +106,8 @@ coherent.Toolbar= Class.create(coherent.View, {
     this.__items= [];
     //  clear out existing markup
     node.innerHTML= "";
-    
+
+    this.__titleIndex= -1;
     for (var i=0; i<len; ++i)
     {
       item= items[i];
@@ -101,14 +116,19 @@ coherent.Toolbar= Class.create(coherent.View, {
       else if (!(item instanceof coherent.BarButtonItem))
         item= new coherent.BarButtonItem(item);
 
+      if (item.style()===coherent.BarButtonStyle.Title)
+        this.__titleIndex= i;
+        
       this.__items.push(item);
       this.addSubview(this.__viewForBarItem(item));
     }
   },
-
-  toolbarButtonClicked: function(sender)
+  
+  setTitle: function(title)
   {
-    console.log(sender.barItem);
+    if (-1==this.__titleIndex)
+      return;
+    this.__items[this.__titleIndex].setTitle(title);
   }
   
 });

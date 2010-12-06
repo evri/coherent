@@ -1,0 +1,148 @@
+.ui-bar
+{
+  background: url(images/toolbar/toolbar-default-background.png) repeat-x top left;
+  padding: 5px;
+  height: 34px;
+  color: white;
+  display: -webkit-box;
+  -webkit-box-orient: horizontal;
+  -webkit-box-align: center;
+  -webkit-user-select: none;
+  position: relative;
+  z-index: 10;
+}
+
+.ui-bar-black
+{
+  background-image: url(images/toolbar/toolbar-black-background.png);
+}
+.ui-bar-black-translucent
+{
+  background-image: url(images/toolbar/toolbar-black-translucent-background.png);
+}
+
+
+.ui-bar-item
+{
+  text-align: center;
+  width: 60px;
+  height: 20px;
+  padding: 7px 5px 1px 5px;
+  cursor: pointer;
+  margin-right: 5px;
+  
+  min-width: 44px;
+  
+  font-family: Helvetica;
+  font-size: 12px;
+  font-weight: bold;
+  text-align: center;
+  color: white;
+  text-shadow: rgba(0,0,0,.6) 0 -1px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ui-bar-item:last-child
+{
+  margin-right: 0;
+}
+
+.ui-bar-flex-space,
+.ui-bar-title
+{
+  width: auto;
+  -webkit-box-flex: 1;
+}
+
+.ui-bar-button
+{
+  border-width: 0 5px 0 5px;
+  -webkit-border-image: url('images/toolbar/bar-button-normal-default.png') 0 5 30 5;
+}
+
+.ui-bar-button:active
+{
+  -webkit-border-image: url('images/toolbar/bar-button-normal-default.png') 30 5 0 5;
+}
+
+.ui-bar-black .ui-bar-button
+{
+  -webkit-border-image: url('images/toolbar/bar-button-normal-black.png') 0 5 60 5;
+}
+
+.ui-bar-black-translucent .ui-bar-button
+{
+  -webkit-border-image: url('images/toolbar/bar-button-normal-black.png') 30 5 30 5;
+}
+
+.ui-bar-black .ui-bar-button:active,
+.ui-bar-black-translucent .ui-bar-button:active
+{
+  -webkit-border-image: url('images/toolbar/bar-button-normal-black.png') 30 5 30 5;
+}
+
+.ui-bar-button.ui-primary
+{
+  -webkit-border-image: url('images/toolbar/bar-button-done-default.png') 0 5 30 5;
+}
+
+.ui-bar-button.ui-primary:active
+{
+  -webkit-border-image: url('images/toolbar/bar-button-done-default.png') 30 5 0 5;
+}
+
+.ui-bar-back
+{
+  border-width: 0 4px 0 12px;
+}
+
+.ui-bar-back
+{
+  -webkit-border-image: url('images/toolbar/bar-button-back-default.png') 0 4 30 12;
+}
+
+.ui-bar-back:active
+{
+  -webkit-border-image: url('images/toolbar/bar-button-back-default.png') 30 4 0 12;
+}
+
+.ui-bar-black .ui-bar-back
+{
+  -webkit-border-image: url('images/toolbar/bar-button-back-black.png') 0 4 60 12;
+}
+
+.ui-bar-black-translucent .ui-bar-back
+{
+  -webkit-border-image: url('images/toolbar/bar-button-back-black.png') 30 4 30 12;
+}
+
+.ui-bar-black .ui-bar-back:active,
+.ui-bar-black-translucent .ui-bar-back:active
+{
+  -webkit-border-image: url('images/toolbar/bar-button-back-black.png') 60 4 0 12;
+}
+
+.ui-navigation-at-root .ui-bar-back
+{
+  opacity: 0;
+}
+
+.ui-bar-icon
+{
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  text-indent: -9999px;
+  width: 26px;
+  height: 26px;
+}
+
+.ui-icon-bookmarks { background-image: url(images/toolbar/bookmarks.png); }
+.ui-icon-camera { background-image: url(images/toolbar/camera.png); }
+.ui-icon-compose { background-image: url(images/toolbar/compose.png); }
+.ui-icon-organize { background-image: url(images/toolbar/organize.png); }
+.ui-icon-refresh { background-image: url(images/toolbar/refresh.png); }
+.ui-icon-reply { background-image: url(images/toolbar/reply.png); }
+.ui-icon-search { background-image: url(images/toolbar/search.png); }
+.ui-icon-trash { background-image: url(images/toolbar/trash.png); }

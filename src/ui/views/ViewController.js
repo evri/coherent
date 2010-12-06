@@ -77,6 +77,16 @@ coherent.ViewController= Class.create(coherent.Responder, {
     this.__title= newTitle;
   },
   
+  url: function()
+  {
+    return this.__url;
+  },
+
+  setUrl: function(url)
+  {
+    this.__url= url;
+  },
+  
   /** Retrieve the view associated with this ViewController.
       @type coherent.View
    */
