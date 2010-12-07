@@ -16,8 +16,14 @@
   width: 480px;
   height: 480px;
   background-color: #ccc;
-  border-radius: 5px;
+  color: black;
+  border-radius: 10px 10px 0 0;
   -webkit-box-shadow: 0 5px 10px rgba(0,0,0,0.85);
+}
+
+.ui-formsheet .ui-bar
+{
+  border-radius: 10px 10px 0 0;
 }
 
 .ui-fullscreen

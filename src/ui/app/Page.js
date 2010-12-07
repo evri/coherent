@@ -85,6 +85,8 @@ coherent.Page= Class.create(coherent.Responder, {
       view.focus();
       view.animateClassName(view.__animationOptionsForProperty('focus'));
     }
+    else if (firstResponder)
+      firstResponder.blur();
 
     return true;
   },

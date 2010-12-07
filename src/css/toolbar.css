@@ -1,7 +1,7 @@
 .ui-bar
 {
   background: url(images/toolbar/toolbar-default-background.png) repeat-x top left;
-  padding: 5px;
+  padding: 5px 8px;
   height: 34px;
   color: white;
   display: -webkit-box;
@@ -29,7 +29,6 @@
   height: 20px;
   padding: 8px 5px 0px 5px;
   cursor: pointer;
-  margin-right: 5px;
   
   min-width: 44px;
   
@@ -58,6 +57,7 @@
 
 .ui-bar-button
 {
+  margin-right: 5px;
   border-width: 0 5px 0 5px;
   -webkit-border-image: url('images/toolbar/bar-button-normal-default.png') 0 5 30 5;
 }
@@ -96,6 +96,7 @@
 .ui-bar-back
 {
   border-width: 0 4px 0 12px;
+  margin-right: 5px;
 }
 
 .ui-bar-back

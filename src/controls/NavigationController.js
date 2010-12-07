@@ -31,7 +31,6 @@
       this.__topIndex= 0;
       viewController.view().addClassName(coherent.Style.NavigationSubview);
       this.view().addSubview(viewController.view());
-      this.view().addClassName(coherent.Style.NavigationAtRoot);
       this.__updateToolbar();
     },
 
@@ -49,12 +48,12 @@
       {
         this.__backButton= new coherent.BarButtonItem({
                                   style: 'ui-bar-back',
-                                  action: 'backButtonPressed',
+                                  action: 'back',
                                   target: this
                                 });
       }
 
-      var previousViewController= this.__viewControllers[this.__viewControllers.length-2];
+      var previousViewController= this.__viewControllers[this.__topIndex-1];
       if (previousViewController)
         this.__backButton.setTitle(previousViewController.valueForKey('title'));
 
@@ -62,6 +61,10 @@
       toolbarItems= [this.__backButton].concat(toolbarItems);
       toolbar.setItems(toolbarItems);
       toolbar.setTitle(viewController.valueForKey('title'));
+      if (!this.__topIndex)
+        toolbar.addClassName(coherent.Style.NavigationAtRoot);
+      else
+        toolbar.removeClassName(coherent.Style.NavigationAtRoot);
     },
   
     topViewController: function()
@@ -99,9 +102,11 @@
     
     visibleViewController: function()
     {
+      if (this.modalViewController)
+        return this.modalViewController;
+        
       var viewController= this.topViewController();
-    
-      return viewController && (viewController.__modalViewController || viewController);
+      return viewController && (viewController.modalViewController || viewController);
     },
   
     viewControllers: function()
@@ -159,24 +164,52 @@
       }
     },
   
+    __dismissModalViewController: function(callback)
+    {
+      if (this.modalViewController)
+      {
+        this.dismissModalViewController(true, callback);
+        return true;
+      }
+      
+      var viewController= this.topViewController();
+      if (viewController.modalViewController)
+      {
+        viewController.dismissModalViewController(true, callback);
+        return true;
+      }
+      
+      return false;
+    },
+    
     pushViewController: function(viewController, animated)
     {
       var outgoingController= this.topViewController();
       var view= this.view();
+
+      var _this= this;
+      function pushAgain()
+      {
+        _this.pushViewController(viewController, animated);
+      }
       
+      if (this.__dismissModalViewController(pushAgain))
+        return;
+
       //  Handle state
       coherent.Application.shared.pushState(viewController);
     
       view.addSubview(viewController.view());
       view.removeClassName(coherent.Style.NavigationAtRoot);
-
+      viewController.view().addClassName(coherent.Style.NavigationSubview);
+      
       this.__animateTransition(outgoingController, viewController, null);
       
       var len= this.__viewControllers.length;
-      while (this.__topIndex<len--)
+      while (this.__topIndex<--len)
         view.removeSubview(this.__viewControllers[len].view());
         
-      this.__viewControllers.length= this.__topIndex+1;
+      this.__viewControllers.length= ++this.__topIndex;
       this.__viewControllers.addObject(viewController);
       this.__updateToolbar();
     },
@@ -187,6 +220,16 @@
       var oldController= this.__viewControllers[this.__topIndex];
       if (!newController)
         return;
+
+      var _this= this;
+      function popAgain()
+      {
+        _this.popViewController(animated);
+      }
+
+      if (this.__dismissModalViewController(popAgain))
+        return;
+
       this.__topIndex--;
       this.__animateTransition(oldController, newController, REVERSE);
       this.__updateToolbar();
@@ -198,8 +241,14 @@
   
     popToRootViewController: function(animated)
     {
+    },
+    
+    back: function(sender)
+    {
+      coherent.Application.shared.popState();
+      this.popViewController(true);
     }
-  
+    
   });
 
 

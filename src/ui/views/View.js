@@ -625,57 +625,23 @@ coherent.View= Class.create(coherent.Responder, {
    */
   sendAction: function()
   {
+    this.sendActionWithArgument(this.argument||null);
+  },
+  
+  sendActionWithArgument: function(argument)
+  {
     if (!this.action)
       return;
 
-    var responder= this.target||this;
-    
-    /*  If the target is FIRST_RESPONDER (a string), then determine what is
-        the current first responder. Otherwise, the initial responder is
-        either the target or the current view if no target has been set.
-     */
-    if (FIRST_RESPONDER===responder)
-      responder= coherent.Page.shared.firstResponder;
-    else if ('string'===typeof(responder))
-      responder= this.__context.valueForKeyPath(responder);
+    var to= this.target||this;
+    if (FIRST_RESPONDER===to)
+      to= coherent.Page.shared.firstResponder;
+    else if ('string'===typeof(to))
+      to= this.__context.valueForKeyPath(to);
 
-    var argument= this.argument||null;
-    
-    /*  When an explicit target is specified and the action is not a string,
-        the action function can be invoked directly. There's no need (and no
-        capactiy) to pass the action up the chain.
-     */
-    if ('string'!==typeof(this.action))
-    {
-      this.action.call(responder, this, argument);
-      return;
-    }
-    
-    var action= this.action;
-    
-    /*  Bubble the action up the responder chain. The first view that has a
-        method corresponding to the action name will be the target responder.
-     */
-    while (responder)
-    {
-      if (action in responder)
-      {
-        responder[action](this, argument);
-        return;
-      }
-      
-      var delegate= responder.delegate && responder.delegate();
-      if (delegate && action in delegate)
-      {
-        delegate[action](this, argument);
-        return;
-      }
-      
-      responder= responder.nextResponder();
-    }
-    
-    console.log('No responder found for action: '+action);
+    coherent.Application.shared.sendAction(this.action, to, this, argument);
   },
+  
   
   /** Default handler for the click event. If the view has been disabled, the
       click is canceled and ignored. If an action has been specified

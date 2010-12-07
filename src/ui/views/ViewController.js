@@ -208,7 +208,7 @@ coherent.ViewController= Class.create(coherent.Responder, {
         this.modalViewController= null;
         this.presentModalViewController(viewController);
       }
-      this.modalViewController.__dismissModalViewController(presentAgain.bind(this));
+      this.modalViewController.__dismissSelf(presentAgain.bind(this));
       return;
     }
     
@@ -217,19 +217,22 @@ coherent.ViewController= Class.create(coherent.Responder, {
     viewController.__presentModally();
   },
   
-  __dismissModalViewController: function(callback)
+  __dismissSelf: function(callback)
   {
     //  Walk up the chain of modal view controllers. Only the last one is animated
     if (this.modalViewController)
     {
       function dismissed()
       {
+        var firstResponder= coherent.Page.shared.firstResponder;
+        if (firstResponder && firstResponder.isDescendantOf(this.view()))
+          coherent.Page.shared.makeFirstResponder(null);
         this.modalViewController= null;
         this.view().node.style.display='none';
         if (callback)
           callback(this);
       }
-      this.modalViewController.__dismissModalViewController(dismissed.bind(this));
+      this.modalViewController.__dismissSelf(dismissed.bind(this));
       return;
     }
     
@@ -249,14 +252,17 @@ coherent.ViewController= Class.create(coherent.Responder, {
     var modalNode= this.__modalNode;
     var transitionHandler= Event.observe(modalNode, "webkitAnimationEnd",
                                          ontransitionend.bind(this));
+    var firstResponder= coherent.Page.shared.firstResponder;
+    if (firstResponder && firstResponder.isDescendantOf(this.view()))
+      coherent.Page.shared.makeFirstResponder(null);
     Element.addClassName(modalNode, "reverse");
   },
   
-  dismissModalViewController: function(animated)
+  dismissModalViewController: function(animated, callback)
   {
     if (this.modalViewController)
     {
-      this.modalViewController.__dismissModalViewController();
+      this.modalViewController.__dismissSelf(callback);
       this.modalViewController= null;
     }
   }

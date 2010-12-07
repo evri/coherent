@@ -776,45 +776,47 @@ coherent.CollectionView= Class.create(coherent.View, {
   {
     // get the row now instead of onmousedown because it will be called after a delay.
     this.__touchedRow= this.itemNodeFromEvent(event);
+    Element.addClassName(this.__touchedRow, coherent.Style.kActiveClass);
+
     var target= this.nextResponder();
     if (target)
       target.ontouchstart(event);
   }, 
   
-  /** Handle a mouse down event within the CollectionView. This handler sets
-      the active class on the item node associated with the event.
-    
-      @param {Event} event - The mouse event.
-   */
-  onmousedown: function(event)
-  {
-    if (this.node.disabled)
-      return;
-
-    var node= (coherent.Support.Touches && this.__touchedRow) ||
-           this.itemNodeFromEvent(event);
-
-    if (!node)
-      return;
-      
-    this.__activeNode= node;
-    Element.addClassName(node, coherent.Style.kActiveClass);
-  },
-
-  /** Handle the event fired when the visitor releases the mouse button after
-      depressing it on this view. This handler removes the active state from
-      the DOM node associated with the item that was clicked on.
-      @param {Event} event - The mouse up event.
-   */
-  onmouseup: function(event)
-  {
-    if (this.node.disabled)
-      return;
-      
-    if (this.__activeNode)
-      Element.removeClassName(this.__activeNode, coherent.Style.kActiveClass);
-    this.__activeNode= null;
-  },
+  // /** Handle a mouse down event within the CollectionView. This handler sets
+  //     the active class on the item node associated with the event.
+  //   
+  //     @param {Event} event - The mouse event.
+  //  */
+  // onmousedown: function(event)
+  // {
+  //   if (this.node.disabled)
+  //     return;
+  // 
+  //   var node= (coherent.Support.Touches && this.__touchedRow) ||
+  //          this.itemNodeFromEvent(event);
+  // 
+  //   if (!node)
+  //     return;
+  //     
+  //   this.__touchRow= node;
+  //   Element.addClassName(node, coherent.Style.kActiveClass);
+  // },
+  // 
+  // /** Handle the event fired when the visitor releases the mouse button after
+  //     depressing it on this view. This handler removes the active state from
+  //     the DOM node associated with the item that was clicked on.
+  //     @param {Event} event - The mouse up event.
+  //  */
+  // onmouseup: function(event)
+  // {
+  //   if (this.node.disabled)
+  //     return;
+  //     
+  //   if (this.__activeNode)
+  //     Element.removeClassName(this.__activeNode, coherent.Style.kActiveClass);
+  //   this.__activeNode= null;
+  // },
 
   /** Handle a touch move event. This handler removes the active state from
       the DOM node associated with the previous mousedown event before passing
@@ -827,9 +829,17 @@ coherent.CollectionView= Class.create(coherent.View, {
     if (this.node.disabled)
       return;
       
-    if (this.__activeNode)
-      Element.removeClassName(this.__activeNode, coherent.Style.kActiveClass);
-    this.__activeNode= null;
+    if (this.__touchedRow)
+      Element.removeClassName(this.__touchedRow, coherent.Style.kActiveClass);
+    this.__touchedRow= null;
+    this.base(event);
+  },
+  
+  ontouchend: function(event)
+  {
+    if (this.__touchedRow)
+      Element.removeClassName(this.__touchedRow, coherent.Style.kActiveClass);
+    this.__touchedRow= null;
     this.base(event);
   },
   

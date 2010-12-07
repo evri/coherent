@@ -50,7 +50,7 @@ coherent.Application= Class.create(coherent.Responder, {
   
   onpopstate: function(event)
   {
-    if (!this.__navigationController || !this.applicationRootUrl)
+    if (this.__poppingState || !this.__navigationController || !this.applicationRootUrl)
       return;
       
     var path= document.location.pathname;
@@ -77,9 +77,20 @@ coherent.Application= Class.create(coherent.Responder, {
     var url= viewController.valueForKey('url');
 
     title= this.callDelegate('pageTitleForString', [title]) || document.title;
-    url= [this.applicationRootUrl, url].join('/').replace(/\/\//g, '/');
+    url= [this.applicationRootUrl, url].join('/').replace(/\/\/+/g, '/');
     
     window.history.pushState(state, title, url);
+  },
+  
+  /**
+    coherent.Application#popState()
+    Deliberately trigger a popstate event. This ignores the event.
+   */
+  popState: function()
+  {
+    this.__poppingState= true;
+    window.history.back();
+    this.__poppingState= false;
   },
   
   /** Handle changes to the URL hash. If a {@link #delegate} has been set, this
@@ -132,6 +143,59 @@ coherent.Application= Class.create(coherent.Responder, {
         view.setVisible(true);
       }
     }
+  },
+  
+  
+  /** section: Target/Action
+    coherent.Application#sendAction(action, to, from[, argument]) -> Boolean
+    
+    - action (String): A string identifying the action to send.
+    - to (Object): An object that should receive the action message. If `null`,
+        the action will be sent to the current first responder.
+    - from (Object): The object sending the message. By default, this is the view
+        that generated the action.
+    - argument (Any): An argument to pass along with the action.
+    
+    If the action was handled, this method returns `true`. Otherwise, it returns
+    `false`.
+   */
+  sendAction: function(action, to, from, argument)
+  {
+    to= to||coherent.Page.shared.firstResponder;
+    
+    /*  When an explicit target is specified and the action is not a string,
+        the action function can be invoked directly. There's no need (and no
+        capactiy) to pass the action up the chain.
+     */
+    if ('string'!==typeof(action))
+    {
+      action.call(to, from, argument);
+      return true;
+    }
+    
+    /*  Bubble the action up the responder chain. The first view that has a
+        method corresponding to the action name will be the target responder.
+     */
+    while (to)
+    {
+      if (action in to)
+      {
+        to[action](from, argument);
+        return true;
+      }
+      
+      var delegate= to.delegate && to.delegate();
+      if (delegate && action in delegate)
+      {
+        delegate[action](from, argument);
+        return true;
+      }
+      
+      to= to.nextResponder();
+    }
+    
+    console.log('No to found for action: '+action);
+    return false;
   }
   
 });
