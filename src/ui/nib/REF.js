@@ -23,8 +23,8 @@ coherent.REF = function(reference)
     var ref= referenceFunction.ref;
     ref.key= referenceFunction.__key;
     ref.owner= this;
-    
-    return referenceFunction;
+
+    return null;
   };
   referenceFunction.ref= ref;
   referenceFunction.__factoryFn__= true;

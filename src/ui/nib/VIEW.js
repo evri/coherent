@@ -67,8 +67,7 @@ coherent.VIEW= function(selector, structure)
     if (!viewNode || 1!==viewNode.nodeType)
       throw new Error('Unable to find or create DOM for view.');
       
-    var v;
-    var p;
+    var v, p, nodes, len, i;
 
     if (':root' in structure)
     {
@@ -89,7 +88,10 @@ coherent.VIEW= function(selector, structure)
       if (!v || 'function'!==typeof(v) || !v.__factoryFn__)
         continue;
 
-      v.call(view, p);
+      //  Find the matching nodes
+      nodes= Element.queryAll(viewNode, p);
+      for (i=0, len= nodes.length; i<len; ++i)
+        v.call(view, nodes[i]);
     }
 
     return view;

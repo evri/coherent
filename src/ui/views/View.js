@@ -281,63 +281,32 @@ coherent.View= Class.create(coherent.Responder, {
     delete this.node;
   },
   
-  __factory__: function(selector, parameters, container)
+  /**
+    coherent.View.__factory__(parameters)
+    
+    - parameters (Object): paramater hash that should be passed to the view when
+        it is ultimately created.
+    
+    This is a factory method that returns a function for creating a view when
+    passed only a node. The signature of the returned method is:
+    
+    function factoryMethod(node) -> coherent.View
+   */
+  __factory__: function(parameters)
   {
     var klass= this;
-    var findNodes= Element.queryAll;
     
-    if ('string'!==typeof(selector))
+    function viewFactory(node)
     {
-      container= parameters;
-      parameters= selector;
-      selector= null;
-    }
-    
-    parameters= parameters||{};
-    
-    function setupNode(node)
-    {
-      var view= coherent.View.fromNode(node)||new klass(node, parameters);
+      var view= coherent.View.fromNode(node) || new klass(node, parameters);
       if ('action' in parameters && !parameters.target)
         view.target= this;
+      return view;
     }
-
-    /**
-        @param sel  When called by ListView to instantiate a template, sel
-              is a node.
-              When called during the processing of the __structure__
-              member, sel is a CSS selector.
-              When called for declarative members, sel is undefined
-            
-        @param bindOnly When called by ListView, this will be the relative
-              source value.
-              When called during the processing of the __structure__
-              member, this will be true if the paramaters should be
-              attached to the node or false to actually create the
-              view.
-              When called for declarative members, bindOnly is undefined
-     */
-    return function(sel)
-    {
-      //  when called with a node, this is just an indirect method of 
-      //  calling the constructor. This is used by the template support
-      //  in ListView.
-      if (sel && 1===sel.nodeType)
-      {
-        return new klass(sel, parameters);
-      }
-      
-      var e= container||(this?this.node:document);
-      var nodes= findNodes(e, selector||sel);
-      if (!nodes.length)
-        return null;
-        
-      Array.forEach(nodes, setupNode, this);
-      
-      return coherent.View.fromNode(nodes[0]);
-    };
+    
+    return viewFactory;
   },
-  
+
   /** Initialise the view. This is always called after the DOM node associated
       with this view has been located. It's a good practice to make certain
       views always call their super class' init method.
