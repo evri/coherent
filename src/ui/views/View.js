@@ -229,40 +229,9 @@ coherent.View= Class.create(coherent.Responder, {
 
     this.base(parameters);
 
-    this.__createStructure();
-  },
-
-  __createStructure: function()
-  {
-    var node= this.node;
-    var v;
-    var p;
-
-
     //  generate structure if desired and there's no content in the view.
     if (this.innerHTML && ""===String(node.innerHTML).trim())
       node.innerHTML= this.innerHTML;
-
-    
-    //  re-jigger dataModel so that it points to this view
-    var oldDataModel= coherent.dataModel;
-    var oldContext= this.__context;
-    coherent.dataModel= this.__context= this;
-
-
-    //  process declarative structure and factory properties
-    var structure= this.structure()||{};
-  
-    for (p in structure)
-    {
-      v= structure[p];
-      if (v && 'function'==typeof(v) && (v=v.valueOf()).__factoryFn__)
-        v.call(this, p);
-    }
-  
-    //  restore original data model
-    this.__context= oldContext;
-    coherent.dataModel= oldDataModel;
   },
   
   /** Remove all observers for the bound attributes. Called when this View is
@@ -351,15 +320,6 @@ coherent.View= Class.create(coherent.Responder, {
       else
         b.update();
     }
-  },
-  
-  /** Return the declarative structure of the View, where the keys are CSS
-      selectors used to find the DOM nodes that should be attached to views.
-      @type Object
-   */
-  structure: function()
-  {
-    return this.__structure__;
   },
   
   /** Return the view element
@@ -1098,9 +1058,6 @@ coherent.View.__subclassCreated__= function(subclass)
   var proto= subclass.prototype;
   var baseproto= subclass.superclass.prototype;
 
-  //  Allow inheritance of __structure__ definitions from base classes
-  if (proto.__structure__!==baseproto.__structure__)
-    Object.applyDefaults(proto.__structure__, baseproto.__structure__);
   if (proto.animationOptions!==baseproto.animationOptions)
     Object.applyDefaults(proto.animationOptions, baseproto.animationOptions);
   if (proto.markup && proto.markup instanceof coherent.Asset)
