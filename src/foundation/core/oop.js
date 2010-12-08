@@ -104,45 +104,6 @@
     return fn;
   }
   
-  /** Create any declarative objects from the class definition. For example:
-  
-          var MyClass= Class.create({
-            foo: AnotherClass({ parameter: value })
-          });
-      
-      Assuming that AnotherClass declared a `__factory__` method, the `foo`
-      property is defined as a factory function. When a new instance of
-      `MyClass` is created, each of the factory functions will be called to 
-      create proper values for the instance variables.
-    
-      If a class declares a `__createFactoryObjects` method, creation of its
-      factory objects is delegated to that method. For an example of this,
-      see {@link coherent.Bindable#__createFactoryObjects}.
-    
-      @inner
-      @param {Object} obj - The object to create the factory objects for.
-   */
-  function createFactoryObjects(obj)
-  {
-    if (obj.__createFactoryObjects)
-    {
-      obj.__createFactoryObjects();
-      return;
-    }
-    
-    //  Create declarative objects
-    var p;
-    var v;
-    for (p in obj.__factories__)
-    {
-      v= obj[p];
-      if (!v.__factoryFn__)
-        continue;
-      v.__key= p;
-      obj[p]= v.call(obj);
-    }
-  }
-  
   /** Create a constructor for a class. Depending on whether the constructor
       exists, the superclass exists, and whether the constructor calls its
       ancestor constructor, this function returns a wrapper function that
@@ -191,8 +152,6 @@
         if (result)
           return result;
       
-        createFactoryObjects(this);
-        
         if (this.__postConstruct instanceof Function)
           this.__postConstruct();
 
@@ -207,8 +166,6 @@
 
         this.__uid= this.__uid||coherent.generateUid();
 
-        createFactoryObjects(this);
-        
         if (this.__postConstruct instanceof Function)
           this.__postConstruct();
 

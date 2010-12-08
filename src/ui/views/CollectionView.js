@@ -352,8 +352,6 @@ coherent.CollectionView= Class.create(coherent.View, {
     var container= this.container();
 
     var insertionAnimationOptions= this.__animationOptionsForProperty('insertion');
-    // insertionAnimationOptions.reverse= true;
-
     var deletionAnimationOptions= this.__animationOptionsForProperty('deletion');
     deletionAnimationOptions.callback= function(node)
     {

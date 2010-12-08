@@ -23,38 +23,6 @@ coherent.Bindable= Class.create(coherent.KVO, {
     this.__copyParameters(parameters||{});
   },
 
-  /** Create factory objects for instances of this class. Because Bindable
-      instances may have factory objects that should participate in the
-      binding context, this method overrides the default implementation
-      provided by {@link Class.create} to switch the global context to this
-      instances context before constructing the factory objects.
-    
-      @private
-   */
-  __createFactoryObjects: function()
-  {
-    var oldDataModel= coherent.dataModel;
-    var oldContext= this.__context;
-    
-    coherent.dataModel= this.__context= this;
-    
-    //  Create declarative objects
-    var p;
-    var v;
-    for (p in this.__factories__)
-    {
-      v= this[p];
-      if (!v.__factoryFn__)
-        continue;
-      v.__key= p;
-      this[p]= v.call(this);
-    }
-    
-    //  Restore data model
-    coherent.dataModel= oldDataModel;
-    this.__context= oldContext;
-  },
-  
   /** This is a declarative way of specifying what bindings the object exposes.
     Subclasses should declare their own `exposedBindings` property, which
     will be merged with their superclass' value.

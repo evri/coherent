@@ -194,7 +194,7 @@ coherent.Application= Class.create(coherent.Responder, {
       to= to.nextResponder();
     }
     
-    console.log('No to found for action: '+action);
+    console.log('No target found for action: '+action);
     return false;
   }
   

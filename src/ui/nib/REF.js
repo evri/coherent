@@ -24,7 +24,7 @@ coherent.REF = function(reference)
     ref.key= referenceFunction.__key;
     ref.owner= this;
     
-    return null;
+    return referenceFunction;
   };
   referenceFunction.ref= ref;
   referenceFunction.__factoryFn__= true;
