@@ -27,7 +27,10 @@ describe("View", function() {
       var view= new coherent.View('view', {
         htmlBinding: 'context.html'
       });
-    
+      view.setupBindings();
+      view.init();
+      view.updateBindings();
+      
       expect(view.node).toHaveHtml(this.context.html);
       this.context.setValueForKey(updatedHTML, "html");
       expect(view.node).toHaveHtml(updatedHTML);
@@ -38,6 +41,9 @@ describe("View", function() {
       var view= new coherent.View('view', {
         textBinding: 'context.text'
       });
+      view.setupBindings();
+      view.init();
+      view.updateBindings();
       
       expect(view.node).toHaveText(this.context.text);
       this.context.setValueForKey(updatedText, "text");

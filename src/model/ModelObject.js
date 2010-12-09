@@ -7,6 +7,14 @@
 
     constructor: function(hash)
     {
+      this.changes= {};
+      this.original= {};
+      this.changeCount= 0;
+      this.merge(hash, true);
+    },
+
+    merge: function(hash, suppressNotifications)
+    {
       var schema= this.constructor.schema;
       var info;
       var value;
@@ -29,6 +37,8 @@
         schema.__initialised= true;
       }
       
+      var keys= [];
+      
       for (var key in hash)
       {
         info= schema[key];
@@ -38,13 +48,23 @@
           continue;
         }
         hash[key]= coherent.KVO.adaptTree(info.fromValue(hash[key]));
+        if (!suppressNotifications)
+          this.willChangeValueForKey(key);
+        keys.push(key);
       }
     
-      this.original= hash;
+      this.original= Object.extend(this.original, hash);
       this.changes= {};
       this.changeCount=0;
-    },
 
+      if (!suppressNotifications)
+      {
+        var len= keys.length;
+        for (var i=0; i<len; ++i)
+          this.didChangeValueForKey(keys[i]);
+      }
+    },
+    
     observeChildObjectChangeForKeyPath: function(change, keypath, context)
     {
       //  Faster than calling base.

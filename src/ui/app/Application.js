@@ -36,6 +36,17 @@ coherent.Application= Class.create(coherent.Responder, {
     return void(0);
   },
 
+  viewControllerForPath: function(path)
+  {
+    if (!path.beginsWith(this.applicationRootUrl))
+      return null;
+    path= path.substring(this.applicationRootUrl.length+1);
+    if ('/'!==path.charAt(0))
+      path= '/'+path;
+    
+    return this.callDelegate('viewControllerForPath', [path]);
+  },
+  
   navigationController: function()
   {
     return this.__navigationController;
@@ -54,17 +65,10 @@ coherent.Application= Class.create(coherent.Responder, {
       return;
       
     var path= document.location.pathname;
-    if (!path.beginsWith(this.applicationRootUrl))
-      return;
-    path= path.substring(this.applicationRootUrl.length+1);
-    if ('/'!==path.charAt(0))
-      path= '/'+path;
     
-    var viewController= this.callDelegate('viewControllerForPath', [path]);
-    if (!viewController)
-      return;
-    
-    this.__navigationController.setTopViewController(viewController, event.state);
+    var viewController= this.viewControllerForPath(path);
+    if (viewController)
+      this.__navigationController.setTopViewController(viewController, event.state);
   },
   
   pushState: function(viewController)
