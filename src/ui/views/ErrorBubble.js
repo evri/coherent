@@ -10,9 +10,11 @@ coherent.ErrorBubble= Class.create(coherent.Bubble, {
 
   markup: '<div class="ui-bubble"></div>',
   innerHTML: '<span class="ui-bubble-chrome ui-bubble-tl"></span><span class="ui-bubble-chrome ui-bubble-tr"></span><span class="ui-bubble-chrome ui-bubble-top"></span><span class="ui-bubble-chrome ui-bubble-left"></span><span class="ui-bubble-chrome ui-bubble-right"></span><span class="ui-bubble-chrome ui-bubble-bottom"></span><span class="ui-bubble-chrome ui-bubble-bl"></span><span class="ui-bubble-chrome ui-bubble-br"></span><a href="#" class="close">close</a><span class="ui-bubble-chrome ui-bubble-center"></span><div class="ui-bubble-container"><div class="ui-bubble-content"></div><ul class="ui-bubble-buttons"><li><button></button></li></ul></div><span class="ui-bubble-chrome ui-bubble-arrow"></span>',
-
-  __structure__: {
-    '.buttons': coherent.CollectionView({
+  
+  init: function()
+  {
+    this.base();
+    this.buttons= new coherent.CollectionView({
               visibleBinding: 'recoveryOptions',
               contentBinding: 'recoveryOptions',
               action: 'recoveryButtonClicked',
@@ -21,7 +23,10 @@ coherent.ErrorBubble= Class.create(coherent.Bubble, {
                       textBinding: 'representedObject.text'
                     })
                 })
-            })
+            });
+    this.buttons.setupBindings();
+    this.buttons.init();
+    this.buttons.updateBindings();
   },
   
   /** Retrieve the error being displayed in this bubble.
