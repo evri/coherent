@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>src/ui/nib/NIB.js</string>
+	<string>src/controls/NavigationController.js</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -65,6 +65,20 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
+		<key>src/controls/NavigationController.js</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>6</integer>
+				<key>line</key>
+				<integer>67</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>164</integer>
+		</dict>
 		<key>src/controls/PagingView.js</key>
 		<dict>
 			<key>caret</key>
@@ -92,20 +106,6 @@
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
-		</dict>
-		<key>src/foundation/core/Bindable.js</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>5</integer>
-				<key>line</key>
-				<integer>237</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>270</integer>
 		</dict>
 		<key>src/foundation/core/KeyPathTrie.js</key>
 		<dict>
@@ -207,34 +207,6 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
-		<key>src/ui/nib/NIB.js</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>63</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>106</integer>
-		</dict>
-		<key>src/ui/nib/REF.js</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>26</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>7</integer>
-		</dict>
 		<key>src/ui/views/Overlay.js</key>
 		<dict>
 			<key>caret</key>
@@ -262,34 +234,6 @@
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>2</integer>
-		</dict>
-		<key>src/ui/views/View.js</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>51</integer>
-				<key>line</key>
-				<integer>458</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>256</integer>
-		</dict>
-		<key>src/ui/views/ViewController.js</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>4</integer>
-				<key>line</key>
-				<integer>132</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>111</integer>
 		</dict>
 		<key>tests/oop-test.js</key>
 		<dict>
@@ -322,15 +266,11 @@
 	</dict>
 	<key>openDocuments</key>
 	<array>
-		<string>src/ui/nib/REF.js</string>
-		<string>src/foundation/core/Bindable.js</string>
-		<string>src/ui/views/View.js</string>
-		<string>src/ui/views/ViewController.js</string>
-		<string>src/ui/nib/NIB.js</string>
+		<string>src/controls/NavigationController.js</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<false/>
 	<key>windowFrame</key>
-	<string>{{765, 302}, {1152, 876}}</string>
+	<string>{{765, 19}, {1154, 1159}}</string>
 </dict>
 </plist>

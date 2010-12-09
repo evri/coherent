@@ -62,6 +62,7 @@ coherent.VIEW= function(selector, structure)
   function setupView(viewNode)
   {
     var view;
+    var needsPostConstruct= setupView.__nib.needsPostConstruct;
     
     viewNode= resolveViewNode(viewNode);
     if (!viewNode || 1!==viewNode.nodeType)
@@ -91,9 +92,10 @@ coherent.VIEW= function(selector, structure)
       //  Find the matching nodes
       nodes= Element.queryAll(viewNode, p);
       for (i=0, len= nodes.length; i<len; ++i)
-        v.call(view, nodes[i]);
+        needsPostConstruct.push(v.call(view, nodes[i]));
     }
 
+    needsPostConstruct.push(view);
     return view;
   }
 

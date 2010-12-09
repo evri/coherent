@@ -3,17 +3,21 @@
 
 coherent.VIEW_TEMPLATE= function()
 {
-  var result= coherent.VIEW.apply(this, arguments);
+  var viewFactory= coherent.VIEW.apply(this, arguments);
   
-  function templateFactory()
+  function templateViewFactory(node)
   {
-    result.__key= templateFactory.__key;
-    result.__nib= templateFactory.__nib;
-    return result;
+    viewFactory.__nib= templateViewFactory.__nib;
+    viewFactory.__key= templateViewFactory.__key;
     
+    var view= viewFactory(node);
+    templateViewFactory.__nib.postConstruct();
+    templateViewFactory.__nib.__awakeViewsFromNib(view);
+    return view;
   }
-  templateFactory.__viewTemplate__=true;
-  return templateFactory;
+  
+  templateViewFactory.__viewTemplate__=true;
+  return templateViewFactory;
 }
 
 coherent.__export("VIEW_TEMPLATE");

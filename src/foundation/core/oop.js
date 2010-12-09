@@ -152,9 +152,6 @@
         if (result)
           return result;
       
-        if (this.__postConstruct instanceof Function)
-          this.__postConstruct();
-
         return this;
       };
     }
@@ -165,9 +162,6 @@
           return callFactory(wrapped, arguments);
 
         this.__uid= this.__uid||coherent.generateUid();
-
-        if (this.__postConstruct instanceof Function)
-          this.__postConstruct();
 
         return this;
       }

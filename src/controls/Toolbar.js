@@ -84,6 +84,10 @@ coherent.Toolbar= Class.create(coherent.View, {
                     target: barItem.target
                   });
 
+    view.setupBindings();
+    view.init();
+    view.updateBindings();
+    
     coherent.dataModel= oldDataModel;
     
     return view;

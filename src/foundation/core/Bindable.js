@@ -162,21 +162,6 @@ coherent.Bindable= Class.create(coherent.KVO, {
     this.bindings[name]= binding;
   },
   
-  /** After all contructors execute, the Oop framework calls this method.
-    
-    This method performs the following steps:
-    1. Setup the bindings defined in the parameters (calls {@link #setupBindings})
-    2. Call the init method
-    3. Retrieve the current value of each binding (calls {@link #updateBindings})
-   */
-  __postConstruct: function()
-  {
-    this.setupBindings();
-    if (this.init)
-      this.init();
-    this.updateBindings();
-  },
-  
   /** Copy the parameters hash to this object. This method explicitly skips
     any parameter name that ends in `Binding`, because those are expected to
     be binding declarations.

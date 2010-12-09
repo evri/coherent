@@ -14,6 +14,7 @@ coherent.Nib= Class._create({
     this.name= name;
     this.def= def;
     this.references= coherent.REF.__unresolved;
+    this.needsPostConstruct= [];
     coherent.REF.__unresolved= [];
   },
 
@@ -53,6 +54,27 @@ coherent.Nib= Class._create({
     }
   },
   
+  postConstruct: function()
+  {
+    var postConstruct= this.needsPostConstruct;
+    var len= postConstruct.length;
+    var thing;
+    
+    this.needsPostConstruct= [];
+    
+    for (var i=0; i<len; ++i)
+    {
+      thing= postConstruct[i];
+      if (!thing.setupBindings)
+        continue;
+
+      thing.setupBindings();
+      if (thing.init)
+        thing.init();
+      thing.updateBindings();
+    }
+  },
+  
   instantiateNibWithOwner: function(owner)
   {
     var oldDataModel= coherent.dataModel;
@@ -68,6 +90,7 @@ coherent.Nib= Class._create({
     var ctypeof= coherent.typeOf;
     var views= [];
     var awake= [];
+    var needsPostConstruct= this.needsPostConstruct;
 
     NIB.__currentNib= this;
     
@@ -103,8 +126,12 @@ coherent.Nib= Class._create({
         //  of things to awake, because we special process views.
         if (v instanceof coherent.View)
           views.push(v);
-        else if ('awakeFromNib' in v)
-          awake.push(v);
+        else
+        {
+          needsPostConstruct.push(v);
+          if ('awakeFromNib' in v)
+            awake.push(v);
+        }
       }
       model.setValueForKey(v, p);
     }
@@ -137,7 +164,9 @@ coherent.Nib= Class._create({
     var len= this.references.length;
     while (len--)
       this.references[len].resolve(model);
-      
+
+    this.postConstruct();
+
     len= awake.length;
     while (len--)
       awake[len].awakeFromNib();
@@ -145,6 +174,7 @@ coherent.Nib= Class._create({
     len= views.length;
     while (len--)
       this.__awakeViewsFromNib(views[len]);
+
     
     coherent.dataModel= oldDataModel;
     

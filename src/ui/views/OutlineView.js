@@ -67,12 +67,6 @@ coherent.OutlineView= Class.create(coherent.View, {
   setViewTemplate: function(viewTemplate)
   {
     this.__viewTemplate= viewTemplate;
-    
-    //  If the viewTemplate is specified as simply a class (rather than a
-    //  factory function, via a declarative constructor), then convert it
-    //  to a factory function. This makes the logic less complex later.
-    if (this.__viewTemplate && !this.__viewTemplate.__factoryFn__)
-      this.__viewTemplate= this.__viewTemplate();
   },
 
   newItemForRepresentedObject: function(representedObject, parentItem)
@@ -97,7 +91,7 @@ coherent.OutlineView= Class.create(coherent.View, {
     else
       item.leaf= (0===(representedObject.valueForKeyPath(this.childrenKeyPath)||[]).length);
 
-    item.view= this.__viewTemplate(node, null);
+    item.view= this.__viewTemplate(node);
     item.node= node||item.view.node;
     item.hasDisclosureButton= Element.query(item.node, "." + this.disclosureButtonClassName);
     

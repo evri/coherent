@@ -199,12 +199,6 @@
     setAnnotationViewTemplate: function(viewTemplate)
     {
       this.__annotationViewTemplate= viewTemplate;
-    
-      //  If the viewTemplate is specified as simply a class (rather than a
-      //  factory function, via a declarative constructor), then convert it
-      //  to a factory function. This makes the logic less complex later.
-      if (this.__annotationViewTemplate && !this.__annotationViewTemplate.__factoryFn__)
-      this.__annotationViewTemplate= this.__annotationViewTemplate();
     },
   
     showOverlayForAnnotation: function(annotation)
@@ -229,7 +223,7 @@
       coherent.dataModel= item;
     
       item.setValueForKey(annotation, 'representedObject');
-      item.setValueForKey(this.__annotationViewTemplate(this.annotationNode, null), 'view');
+      item.setValueForKey(this.__annotationViewTemplate(this.annotationNode), 'view');
       item.setValueForKey(new coherent.MapViewOverlay(item.view), 'overlay');
     
       var hoverInfo={

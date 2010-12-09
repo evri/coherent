@@ -229,12 +229,6 @@ coherent.CollectionView= Class.create(coherent.View, {
   setViewTemplate: function(viewTemplate)
   {
     this.__viewTemplate= viewTemplate;
-    
-    //  If the viewTemplate is specified as simply a class (rather than a
-    //  factory function, via a declarative constructor), then convert it
-    //  to a factory function. This makes the logic less complex later.
-    if (this.__viewTemplate && !this.__viewTemplate.__factoryFn__)
-      this.__viewTemplate= this.__viewTemplate();
   },
   
   /** Create a new view for the representedObject. This method swizzles the
@@ -263,7 +257,7 @@ coherent.CollectionView= Class.create(coherent.View, {
       node= Element.clone(this.templateNode);
 
     item.setValueForKey(representedObject, 'representedObject');
-    item.setValueForKey(this.__viewTemplate(node, null), 'view');
+    item.setValueForKey(this.__viewTemplate(node), 'view');
     item.setValueForKey(node||item.view.node, 'node');
     item.setValueForKey(false, 'selected');
     item.addObserverForKeyPath(this, 'observeItemSelectedChange', 'selected');
