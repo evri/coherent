@@ -46,7 +46,7 @@
     Properties: ('__defineGetter__' in Object.prototype),
     
     /** Does the browser support the Object.defineProperty method? */
-    DefineProperty: ('defineProperty' in Object),
+    DefineProperty: ('defineProperty' in Object && 'pushState' in window.history),
     
     /** Does the browser support native query selector? */
     QuerySelector: ('querySelector' in document),

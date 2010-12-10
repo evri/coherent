@@ -2,7 +2,7 @@
 <html>
     <head>
         <link rel="stylesheet" href="reset.css" type="text/css" title="no title" charset="utf-8">
-        <script src="../build/debug/distil.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../build/debug/distil-sync.js" type="text/javascript" charset="utf-8"></script>
         <script src="../build/debug/coherent-debug.js" type="text/javascript" charset="utf-8"></script>
         <script src="states.js" type="text/javascript" charset="utf-8"></script>
         <style>
@@ -101,7 +101,7 @@
             }
         });
         var controller= new coherent.ViewController({ nibName: 'simple' });
-        controller.view();
+        coherent.Page.shared.setRootViewController(controller);
       });
     </script>
 </html>
