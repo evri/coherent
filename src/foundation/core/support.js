@@ -46,7 +46,18 @@
     Properties: ('__defineGetter__' in Object.prototype),
     
     /** Does the browser support the Object.defineProperty method? */
-    DefineProperty: ('defineProperty' in Object),
+    DefineProperty: ('defineProperty' in Object) && (function(){
+          var o = {};
+          try
+          {
+           Object.defineProperty(o, "prop", {value: true, enumerable: true});
+          }
+          catch (e)
+          {
+           return false;
+          }
+          return ("prop" in o && o.prop === true);
+        })(),
     
     /** Does the browser support native query selector? */
     QuerySelector: ('querySelector' in document),

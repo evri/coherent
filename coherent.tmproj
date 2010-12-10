@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>src/controls/NavigationController.js</string>
+	<string>src/ui/app/Application.js</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -65,20 +65,6 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
-		<key>src/controls/NavigationController.js</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>6</integer>
-				<key>line</key>
-				<integer>67</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>164</integer>
-		</dict>
 		<key>src/controls/PagingView.js</key>
 		<dict>
 			<key>caret</key>
@@ -135,19 +121,19 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
-		<key>src/legacy/ModeledXMLProxy.js</key>
+		<key>src/ui/app/Application.js</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>18</integer>
 				<key>line</key>
-				<integer>0</integer>
+				<integer>41</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>58</integer>
+			<integer>31</integer>
 		</dict>
 		<key>src/ui/dom/event.js</key>
 		<dict>
@@ -266,11 +252,11 @@
 	</dict>
 	<key>openDocuments</key>
 	<array>
-		<string>src/controls/NavigationController.js</string>
+		<string>src/ui/app/Application.js</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<false/>
 	<key>windowFrame</key>
-	<string>{{765, 19}, {1154, 1159}}</string>
+	<string>{{286, 0}, {1154, 878}}</string>
 </dict>
 </plist>

@@ -40,7 +40,7 @@ coherent.Application= Class.create(coherent.Responder, {
   {
     if (!path.beginsWith(this.applicationRootUrl))
       return null;
-    path= path.substring(this.applicationRootUrl.length+1);
+    path= path.substring(this.applicationRootUrl.length);
     if ('/'!==path.charAt(0))
       path= '/'+path;
     
