@@ -200,7 +200,7 @@ coherent.ViewController= Class.create(coherent.Responder, {
     if (this.modalViewController)
     {
       //  Ask the delegate (if any) whether it's OK to dismiss the current view controller
-      if (false===this.callDelegate("willDismissModalViewController", [this.modalViewController]))
+      if (false===this.callDelegate("willDismissModalViewController", this.modalViewController))
         return;
 
       function presentAgain()

@@ -17,7 +17,7 @@ coherent.Application= Class.create(coherent.Responder, {
       var app= coherent.Application.shared;
       app.loaded= true;
       app.__loadMainNib();
-      app.callDelegate('applicationDidFinishLaunching');
+      app.callDelegate('applicationDidFinishLaunching', app);
       //  Remove a startup notice
       var startup= Element.query('.ui-startup');
       if (startup)
@@ -44,7 +44,7 @@ coherent.Application= Class.create(coherent.Responder, {
     if ('/'!==path.charAt(0))
       path= '/'+path;
     
-    return this.callDelegate('viewControllerForPath', [path]);
+    return this.callDelegate('viewControllerForPath', path);
   },
   
   navigationController: function()
@@ -76,12 +76,12 @@ coherent.Application= Class.create(coherent.Responder, {
     if (!coherent.Support.HistoryPushState)
       return;
     
-    var state= this.callDelegate('historyStateForViewController', [viewController]);
+    var state= this.callDelegate('historyStateForViewController', viewController);
     var title= viewController.valueForKey('title');
     var url= viewController.valueForKey('url');
 
-    title= this.callDelegate('pageTitleForString', [title]) || document.title;
-    url= [this.applicationRootUrl, url].join('/').replace(/\/\/+/g, '/');
+    title= this.callDelegate('pageTitleForString', title) || document.title;
+    url= coherent.Path.join(this.applicationRootUrl, url);
     
     window.history.pushState(state, title, url);
   },

@@ -28,9 +28,8 @@
   width: 60px;
   height: 20px;
   padding: 8px 5px 0px 5px;
-  cursor: pointer;
   
-  min-width: 44px;
+  min-width: 34px;
   
   font-family: Helvetica;
   font-size: 12px;
@@ -53,6 +52,14 @@
 {
   width: auto;
   -webkit-box-flex: 1;
+}
+
+.ui-bar-button,
+.ui-bar-icon,
+.ui-bar-title,
+.ui-bar-back
+{
+  cursor: pointer;
 }
 
 .ui-bar-button
@@ -127,7 +134,7 @@
 
 .ui-navigation-at-root .ui-bar-back
 {
-  opacity: 0;
+  visibility: hidden;
 }
 
 .ui-bar-icon
@@ -147,3 +154,4 @@
 .ui-icon-reply { background-image: url(images/toolbar/reply.png); }
 .ui-icon-search { background-image: url(images/toolbar/search.png); }
 .ui-icon-trash { background-image: url(images/toolbar/trash.png); }
+.ui-icon-save { background-image: url(images/toolbar/save.png); }

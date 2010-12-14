@@ -54,8 +54,6 @@ coherent.Toolbar= Class.create(coherent.View, {
     
     Element.addClassName(this.__templateNode.className, coherent.Style.ToolbarItem);
     
-    //  Set up aria roles
-    this.__templateNode.setAttribute('role', 'button');
     return this.__templateNode;
   },
   
@@ -74,6 +72,10 @@ coherent.Toolbar= Class.create(coherent.View, {
     item.setValueForKey(barItem, 'representedObject');
     if (barItem.id)
       node.id= barItem.id;
+
+    //  Set up aria roles
+    if (barItem.action)
+      node.setAttribute('role', 'button');
       
     var view= new coherent.View(node, {
                     barItem: barItem,
@@ -122,7 +124,7 @@ coherent.Toolbar= Class.create(coherent.View, {
 
       if (item.style()===coherent.BarButtonStyle.Title)
         this.__titleIndex= i;
-        
+
       this.__items.push(item);
       this.addSubview(this.__viewForBarItem(item));
     }

@@ -123,13 +123,13 @@ coherent.Responder= Class.create(coherent.Bindable, {
     }
   },
   
-  callDelegate: function(method, args)
+  callDelegate: function(method)
   {
     var delegate= this.delegate();
     if (!delegate || !delegate[method])
       return null;
-      
-    args= [this].concat(args);
+    
+    var args= Array.from(arguments,1);
     return delegate[method].apply(delegate, args);
   },
 

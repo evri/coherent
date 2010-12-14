@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>src/ui/app/Application.js</string>
+	<string>sandbox/anchored-bubble.html</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -21,6 +21,20 @@
 	<integer>270</integer>
 	<key>metaData</key>
 	<dict>
+		<key>sandbox/anchored-bubble.html</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>108</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>78</integer>
+		</dict>
 		<key>sandbox/slideshow.html</key>
 		<dict>
 			<key>caret</key>
@@ -79,6 +93,20 @@
 			<key>firstVisibleLine</key>
 			<integer>22</integer>
 		</dict>
+		<key>src/css/layouts.css</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>10</integer>
+				<key>line</key>
+				<integer>10</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
 		<key>src/foundation/additions/function-additions.js</key>
 		<dict>
 			<key>caret</key>
@@ -126,14 +154,14 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>18</integer>
+				<integer>59</integer>
 				<key>line</key>
-				<integer>41</integer>
+				<integer>19</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>31</integer>
+			<integer>0</integer>
 		</dict>
 		<key>src/ui/dom/event.js</key>
 		<dict>
@@ -193,7 +221,21 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
-		<key>src/ui/views/Overlay.js</key>
+		<key>src/ui/views/Bubble.js</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>56</integer>
+				<key>line</key>
+				<integer>20</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>170</integer>
+		</dict>
+		<key>src/ui/views/ErrorBubble.js</key>
 		<dict>
 			<key>caret</key>
 			<dict>
@@ -205,7 +247,21 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>102</integer>
+			<integer>0</integer>
+		</dict>
+		<key>src/ui/views/Overlay.js</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>7</integer>
+				<key>line</key>
+				<integer>175</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>88</integer>
 		</dict>
 		<key>src/ui/views/ToggleButton.js</key>
 		<dict>
@@ -220,6 +276,20 @@
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>2</integer>
+		</dict>
+		<key>src/ui/views/ViewController.js</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>202</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>160</integer>
 		</dict>
 		<key>tests/oop-test.js</key>
 		<dict>
@@ -253,6 +323,12 @@
 	<key>openDocuments</key>
 	<array>
 		<string>src/ui/app/Application.js</string>
+		<string>src/css/layouts.css</string>
+		<string>src/ui/views/ViewController.js</string>
+		<string>src/ui/views/Overlay.js</string>
+		<string>src/ui/views/Bubble.js</string>
+		<string>src/ui/views/ErrorBubble.js</string>
+		<string>sandbox/anchored-bubble.html</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<false/>

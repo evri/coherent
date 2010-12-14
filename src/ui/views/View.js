@@ -522,6 +522,11 @@ coherent.View= Class.create(coherent.Responder, {
       node.className= newClassName;
   },
   
+  hasClassName: function(classname)
+  {
+    return Element.hasClassName(this.node, classname);
+  },
+  
   addClassName: function(classname, animationOptions)
   {
     if (animationOptions)

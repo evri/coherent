@@ -136,7 +136,7 @@ coherent.Page= Class.create(coherent.Responder, {
     var view= this.targetViewForEvent(event);
     
     if (this.__mouseEventListeners.length)
-      this.__mouseEventListeners.forEach(function(l) { l.onmousedown(event); });
+      this.__mouseEventListeners.forEach(function(l) { l.onmousedown && l.onmousedown(event); });
       
     if (view)
     {
@@ -166,7 +166,7 @@ coherent.Page= Class.create(coherent.Responder, {
       this._mousedownView.onmouseup(event);
 
     if (this.__mouseEventListeners.length)
-      this.__mouseEventListeners.forEach(function(l) { l.onmouseup(event); });
+      this.__mouseEventListeners.forEach(function(l) { l.onmouseup && l.onmouseup(event); });
       
     this._mousedownView= null;
     Event.stopObserving(document, 'mousemove', this._onmousedragHandler);
@@ -287,7 +287,7 @@ coherent.Page= Class.create(coherent.Responder, {
       return;
       
     if (this.__mouseEventListeners.length)
-      this.__mouseEventListeners.forEach(function(l) { l.onclick(event); });
+      this.__mouseEventListeners.forEach(function(l) { l.onclick && l.onclick(event); });
 
     var view= this.targetViewForEvent(event);
     if (view)
@@ -300,7 +300,7 @@ coherent.Page= Class.create(coherent.Responder, {
   _ondblclick: function(event)
   {
     if (this.__mouseEventListeners.length)
-      this.__mouseEventListeners.forEach(function(l) { l.ondblclick(event); });
+      this.__mouseEventListeners.forEach(function(l) { l.ondblclick && l.ondblclick(event); });
       
     if (this._mousedownView)
       this._mousedownView.ondblclick(event);
@@ -431,6 +431,9 @@ coherent.Page= Class.create(coherent.Responder, {
     if (this._touchstartView)
       return;
 
+    if (this.__mouseEventListeners.length)
+      this.__mouseEventListeners.forEach(function(l) { l.ontouchstart && l.ontouchstart(event); });
+
     var view= this.targetViewForEvent(event);
     if (view)
     {
@@ -533,6 +536,9 @@ coherent.Page= Class.create(coherent.Responder, {
       if (!this._touchmovedX && !this._touchmovedY)
         this._touchstartView.onclick(event);
     }
+
+    if (this.__mouseEventListeners.length)
+      this.__mouseEventListeners.forEach(function(l) { l.ontouchend && l.ontouchend(event); });
     
     this._gesturing= false;
     this._touchstartView= null;

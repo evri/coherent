@@ -279,7 +279,7 @@ coherent.ScrollView= Class.create(coherent.View, {
     if (this.distX + this.distY > 5)
     {
       if (!this.moved)
-        this.callDelegate('scrollViewWillBeginDragging');
+        this.callDelegate('scrollViewWillBeginDragging', this);
 
       // Lock scroll direction
       if (this.directionalLockEnabled)
@@ -299,7 +299,7 @@ coherent.ScrollView= Class.create(coherent.View, {
       this.moved = true;
       this.directionX = leftDelta > 0 ? -1 : 1;
       this.directionY = topDelta > 0 ? -1 : 1;
-      this.callDelegate('scrollViewDidScroll');
+      this.callDelegate('scrollViewDidScroll', this);
     }
     else
     {
@@ -384,7 +384,7 @@ coherent.ScrollView= Class.create(coherent.View, {
 
     //  Call the delegate method scrollViewDidEndDragging with a flag indicating
     //  whether the scroll will decelerate
-    this.callDelegate('scrollViewDidEndDragging', [newDuration>0]);
+    this.callDelegate('scrollViewDidEndDragging', this, newDuration>0);
     this.scrollTo(newPositionX, newPositionY, newDuration);
   },
 
