@@ -571,8 +571,12 @@ coherent.View= Class.create(coherent.Responder, {
     if (FIRST_RESPONDER===to)
       to= coherent.Page.shared.firstResponder;
     else if ('string'===typeof(to))
+    {
       to= this.__context.valueForKeyPath(to);
-
+      if (!to)
+        throw new Error("Can't send action "+this.action+"; no object named " + this.target);
+    }
+    
     coherent.Application.shared.sendAction(this.action, to, this, argument);
   },
   
