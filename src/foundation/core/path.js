@@ -19,7 +19,11 @@
   
   Path.join= function()
   {
-    var parts = Array.prototype.filter.call(arguments, validPathPart);
+    var parts;
+    if (1===arguments.length && arguments[0].splice)
+      parts= arguments[0].filter(validPathPart);
+    else
+      parts= Array.prototype.filter.call(arguments, validPathPart);
     return parts.map(removeLeadingAndTrailingSlash).join('/');
   }
 

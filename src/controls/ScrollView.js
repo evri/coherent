@@ -64,14 +64,14 @@ coherent.ScrollView= Class.create(coherent.View, {
         
   onDOMModified: function(e)
   {
+    if (e.target.parentNode != this.node)
+      return;
+    
     if (this.__refreshTimer)
       this.__refreshTimer.cancel();
       
     this.__refreshTimer= Function.delay(this.refresh, 100, this);
 
-    if (e.target.parentNode != this.node)
-      return;
-    
     if (this.scrollsToTopOnDOMChanges && (this.x!==0 || this.y!==0))
       this.scrollTo(0,0,0);
   },
@@ -89,8 +89,8 @@ coherent.ScrollView= Class.create(coherent.View, {
     
     this.viewportWidth = this.wrapper.clientWidth;
     this.viewportHeight = this.wrapper.clientHeight;
-    this.contentWidth = this.node.offsetWidth;
-    this.contentHeight = this.node.offsetHeight;
+    this.contentWidth = this.node.scrollWidth;
+    this.contentHeight = this.node.scrollHeight;
     this.maxScrollX = this.viewportWidth - this.contentWidth;
     this.maxScrollY = this.viewportHeight - this.contentHeight;
     this.directionX = 0;
