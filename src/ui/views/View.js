@@ -267,10 +267,7 @@ coherent.View= Class.create(coherent.Responder, {
     
     function viewFactory(node)
     {
-      var view= coherent.View.fromNode(node) || new klass(node, parameters);
-      if ('action' in parameters && !parameters.target)
-        view.target= this;
-      return view;
+      return coherent.View.fromNode(node) || new klass(node, parameters);
     }
     
     return viewFactory;
