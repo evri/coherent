@@ -1007,7 +1007,7 @@ coherent.View= Class.create(coherent.Responder, {
   /** Return the acceptable drop operations for the view. Default is none. */
   draggingEntered: function(dragInfo)
   {
-    var delegate= this.delegate();
+    var delegate= this.delegate;
     if (delegate && 'draggingEntered' in delegate)
       return delegate.draggingEntered(dragInfo);
     return "none";
@@ -1015,7 +1015,7 @@ coherent.View= Class.create(coherent.Responder, {
   
   draggingExited: function(dragInfo)
   {
-    var delegate= this.delegate();
+    var delegate= this.delegate;
     if (delegate && 'draggingExited' in delegate)
       delegate.draggingExited(dragInfo);
   },
@@ -1023,7 +1023,7 @@ coherent.View= Class.create(coherent.Responder, {
   /** Return the acceptable drop operations for the view. Default is none. */
   draggingUpdated: function(dragInfo)
   {
-    var delegate= this.delegate();
+    var delegate= this.delegate;
     if (delegate && 'draggingUpdated' in delegate)
       return delegate.draggingUpdated(dragInfo);
     return null;
@@ -1032,7 +1032,7 @@ coherent.View= Class.create(coherent.Responder, {
   /** Return true if the view is willing to accept the drop. */
   prepareForDragOperation: function(dragInfo)
   {
-    var delegate= this.delegate();
+    var delegate= this.delegate;
     if (delegate && 'prepareForDragOperation' in delegate)
       return delegate.prepareForDragOperation(dragInfo);
     return false;
@@ -1041,7 +1041,7 @@ coherent.View= Class.create(coherent.Responder, {
   /** Return true if the view was able to perform the drag. */
   performDragOperation: function(dragInfo)
   {
-    var delegate= this.delegate();
+    var delegate= this.delegate;
     if (delegate && 'performDragOperation' in delegate)
       return delegate.performDragOperation(dragInfo);
     return false;
@@ -1049,7 +1049,7 @@ coherent.View= Class.create(coherent.Responder, {
   
   concludeDragOperation: function(dragInfo)
   {
-    var delegate= this.delegate();
+    var delegate= this.delegate;
     if (delegate && 'concludeDragOperation' in delegate)
       delegate.concludeDragOperation(dragInfo);
   }

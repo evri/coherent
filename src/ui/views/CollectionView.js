@@ -255,7 +255,9 @@ coherent.CollectionView= Class.create(coherent.View, {
     
     if (!node && this.templateNode)
       node= Element.clone(this.templateNode);
-
+    
+    var template= this.callDelegate('collectionViewTemplateForRepresentedObject', this, representedObject) ||
+                  this.__viewTemplate;
     item.setValueForKey(representedObject, 'representedObject');
     item.setValueForKey(this.__viewTemplate(node), 'view');
     item.setValueForKey(node||item.view.node, 'node');

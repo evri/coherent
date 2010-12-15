@@ -13,9 +13,9 @@ coherent.PopupButton= Class.create(coherent.View, {
     if ('A'===node.tagName)
       Event.preventDefault(event);
 
-    if (this!=this.popupView.delegate())
+    if (this!=this.popupView.delegate)
     {
-      this.popupView.setDelegate(this);
+      this.popupView.delegate= this;
       this.popupView.attachToView(this);
     }
     if (this.active())

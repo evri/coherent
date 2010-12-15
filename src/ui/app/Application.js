@@ -188,7 +188,7 @@ coherent.Application= Class.create(coherent.Responder, {
         return true;
       }
       
-      var delegate= to.delegate && to.delegate();
+      var delegate= to.delegate;
       if (delegate && action in delegate)
       {
         delegate[action](from, argument);

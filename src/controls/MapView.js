@@ -154,14 +154,11 @@
               visible: true,
               map: this.__map
             };
-      var delegate= this.delegate();
-  
-      if (delegate && delegate.mapViewMarkerOptionsForAnnotation)
-      {
-        var more= delegate.mapViewMarkerOptionsForAnnotation(this, annotation);
-        if (more)
-          Object.extend(options, more);
-      }
+            
+      var more= this.callDelegate('mapViewMarkerOptionsForAnnotation', this, annotation);
+      if (more)
+        Object.extend(options, more);
+        
       var marker= new google.maps.Marker(options);
       google.maps.event.addListener(marker, 'click', this.__markerClicked.bind(this, marker));
       return marker;
