@@ -73,7 +73,7 @@ coherent.Responder= Class.create(coherent.Bindable, {
   
   callDelegate: function(method)
   {
-    if (!this.delegate || !delegate[method])
+    if (!this.delegate || !this.delegate[method])
       return null;
     
     var args= Array.from(arguments,1);

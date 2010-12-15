@@ -259,7 +259,7 @@ coherent.CollectionView= Class.create(coherent.View, {
     var template= this.callDelegate('collectionViewTemplateForRepresentedObject', this, representedObject) ||
                   this.__viewTemplate;
     item.setValueForKey(representedObject, 'representedObject');
-    item.setValueForKey(this.__viewTemplate(node), 'view');
+    item.setValueForKey(template(node), 'view');
     item.setValueForKey(node||item.view.node, 'node');
     item.setValueForKey(false, 'selected');
     item.addObserverForKeyPath(this, 'observeItemSelectedChange', 'selected');
