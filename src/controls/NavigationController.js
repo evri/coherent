@@ -30,6 +30,7 @@
       this.__viewControllers= [viewController];
       this.__topIndex= 0;
       viewController.view().addClassName(coherent.Style.NavigationSubview);
+      viewController.view().addClassName(coherent.Style.kActiveClass);
       this.view().addSubview(viewController.view());
       this.__updateToolbar();
     },
@@ -154,13 +155,13 @@
 
       if (direction===REVERSE)
       {
-        Element.updateClass(oldNode, ['ui-slide', 'out', 'reverse'], ['in']);
-        Element.updateClass(newNode, ['ui-slide', 'in', 'reverse'], ['out']);
+        Element.updateClass(oldNode, ['ui-slide', 'out', 'reverse'], ['in', coherent.Style.kActiveClass]);
+        Element.updateClass(newNode, ['ui-slide', 'in', 'reverse', coherent.Style.kActiveClass], ['out']);
       }
       else
       {
-        Element.updateClass(oldNode, ['ui-slide', 'out'], ['in', 'reverse']);
-        Element.updateClass(newNode, ['ui-slide', 'in'], ['out', 'reverse']);
+        Element.updateClass(oldNode, ['ui-slide', 'out'], ['in', 'reverse', coherent.Style.kActiveClass]);
+        Element.updateClass(newNode, ['ui-slide', 'in', coherent.Style.kActiveClass], ['out', 'reverse']);
       }
     },
   
