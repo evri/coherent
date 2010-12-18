@@ -23,7 +23,6 @@ coherent.REF = function(reference)
     var ref= referenceFunction.ref;
     ref.key= referenceFunction.__key;
     ref.owner= this;
-
     return null;
   };
   referenceFunction.ref= ref;
@@ -34,6 +33,9 @@ coherent.REF = function(reference)
 coherent.REF.__unresolved= [];
 coherent.REF.resolve= function(context)
 {
+  if (!this.key || !this.owner)
+    return;
+    
   var object= context.valueForKey(this.reference);
   if (object && this.childReference)
     object= (object.__resolveChildReference||object.valueForKeyPath).call(object, this.childReference);
@@ -46,6 +48,7 @@ coherent.REF.resolve= function(context)
     this.owner[setter](object);
   else
     this.owner[this.key]= object;
+  this.owner= null;
 }
 
 coherent.__export("REF");

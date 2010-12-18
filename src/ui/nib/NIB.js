@@ -14,6 +14,7 @@ coherent.Nib= Class._create({
     this.name= name;
     this.def= def;
     this.references= coherent.REF.__unresolved;
+
     this.needsPostConstruct= [];
     coherent.REF.__unresolved= [];
   },
@@ -56,11 +57,15 @@ coherent.Nib= Class._create({
   
   postConstruct: function()
   {
+    var len= this.references.length;
+    while (len--)
+      this.references[len].resolve(this.context);
+
     var postConstruct= this.needsPostConstruct;
-    var len= postConstruct.length;
     var thing;
     
     this.needsPostConstruct= [];
+    len= postConstruct.length;
     
     for (var i=0; i<len; ++i)
     {
@@ -84,8 +89,7 @@ coherent.Nib= Class._create({
     model.setValueForKey(coherent.Application.shared, 'application');
     model.setValueForKey(coherent.Page.shared, 'page');
     
-    var v;
-    var p;
+    var v, p, len;
     var ignore= coherent.KVO.typesOfKeyValuesToIgnore;
     var ctypeof= coherent.typeOf;
     var views= [];
@@ -93,6 +97,7 @@ coherent.Nib= Class._create({
     var needsPostConstruct= this.needsPostConstruct;
 
     NIB.__currentNib= this;
+    this.context= model;
     
     for (p in this.def)
     {
@@ -161,10 +166,6 @@ coherent.Nib= Class._create({
       }
     }
 
-    var len= this.references.length;
-    while (len--)
-      this.references[len].resolve(model);
-
     this.postConstruct();
 
     len= awake.length;
@@ -178,7 +179,6 @@ coherent.Nib= Class._create({
     
     coherent.dataModel= oldDataModel;
     
-    this.context= model;
     NIB.__currentNib= null;
   }
   

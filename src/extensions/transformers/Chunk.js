@@ -7,6 +7,8 @@ coherent.transformer.Chunk= Class.create(coherent.ValueTransformer, {
     this.chunkSize= chunkSize;
   },
   
+  transformsArrayValues: true,
+  
   transformedValue: function(value)
   {
     if (void(0)==value)

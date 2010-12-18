@@ -133,7 +133,7 @@ coherent.Binding= Class._create({
   {
     if (!this.transformer)
       return value;
-    if ('array'!==coherent.typeOf(value))
+    if ('array'!==coherent.typeOf(value) || this.transformer.transformsArrayValues)
       return this.transformer.transformedValue(value);
     
     return value.map(this.transformer.transformedValue, this.transformer);
@@ -151,7 +151,7 @@ coherent.Binding= Class._create({
       return value;
     if (!this.transformer.reverseTransformedValue)
       return undefined;
-    if ('array'!==coherent.typeOf(value))
+    if ('array'!==coherent.typeOf(value) || this.transformer.transformsArrayValues)
       return this.transformer.reverseTransformedValue(value);
     
     return value.map(this.transformer.reverseTransformedValue, this.transformer);

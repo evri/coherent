@@ -8,9 +8,9 @@
     return void(0)!=part && ''!==part && '/'!==part;
   }
 
-  function removeLeadingAndTrailingSlash(part)
+  function removeLeadingAndTrailingSlash(part, index)
   {
-    if ('/'===part.charAt(0))
+    if (index && '/'===part.charAt(0))
       part= part.slice(1);
     if ('/'===part.slice(-1))
       part= part.slice(0,-1);
@@ -24,6 +24,7 @@
       parts= arguments[0].filter(validPathPart);
     else
       parts= Array.prototype.filter.call(arguments, validPathPart);
+
     return parts.map(removeLeadingAndTrailingSlash).join('/');
   }
 
