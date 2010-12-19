@@ -66,6 +66,19 @@
     models[name]= Klass;
     
     decl= decl||{};
+    if ('persistence' in decl)
+    {
+      Klass.persistence= decl.persistence;
+      if ('function'===typeof(Klass.persistence))
+      {
+        if (Klass.persistence.__factoryFn__)
+          Klass.persistence= Klass.persistence(Klass);
+        else
+          Klass.persistence= new Klass.persistence(Klass, {});
+      }
+      
+      delete decl.persistence;
+    }
     
     for (var key in decl)
     {
