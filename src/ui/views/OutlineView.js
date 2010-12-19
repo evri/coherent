@@ -59,16 +59,6 @@ coherent.OutlineView= Class.create(coherent.View, {
     return !(node.disabled || node.readOnly);
   },
 
-  viewTemplate: function()
-  {
-    return this.__viewTemplate;
-  },
-  
-  setViewTemplate: function(viewTemplate)
-  {
-    this.__viewTemplate= viewTemplate;
-  },
-
   newItemForRepresentedObject: function(representedObject, parentItem)
   {
     var oldDataModel= coherent.dataModel;
@@ -91,7 +81,7 @@ coherent.OutlineView= Class.create(coherent.View, {
     else
       item.leaf= (0===(representedObject.valueForKeyPath(this.childrenKeyPath)||[]).length);
 
-    item.view= this.__viewTemplate(node);
+    item.view= this.viewTemplate(node);
     item.node= node||item.view.node;
     item.hasDisclosureButton= Element.query(item.node, "." + this.disclosureButtonClassName);
     

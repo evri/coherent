@@ -214,23 +214,6 @@ coherent.CollectionView= Class.create(coherent.View, {
     return !(node.disabled || node.readOnly);
   },
   
-  /** Retrieve the view template that will be used to create items in the 
-      collection view.
-      @type coherent.VIEW_TEMPLATE
-   */
-  viewTemplate: function()
-  {
-    return this.__viewTemplate;
-  },
-  
-  /** Set the view template that is used to create items in the collection.
-      @param coherent.VIEW_TEMPLATE viewTemplate
-   */
-  setViewTemplate: function(viewTemplate)
-  {
-    this.__viewTemplate= viewTemplate;
-  },
-  
   /** Create a new view for the representedObject. This method swizzles the
       global dataModel to point to the created item, then creates an instance
       of the {@link #viewTemplate} to associate with the new item. Because the
@@ -257,7 +240,7 @@ coherent.CollectionView= Class.create(coherent.View, {
       node= Element.clone(this.templateNode);
     
     var template= this.callDelegate('collectionViewTemplateForRepresentedObject', this, representedObject) ||
-                  this.__viewTemplate;
+                  this.viewTemplate;
     item.setValueForKey(representedObject, 'representedObject');
     item.setValueForKey(template.call(this, node), 'view');
     item.setValueForKey(node||item.view.node, 'node');

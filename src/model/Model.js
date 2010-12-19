@@ -52,6 +52,7 @@
     var classInfo= coherent.KVO.getClassInfoForObject(Klass.prototype);
     var value;
     var setKey;
+    var validateKey;
     var setter;
     var wrapMethod= coherent.KeyInfo.wrapMethod;
     var wrapGetMethod= coherent.KeyInfo.wrapGetMethod;
@@ -69,7 +70,8 @@
     for (var key in decl)
     {
       setKey= 'set'+key.titleCase();
-        
+      validateKey= 'validate'+key.titleCase();
+      
       value= decl[key];
       
       if (value instanceof Property)
@@ -87,7 +89,8 @@
           
         classInfo.methods[key]= {
           getter: value.get,
-          setter: value.set
+          setter: value.set,
+          validator: value.validate
         };
         
         schema[key]= value;
@@ -96,12 +99,9 @@
       
       if ('function'!==typeof(value))
         continue;
-      
-      //  Because of short-circuiting, it's important to put the primitive
-      //  check first, otherwise, if value is a Model primitive will have the
-      //  same value as the previous pass through the loop
-      if (primitive=(-1!==PRIMITIVE_TYPES.indexOf(value)) ||
-          'modelName' in value)
+
+      primitive=(-1!==PRIMITIVE_TYPES.indexOf(value));
+      if (primitive || 'modelName' in value)
       {
         decl[key]= makeGetter(key);
         decl[setKey]= makeSetter(key);
@@ -109,12 +109,14 @@
           key: key,
           get: decl[key],
           set: decl[setKey],
+          validate: decl[validateKey],
           type: value,
           primitive: primitive
         });
         classInfo.methods[key]= {
           getter: decl[key],
-          setter: decl[setKey]
+          setter: decl[setKey],
+          validator: decl[validateKey]
         };
         continue;
       }
@@ -130,12 +132,14 @@
       schema[key]= new Property({
         key: key,
         set: setter,
-        get: value
+        get: value,
+        validate: decl[validateKey]
       });
       
       classInfo.methods[key]= {
         setter: setter,
-        getter: value
+        getter: value,
+        validator: decl[validateKey]
       };
       
     }

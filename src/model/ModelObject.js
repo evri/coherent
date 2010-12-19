@@ -181,7 +181,6 @@
         inverse.relateObjects(value, this);
     },
 
-    // observeChildObjectChangeForKeyPath: function
     infoForKey: function(key)
     {
       if (coherent.KVO.kAllPropertiesKey==key)
@@ -219,6 +218,82 @@
           json[p]= value.map(function(obj){ return obj.id(); });
       }
       return json;
+    },
+    
+    validateForSave: function()
+    {
+      return true;
+    },
+    
+    validateForUpdate: function()
+    {
+      return true;
+    },
+
+    validateForDestroy: function()
+    {
+      return true;
+    },
+
+    __persistMethod: function(method, callback)
+    {
+      var model= this.constructor;
+      
+      var wrappedCallback= function(error)
+      {
+        if (!error)
+        {
+          this.merge(this.changes);
+          this.reset();
+
+          switch (method)
+          {
+            case 'create':
+              model.add(this);
+              break;
+            case 'destroy':
+              model.remove(this);
+              break;
+            default:
+              break;
+          }
+        }
+        
+        if (callback)
+          callback(error);
+      };
+
+      if (model.persistence)
+        model.persistence[method](this, wrappedCallback);
+      else
+        wrappedCallback.call(this, null);
+    },
+    
+    save: function(callback)
+    {
+      var isNew= this.isNew();
+      var error= isNew ? this.validateForSave() : this.validateForUpdate();
+      if (error instanceof coherent.Error)
+      {
+        if (callback)
+          callback(error);
+        return;
+      }
+      this.__persistMethod(isNew ? 'create' : 'update', callback);
+    },
+    
+    destroy: function(callback)
+    {
+      var model= this.constructor;
+      var error= this.validateForDestroy();
+      if (error instanceof coherent.Error)
+      {
+        if (callback)
+          callback(error);
+        return;
+      }
+      
+      this.__persistMethod('destroy', callback);
     }
 
   });

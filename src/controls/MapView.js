@@ -188,16 +188,6 @@
         this.__overlayItem.overlay.setMap(null);
     },
   
-    annotationViewTemplate: function()
-    {
-      return this.__annotationViewTemplate;
-    },
-  
-    setAnnotationViewTemplate: function(viewTemplate)
-    {
-      this.__annotationViewTemplate= viewTemplate;
-    },
-  
     showOverlayForAnnotation: function(annotation)
     {
       if (this.__annotationTimer)
@@ -211,7 +201,7 @@
         return;
       }
     
-      if (!this.__annotationViewTemplate)
+      if (!this.annotationViewTemplate)
         return;
       
       var oldDataModel= coherent.dataModel;
@@ -220,7 +210,7 @@
       coherent.dataModel= item;
     
       item.setValueForKey(annotation, 'representedObject');
-      item.setValueForKey(this.__annotationViewTemplate(this.annotationNode), 'view');
+      item.setValueForKey(this.annotationViewTemplate(this.annotationNode), 'view');
       item.setValueForKey(new coherent.MapViewOverlay(item.view), 'overlay');
     
       var hoverInfo={
