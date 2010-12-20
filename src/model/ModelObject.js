@@ -235,9 +235,18 @@
       return true;
     },
 
-    __persistMethod: function(method, callback)
+    save: function(callback)
     {
       var model= this.constructor;
+      var isNew= this.isNew();
+      var error= isNew ? this.validateForSave() : this.validateForUpdate();
+      
+      if (error instanceof coherent.Error)
+      {
+        if (callback)
+          callback(error);
+        return;
+      }
       
       var wrappedCallback= function(error)
       {
@@ -245,41 +254,17 @@
         {
           this.merge(this.changes);
           this.reset();
-
-          switch (method)
-          {
-            case 'create':
-              model.add(this);
-              break;
-            case 'destroy':
-              model.remove(this);
-              break;
-            default:
-              break;
-          }
+          if (isNew)
+            model.add(this);
         }
-        
         if (callback)
           callback(error);
       };
-
+      
       if (model.persistence)
-        model.persistence[method](this, wrappedCallback);
+        model.persistence[isNew ? 'create' : 'update'](this, wrappedCallback);
       else
         wrappedCallback.call(this, null);
-    },
-    
-    save: function(callback)
-    {
-      var isNew= this.isNew();
-      var error= isNew ? this.validateForSave() : this.validateForUpdate();
-      if (error instanceof coherent.Error)
-      {
-        if (callback)
-          callback(error);
-        return;
-      }
-      this.__persistMethod(isNew ? 'create' : 'update', callback);
     },
     
     destroy: function(callback)
@@ -293,7 +278,18 @@
         return;
       }
       
-      this.__persistMethod('destroy', callback);
+      var wrappedCallback= function(error)
+      {
+        if (!error)
+          model.remove(this);
+        if (callback)
+          callback(error);
+      };
+      
+      if (model.persistence)
+        model.persistence.destroy(this, wrappedCallback);
+      else
+        wrappedCallback.call(this, null);
     }
 
   });

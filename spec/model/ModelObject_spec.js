@@ -118,24 +118,6 @@ describe("ModelObject", function() {
       expect(passed).toBeInstanceOf(coherent.Error);
     });
     
-    it("can be added to the Model's collection", function() {
-      var object= new this.Model();
-      this.Model.add(object);
-      expect(this.Model.collection).toContain(object);
-      expect(this.Model.all()).toContain(object);
-      expect(this.Model.count()).toBe(1);
-    });
-
-    it("can be removed from the Model's collection", function() {
-      var object= new this.Model();
-      this.Model.add(object);
-      expect(this.Model.collection).toContain(object);
-      expect(this.Model.collection.length).toBe(1);
-      this.Model.remove(object);
-      expect(this.Model.collection).not.toContain(object);
-      expect(this.Model.collection.length).toBe(0);
-    });
-    
     it("should be removed from the Model's collection when destroyed", function() {
       var object= new this.Model();
       this.Model.add(object);
@@ -168,40 +150,6 @@ describe("ModelObject", function() {
       object.save();
       object.destroy(callback);
       expect(passed).toBe(null);
-    });
-    
-    it("can only be added to the Model's collection once", function() {
-      var object= new this.Model();
-      this.Model.add(object);
-      this.Model.add(object);
-      expect(this.Model.collection).toContain(object);
-      expect(this.Model.collection.length).toBe(1);
-    });
-    
-    it("can be found by ID", function() {
-      var object1= new this.Model({ id: 'foo' });
-      var object2= new this.Model({ id: 'bar' });
-      this.Model.add(object1);
-      this.Model.add(object2);
-      expect(this.Model.find("bar")).toBe(object2);
-      expect(this.Model.find("foo")).toBe(object1);
-    });
-    
-    it("can be found by predicate", function() {
-      var object1= new this.Model({ name: 'foo' });
-      var object2= new this.Model({ name: 'bar' });
-      this.Model.add(object1);
-      this.Model.add(object2);
-      function makeFindByName(name)
-      {
-        return function(obj)
-        {
-          return obj.valueForKey('name')==name;
-        }
-      }
-      
-      expect(this.Model.find(makeFindByName('bar'))).toBe(object2);
-      expect(this.Model.find(makeFindByName("foo"))).toBe(object1);
     });
   });
 

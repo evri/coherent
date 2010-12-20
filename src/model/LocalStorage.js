@@ -5,7 +5,7 @@
 
 coherent.LocalStorage= Class.create({
 
-  constructor: function(Model, params)
+  constructor: function(Model)
   {
     if (!window.localStorage)
       throw new Error("coherent.LocalStorage requires a browser with localStorage support");
@@ -16,6 +16,8 @@ coherent.LocalStorage= Class.create({
   
   clearIndex: function()
   {
+    var index= this.readIndex();
+    index.forEach(function(id){ localStorage.removeItem(id); });
     localStorage.removeItem(this.index_name);
   },
   
@@ -49,11 +51,22 @@ coherent.LocalStorage= Class.create({
     this.writeIndex(index);
   },
   
+  fetch: function(id, callback)
+  {
+    var data= localStorage.getItem(id);
+    if (data)
+      data= new this.model(JSON.parse(data));
+      
+    if (callback)
+      callback(data||null, data ? null : true);
+  },
+  
   create: function(object, callback)
   {
     var id= [this.model.modelName, object.__uid].join('-');
-    object.setId(id);
+    object.setPrimitiveValueForKey(id, this.model.uniqueId);
     localStorage.setItem(id, JSON.stringify(object));
+    this.addToIndex(id);
     if (callback)
       callback.call(object, null);
   },
@@ -67,7 +80,9 @@ coherent.LocalStorage= Class.create({
   
   destroy: function(object, callback)
   {
-    localStorage.removeItem(object.id());
+    var id= object.id();
+    localStorage.removeItem(id);
+    this.removeFromIndex(id);
     if (callback)
       callback.call(object, null);
   },

@@ -2,7 +2,7 @@ describe("coherent.Model", function() {
 
   beforeEach(function(){
     coherent.Model._resetModels();
-    this.model= Model("foo", {});
+    this.Model= Model("foo", {});
   });
   
   it("should exist", function() {
@@ -15,15 +15,15 @@ describe("coherent.Model", function() {
   });
   
   it("should be create a new Model", function() {
-    expect(this.model).not.toBeNull();
+    expect(this.Model).not.toBeNull();
   });
   
   it("should return a subclass of coherent.ModelObject", function() {
-    expect(this.model.superclass).toBe(coherent.ModelObject);
+    expect(this.Model.superclass).toBe(coherent.ModelObject);
   });
 
   it("should create instances derived from coherent.ModelObject", function() {
-    var object= new this.model();
+    var object= new this.Model();
     expect(object).toBeInstanceOf(coherent.ModelObject);
     expect(object).toHaveProperty('valueForKey');
     expect(object).toHaveProperty('setValueForKey');
@@ -164,17 +164,67 @@ describe("coherent.Model", function() {
       expect(observer.called).toBe(true);
     });
   });
-  
-  describe("uid collection", function() {
-    it("should start empty", function() {
-      var M= Model("Bogus", {});
-      expect(M.uids()).toBeEmpty();
+
+  describe("collection", function() {
+    it("can add instances", function() {
+      var object= new this.Model();
+      this.Model.add(object);
+      expect(this.Model.collection).toContain(object);
+      expect(this.Model.all()).toContain(object);
+      expect(this.Model.count()).toBe(1);
+    });
+
+    it("can be cleared", function() {
+      var object= new this.Model();
+      this.Model.add(object);
+      expect(this.Model.count()).toBe(1);
+      this.Model.clear();
+      expect(this.Model.count()).toBe(0);
+    });
+
+    it("can remove instances", function() {
+      var object= new this.Model();
+      this.Model.add(object);
+      expect(this.Model.collection).toContain(object);
+      expect(this.Model.collection.length).toBe(1);
+      this.Model.remove(object);
+      expect(this.Model.collection).not.toContain(object);
+      expect(this.Model.collection.length).toBe(0);
     });
     
-    it("should include added objects", function() {
-      var object= new this.model();
-      this.model.add(object);
-      expect(this.model.uids()).toContain(object.__uid);
+    it("should only add instances once", function() {
+      var object= new this.Model();
+      this.Model.add(object);
+      this.Model.add(object);
+      expect(this.Model.collection).toContain(object);
+      expect(this.Model.collection.length).toBe(1);
     });
+    
+    it("can be found by ID", function() {
+      var object1= new this.Model({ id: 'foo' });
+      var object2= new this.Model({ id: 'bar' });
+      this.Model.add(object1);
+      this.Model.add(object2);
+      expect(this.Model.find("bar")).toBe(object2);
+      expect(this.Model.find("foo")).toBe(object1);
+    });
+    
+    it("can be found by predicate", function() {
+      var object1= new this.Model({ name: 'foo' });
+      var object2= new this.Model({ name: 'bar' });
+      this.Model.add(object1);
+      this.Model.add(object2);
+      function makeFindByName(name)
+      {
+        return function(obj)
+        {
+          return obj.valueForKey('name')==name;
+        }
+      }
+      
+      expect(this.Model.find(makeFindByName('bar'))).toBe(object2);
+      expect(this.Model.find(makeFindByName("foo"))).toBe(object1);
+    });
+    
   });
 });
