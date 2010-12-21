@@ -6,6 +6,8 @@
  */
 coherent.Button= Class.create(coherent.FormControl, {
 
+  exposedBindings: ['text'],
+  
   onmousedown: function(event)
   {
     var node= this.node;

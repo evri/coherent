@@ -84,7 +84,7 @@ coherent.PagingView= Class.create(coherent.View, {
     var lastPage= this.numberOfPages()-1;
     if (selectedIndex<-1 || selectedIndex>lastPage)
       return;
-      
+    
     var selectionOptions= this.__animationOptionsForProperty('selection');
     var fromNode= coherent.View.fromNode;
     var container= this.container();

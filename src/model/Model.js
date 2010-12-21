@@ -316,10 +316,9 @@
           value= new Date(Date.parse(value));
         else
           value= new this.type(value);
-          
+        
         if (this.primitive && Date!=this.type)
           value= value.valueOf();
-          
         array[len]= value;
       }
       
