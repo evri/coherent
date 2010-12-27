@@ -11,25 +11,6 @@ coherent.Application= Class.create(coherent.Responder, {
     if (coherent.Application.shared)
       return coherent.Application.shared;
       
-    // coherent.hash.addObserverForKeyPath(this, 'observeHashChange', 'value');
-    
-    distil.onready(function() {
-      var app= coherent.Application.shared;
-      app.loaded= true;
-      app.__loadMainNib();
-      app.callDelegate('applicationDidFinishLaunching', app);
-      //  Remove a startup notice
-      var startup= Element.query('.ui-startup');
-      if (startup)
-        startup.parentNode.removeChild(startup);
-        
-      function removeLoading()
-      {
-        Element.removeClassName(document.documentElement, 'ui-loading');
-      }
-      Function.delay(removeLoading,0);
-    });
-    
     if (coherent.Support.HistoryPushState)
       Event.observe(window, 'popstate', this.onpopstate.bind(this));
       

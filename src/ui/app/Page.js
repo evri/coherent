@@ -435,112 +435,39 @@ coherent.Page= Class.create(coherent.Responder, {
       this.__mouseEventListeners.forEach(function(l) { l.ontouchstart && l.ontouchstart(event); });
 
     var view= this.targetViewForEvent(event);
-    if (view)
-    {
-      view.ontouchstart(event);
+    if (!view)
+      return;
 
-      // var self = this;
-      // this._touchstartMouseDownDelay = window.setTimeout(function(){
-      //   view.onmousedown(event);
-      //   self._touchsentMD = true;
-      //   delete self._touchstartMouseDownDelay;
-      // },100);
-    }
     this._touchstartView= view;
-    this._touchmovedX = false;
-    this._touchmovedY = false;
-    this._touchsentMD = false;
-    this._touchstartX = event.targetTouches[0].clientX;
-    this._touchstartY = event.targetTouches[0].clientY;
+    view.ontouchstart(event);
   },
   
   ontouchmove: function(event)
   {
     //  No other responder handled the touch move...
     if (this.__pageLocks)
-    {
       Event.preventDefault(event);
-    }
   },
   
   _ontouchmove: function(event)
   {
     if (1!=event.touches.length || this._gesturing)
       return;
-      
-    var x = event.targetTouches[0].clientX;
-    var y = event.targetTouches[0].clientY;
-    var xJustMoved = false;
-    var yJustMoved = false;
     
-    if (!this._touchmovedX && Math.abs(this._touchstartX-x) > 5)
-      xJustMoved= this._touchmovedX = true;
-
-    if (!this._touchmovedY && Math.abs(this._touchstartY-y) > 5)
-      yJustMoved= this._touchmovedY = true;
-
     if (this._touchstartView)
-    {
       this._touchstartView.ontouchmove(event);
-      
-      if (this._touchstartMouseDownDelay)
-      {
-        window.clearTimeout(this._touchstartMouseDownDelay);
-        delete this._touchstartMouseDownDelay;
-      }
-
-      if (xJustMoved || yJustMoved)
-      { 
-        if (this._touchsentMD)
-        {
-          this._touchstartView.onmouseup(event);
-          this._touchsentMD = false;
-        }
-        
-        if (!this._touchmovedY && xJustMoved)
-        {
-          this._touchstartView.onswipe(event);
-          // this._gesturing= true;
-        }
-      } 
-    }
   },
   
   _ontouchend: function(event)
   {
+    if (this.__mouseEventListeners.length)
+      this.__mouseEventListeners.forEach(function(l) { l.ontouchend && l.ontouchend(event); });
+
     if (!this._touchstartView)
       return;
       
     this._touchstartView.ontouchend(event);
 
-    if (this._touchstartMouseDownDelay)
-    {
-      var startView = this._touchstartView;
-      
-      window.clearTimeout(this._touchstartMouseDownDelay);          
-      delete this._touchstartMouseDownDelay;
-
-      this._touchstartView.onmousedown(event);
-      this._touchsentMD = true;
-      
-      window.setTimeout(function()
-      {
-        startView.onmouseup(event);
-        startView.onclick(event);
-      } ,0);
-    }
-    else if (this._touchsentMD)
-    {
-      this._touchstartView.onmouseup(event);
-      
-      if (!this._touchmovedX && !this._touchmovedY)
-        this._touchstartView.onclick(event);
-    }
-
-    if (this.__mouseEventListeners.length)
-      this.__mouseEventListeners.forEach(function(l) { l.ontouchend && l.ontouchend(event); });
-    
-    this._gesturing= false;
     this._touchstartView= null;
   },
   
@@ -550,17 +477,6 @@ coherent.Page= Class.create(coherent.Responder, {
       return;
 
     this._touchstartView.ontouchend(event);
-
-    if (this._touchstartMouseDownDelay)
-    {
-      window.clearTimeout(this._touchstartMouseDownDelay);
-      delete this._touchstartMouseDownDelay;
-    }
-    else if (this._touchsentMD)
-    {
-      this._touchstartView.onmouseup(event);
-    }
-    this._gesturing= false;
     this._touchstartView= null;
   },
   
@@ -897,165 +813,4 @@ coherent.Page= Class.create(coherent.Responder, {
   
 });
 
-/** @private */
-(function(){
-
-  /** The single page instance.
-      @type coherent.Page
-      @public
-   */
-  coherent.Page.shared= new coherent.Page();
-  
-  window._setTimeout= window.setTimeout;
-  /** @ignore */
-  window.setTimeout= function(handler, delay)
-  {
-    if (!handler)
-      return null;
-      
-    if ('string'===typeof(handler))
-    {
-      handler= 'coherent.EventLoop.begin();do {' +
-           handler + '} while (false); ' +
-           'coherent.EventLoop.end();';
-      return window._setTimeout(handler, delay);
-    }
-    
-    var args= Array.from(arguments, 2);
-    
-    /** @ignore */
-    function timeoutWrapper()
-    {
-      coherent.EventLoop.begin();
-      var value= handler.apply(this, args);
-      coherent.EventLoop.end();
-      return value;
-    }
-    return window._setTimeout(timeoutWrapper, delay);
-  }
-  
-  window._setInterval= window.setInterval;
-  /** @ignore */
-  window.setInterval= function(handler, delay)
-  {
-    if (!handler)
-      return null;
-
-    if ('string'===typeof(handler))
-    {
-      handler= 'coherent.EventLoop.begin();do {' +
-           handler + '} while (false); ' +
-           'coherent.EventLoop.end();';
-      return window._setInterval(handler, delay);
-    }
-    
-    var args= Array.from(arguments, 2);
-    
-    /** @ignore */
-    function intervalWrapper()
-    {
-      coherent.EventLoop.begin();
-      var value= handler.apply(this, args);
-      coherent.EventLoop.end();
-      return value;
-    }
-    return window._setInterval(intervalWrapper, delay);
-  }
-  
-  var p= coherent.Page.shared;
-  var wrapEventHandler;
-  
-  if (!coherent.Support.StandardEventModel)
-  {
-    /** @ignore */
-    wrapEventHandler=function(fn)
-    {
-      return function()
-      {
-        coherent.EventLoop.begin(window.event);
-        p[fn](window.event);
-        coherent.EventLoop.end();
-      };
-    };
-
-    p._onmousedragHandler= wrapEventHandler("_onmousedrag");
-
-    document.attachEvent('onmouseover', wrapEventHandler("_onmouseover"));
-    // document.attachEvent('onmouseout', wrapEventHandler("_onmouseout"));
-    document.attachEvent('onmousedown', wrapEventHandler("_onmousedown"));
-    document.attachEvent('onmouseup', wrapEventHandler("_onmouseup"));
-    document.attachEvent('onclick', wrapEventHandler("_onclick"));
-    document.attachEvent('ondblclick', wrapEventHandler("_ondblclick"));
-    document.attachEvent('onkeydown', wrapEventHandler("_onkeydown"));
-    document.attachEvent('onkeyup', wrapEventHandler("_onkeyup"));
-    document.attachEvent('onkeypress', wrapEventHandler("_onkeypress"));
-    document.attachEvent('onfocusin', wrapEventHandler("_onfocus"));
-    document.attachEvent('onfocusout', wrapEventHandler("_onblur"));
-    window.attachEvent('onfocus', wrapEventHandler("_onfocus"));
-    window.attachEvent('onblur', wrapEventHandler("_onblur"));
-    window.attachEvent('onunload', wrapEventHandler("_onunload"));
-
-    if (coherent.Support.DragAndDrop)
-    {
-      document.attachEvent('ondragstart', wrapEventHandler("_ondragstart"));
-      document.documentElement.attachEvent('ondragend', wrapEventHandler("_ondragend"));
-      document.documentElement.attachEvent('ondragenter', wrapEventHandler("_ondragenter"));
-      document.documentElement.attachEvent('ondrag', wrapEventHandler("_ondrag"));
-      document.documentElement.attachEvent('ondragover', wrapEventHandler("_ondragover"));
-      document.documentElement.attachEvent('ondrop', wrapEventHandler("_ondrop"));
-    }
-  }
-  else
-  {
-    /** @ignore */
-    wrapEventHandler=function(fn)
-    {
-      return function(event)
-      {
-        coherent.EventLoop.begin(event);
-        p[fn](event);
-        coherent.EventLoop.end();
-      };
-    };
-
-    p._onmousedragHandler= wrapEventHandler("_onmousedrag");
-  
-    document.addEventListener('mouseover', wrapEventHandler("_onmouseover"), false);
-    // document.addEventListener('mouseout', wrapEventHandler("_onmouseout"), false);
-    document.addEventListener('mousedown', wrapEventHandler("_onmousedown"), false);
-    document.addEventListener('mouseup', wrapEventHandler("_onmouseup"), false);
-    document.addEventListener('keydown', wrapEventHandler("_onkeydown"), false);
-    document.addEventListener('keyup', wrapEventHandler("_onkeyup"), false);
-    document.addEventListener('keypress', wrapEventHandler("_onkeypress"), false);
-    document.addEventListener('focus', wrapEventHandler("_onfocus"), true);
-    document.addEventListener('blur', wrapEventHandler("_onblur"), true);
-    document.addEventListener('change', wrapEventHandler("_onchange"), true);
-    document.addEventListener('submit', wrapEventHandler("_onsubmit"), true);
-    document.addEventListener('reset', wrapEventHandler("_onreset"), true);
-    window.addEventListener('focus', wrapEventHandler("_onfocus"), false);
-    window.addEventListener('blur', wrapEventHandler("_onblur"), false);
-
-    document.addEventListener('click', wrapEventHandler("_onclick"), false);
-    document.addEventListener('dblclick', wrapEventHandler("_ondblclick"), false);
-
-    if (coherent.Support.Touches)
-    {
-      document.addEventListener('touchstart', wrapEventHandler("_ontouchstart"), true);
-      document.addEventListener('touchmove', wrapEventHandler("_ontouchmove"), true);
-      document.addEventListener('touchend', wrapEventHandler("_ontouchend"), true);
-      document.addEventListener('touchcancel', wrapEventHandler("_ontouchcancel"), true);
-      document.addEventListener('gesturestart', wrapEventHandler("_ongesturestart"), true);
-      document.addEventListener('gesturechange', wrapEventHandler("_ongesturechange"), true);
-      document.addEventListener('gestureend', wrapEventHandler("_ongestureend"), true);
-    }
-    
-    if (coherent.Support.DragAndDrop)
-    {
-      document.addEventListener('dragstart', wrapEventHandler("_ondragstart"), false);
-      document.addEventListener('dragend', wrapEventHandler("_ondragend"), false);
-      document.addEventListener('dragenter', wrapEventHandler("_ondragenter"), false);
-      document.addEventListener('dragover', wrapEventHandler("_ondragover"), false);
-      document.addEventListener('drop', wrapEventHandler("_ondrop"), false);
-    }
-  }
-})();
+coherent.Page.shared= new coherent.Page();

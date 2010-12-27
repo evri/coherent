@@ -22,68 +22,6 @@
     {
       return obj[name]= value;
     }
-    
-  /** Wrap a constructor function so that it may invoke the base constructor.
-      @param {Function} construct - the original constructor function
-      @param {Function} [superclass] - the superclass' constructor function
-      @returns {Function} a wrapped function which sets up the base method
-        correctly.
-
-      @inner
-   */
-  function wrapConstructorForBase(construct, superclass)
-  {
-    /** Create a wrapped constructor
-        @function
-        @inner
-     */
-    var wrappedConstructor;
-    
-    if (!construct && !superclass)
-      return construct;
-      
-    if (!construct)
-      wrappedConstructor= function()
-      {
-        return superclass.apply(this, arguments);
-      };
-    else
-    {
-      var callsBase= /this\.base/.test(construct);
-      construct.displayName='Original Constructor';
-
-      if (!callsBase && !superclass)
-        return construct;
-        
-      if (!callsBase)
-        wrappedConstructor= function()
-        {
-          superclass.call(this);
-          return construct.apply(this, arguments);
-        };
-      else
-        wrappedConstructor= function()
-        {
-          var prev= this.base;
-          this.base= superclass||function(){};
-          var result= construct.apply(this, arguments);
-          this.base= prev;
-          return result;
-        };
-    }
-    
-    wrappedConstructor.valueOf= function()
-    {
-      return construct;
-    }
-    wrappedConstructor.toString= function()
-    {
-      return String(construct);
-    }
-    wrappedConstructor.displayName='Constructor wrapper';
-    
-    return wrappedConstructor;
-  }
   
   /** Call the factory method for a class.
   
@@ -104,17 +42,15 @@
     return fn;
   }
   
-  /** Create a constructor for a class. Depending on whether the constructor
-      exists, the superclass exists, and whether the constructor calls its
-      ancestor constructor, this function returns a wrapper function that
-      is invoked first.
-    
+  /** Create a constructor for a class. If the class doesn't specify a
+      constructor, the generated method will defer to the superclass constructor.
+      Otherwise, the generated method will make certain the superclass constructor
+      gets called, whether by this.base or directly.
+
       @inner
       @param {Function} construct - The actual constructor for the new class.
       @param {Function} [superclass] - The constructor for the superclass, if
         there is a superclass.
-      @returns {Function} a wrapped function which calls the `__postConstruct`
-        hook if the class defines one.
    */
   function makeConstructor(construct, superclass)
   {
@@ -122,60 +58,37 @@
       throw new Error('Invalid constructor');
     if (superclass && !(superclass instanceof Function))
       throw new Error('Invalid superclass');
-    
-    //  Remove the postConstruct wrapping around the constructor for the
-    //  superclass.
-    superclass= superclass?superclass.valueOf():null;
-    
-    //  If the constructor calls this.base, wrap it with the appropriate
-    //  stuff.
-    construct= wrapConstructorForBase(construct, superclass);
 
-    /** The wrapped constructor. This wrapper enables factory methods,
-        declarative objects, and post construct hooks.
-        @function
-        @inner
-     */
-    var wrapped;
-    
-    if (construct)
+    var constructorCallsBase= /this\.base/.test(construct);
+
+    var wrapped= function()
     {
-      wrapped= function()
-      {
-        if (!(this instanceof wrapped))
-          return callFactory(wrapped, arguments);
-          
-        this.__uid= coherent.generateUid();
-
-        var result= construct.apply(this, arguments);
-
-        if (result)
-          return result;
+      if (!(this instanceof wrapped))
+        return callFactory(wrapped, arguments);
       
-        return this;
-      };
-    }
-    else
-      wrapped= function()
+      if (!this.__uid)
+        this.__uid= coherent.generateUid();
+      
+      if (constructorCallsBase)
       {
-        if (!(this instanceof wrapped))
-          return callFactory(wrapped, arguments);
-
-        this.__uid= this.__uid||coherent.generateUid();
-
-        return this;
+        var previousBase= this.base;
+        this.base= superclass||emptyFn;
+        var result= construct.apply(this, arguments);
+        this.base= previousBase;
+        return result;
       }
+      
+      if (construct)
+      {
+        if (superclass)
+          superclass.call(this);
+        return construct.apply(this, arguments);
+      }
+      
+      return superclass.apply(this, arguments);
+    };
+    wrapped.displayName= 'Generated Constructor';
     
-    //  make wrapped constructor look like the original
-    wrapped.valueOf= function()
-    {
-      return construct;
-    }
-    wrapped.toString= function()
-    {
-      return String(construct||wrapped);
-    }
-    wrapped.displayName='Generated constructor';
     return wrapped;
   }
 
@@ -316,12 +229,6 @@
             ...
             }
       
-        Finally, classes may define a `__postConstruct` method which will be
-        called after all constructors are invoked. In the case of Views,
-        the `__postConstruct` method invokes their `init` method if the
-        DOM node is available or schedules the `init` method if the DOM has
-        not finished loading.
-      
         @param {Class} [superclass] - A reference to the super class for
           this class. If no superclass is specified, the new class will
           inherit from Object.
@@ -355,19 +262,11 @@
           break;
       }
 
-      //  Allow decl to be a function that returns an object
-      if ('function'==typeof(decl))
-      {
-        decl= decl();
-        if (!decl)
-          throw new Error('Class declaration function did not return a prototype');
-      }
-      
       if (decl.hasOwnProperty('constructor'))
       {
-        construct= decl['constructor'];
+        construct= decl.constructor;
         construct.displayName="Original Constructor";
-        delete decl['constructor'];
+        delete decl.constructor;
       }
       
       construct= makeConstructor(construct, superclass);
@@ -377,17 +276,12 @@
       defineNonEnumerableProperty(proto, 'constructor', construct);
       construct.superclass= superclass;
       
-      //  Prepare for factory functions in class decl.
-      defineNonEnumerableProperty(proto, '__factories__',
-                                  superclass ? Object.clone(superclass.prototype.__factories__) : {});
-      
       //  Create a unique ID for each class, helps the Dashcode indexer
       construct.__class_id__= coherent.generateUid();
 
-      this.extend(construct, decl);
-    
+      Class.extend(construct, decl);
+
       postSubclassNotification(construct);
-    
       return construct;
     },
 
@@ -398,6 +292,7 @@
      */
     _create: function(superclass, decl)
     {
+      var construct;
       var proto= {};
       
       switch (arguments.length)
@@ -415,23 +310,25 @@
           break;
       }
 
-      var constructor= emptyFn;
       if (decl.hasOwnProperty('constructor'))
       {
-        constructor= decl.constructor;
+        construct= decl.constructor;
         delete decl.constructor;
       }
+      else
+        construct= emptyFn;
+        
+      construct.__methods= superclass ? Object.clone(superclass.__methods) : {};
 
-      constructor.prototype= proto;
-      constructor.__methods= superclass ? Object.clone(superclass.__methods) : {};
-      constructor.prototype.constructor= constructor;
-      constructor.superclass= superclass;
+      construct.prototype= proto;
+      defineNonEnumerableProperty(proto, 'constructor', construct);
+      construct.superclass= superclass;
 
-      // Give the class a UID, for easier lookup
-      constructor.__class_id__ = coherent.generateUid();
+      //  Create a unique ID for each class, helps the Dashcode indexer
+      construct.__class_id__ = coherent.generateUid();
       
-      Class.extend(constructor, decl);
-      return constructor;
+      Class.extend(construct, decl);
+      return construct;
     },
     
     defineNonEnumerableProperty: defineNonEnumerableProperty,
@@ -464,9 +361,6 @@
         //  wrap the method for calls to base()
         if (superproto)
           value= wrapMethodForBase(value, name, superproto);
-        
-        if (value.__factoryFn__)
-          proto.__factories__[name]= value;
         
         if (proto.constructor.__methods)
           proto.constructor.__methods[name]= value;
