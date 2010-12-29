@@ -912,6 +912,104 @@ coherent.View= Class.create(coherent.Responder, {
     return node.parentNode.removeChild(node);
   },
 
+  gestureRecognizers: function()
+  {
+    return this.__gestureRecognizers||[];
+  },
+  
+  setGestureRecognizers: function(recognizers)
+  {
+    this.__gestureRecognizers= recognizers= recognizers.copy();
+    var len= recognizers.length;
+    var r;
+    while (len--)
+    {
+      r= recognizers[len];
+      if (r.__factoryFn__)
+        r= recognizers[len]= r.call(this);
+      r.view= this;
+    }
+  },
+  
+  addGestureRecognizer: function(recognizer)
+  {
+    var recognizerArray= this.__gestureRecognizers||(this.__gestureRecognizers=[]);
+    recognizerArray.push(recognizer);
+  },
+  
+  __dispatchEventToGestureRecognizers: function(method, event)
+  {
+    var recognizers= this.__gestureRecognizers;
+    var len= recognizers.length;
+    var recognizer;
+    var states= coherent.GestureRecognizer;
+    
+    while (len--)
+    {
+      recognizer= recognizers[len];
+      if (!recognizer.enabled)
+        continue;
+      
+      recognizer[method](event);
+      switch (recognizer.state)
+      {
+        case states.Began:
+        case states.Changed:
+        case states.Recognized:
+        case states.Cancelled:
+          coherent.Application.shared.sendAction(recognizer.action, recognizer.target, recognizer);
+          recognizer.reset();
+          break;
+        
+        case states.Failed:
+          recognizer.reset();
+          break;
+          
+        default:
+          break;
+      }
+    }
+  },
+  
+  ontouchstart: function(event)
+  {
+    if (this.__gestureRecognizers)
+    {
+      this.__dispatchEventToGestureRecognizers('ontouchstart', event);
+      return;
+    }
+    
+    var target= this.nextResponder();
+    if (target)
+      target.ontouchstart(event);
+  },
+
+  ontouchmove: function(event)
+  {
+    if (this.__gestureRecognizers)
+    {
+      this.__dispatchEventToGestureRecognizers('ontouchmove', event);
+      return;
+    }
+    
+    var target= this.nextResponder();
+    if (target)
+      target.ontouchmove(event);
+  },
+
+  ontouchend: function(event)
+  {
+    if (this.__gestureRecognizers)
+    {
+      this.__dispatchEventToGestureRecognizers('ontouchend', event);
+      return;
+    }
+    
+    var target= this.nextResponder();
+    if (target)
+      target.ontouchend(event);
+  },
+
   /** Register for drag types. */
   registerForDraggedTypes: function(dragTypes)
   {

@@ -1,0 +1,82 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="user-scalable=no; width=device-width; initial-scale=1.0; maximum-scale=1.0;">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-transparent">
+    <style>
+      body
+      {
+        padding: 0;
+        margin: 0;
+        background-color: #333;
+      }
+      .demo
+      {
+        font: 16pt georgia;
+        margin: 20px;
+      }
+      
+      .demo span
+      {
+        cursor: pointer;
+        padding: 20px;
+        background-color: white;
+      }
+    </style>
+    <script src="../build/distil.js?sync=true" type="text/javascript" charset="utf-8"></script>
+    <script src="../build/coherent-debug.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../build/coherent-mobile-debug.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+    
+  <body>
+    <div class="demo">
+      <button>Long Press</button>
+      
+      <span style="cursor:pointer" ontouchstart="console.log('start')" ontouchend="console.log('end');event.preventDefault();" onclick="console.log('click')">Prevent default in touchend</span>
+      <span style="cursor:pointer" ontouchstart="console.log('start');event.preventDefault();" ontouchend="console.log('end')" onclick="console.log('click')">Prevent default in touchstart</span>
+    </div>
+    
+    <script>
+      distil.onready(function(){
+    
+        NIB('demo', {
+          
+          main: VIEW('.demo', {
+            'button': coherent.View({
+                action: 'buttonPressed',
+                target: REF('owner'),
+                
+                gestureRecognizers: [
+                  coherent.LongPressGestureRecognizer({
+                    action: 'longPress',
+                    target: REF('owner')
+                  })
+                ]
+              })
+          }),
+          
+          owner: {
+            view: REF('main'),
+            longPress: function()
+            {
+              console.log("That was long");
+            },
+            buttonPressed: function()
+            {
+              console.log("Button pressed");
+            }
+          }
+          
+        });
+        
+        var controller= new coherent.ViewController({
+          nibName: 'demo'
+        });
+        
+        controller.view();
+      });
+    </script>
+
+  </body>
+</html>

@@ -39,9 +39,9 @@ coherent.Page= Class.create(coherent.Responder, {
   
   targetViewForEvent: function(event)
   {
+    var fromNode= coherent.View.fromNode;
     var element= event.target||event.srcElement;
     var view;
-    var fromNode= coherent.View.fromNode;
     
     while (element && element!=document && !(view=fromNode(element)))
       element= element.parentNode;
@@ -151,8 +151,6 @@ coherent.Page= Class.create(coherent.Responder, {
         };
     }
     this._mousedownView= view;
-    // if (!coherent.Support.DragAndDrop)
-    //     Event.preventDefault(event);
   },
 
   _onmouseup: function(event)
@@ -204,6 +202,9 @@ coherent.Page= Class.create(coherent.Responder, {
   _onmouseover: function(event)
   {
     var hooks= this.__hoverTrackingHooks||[];
+    if (!hooks.length)
+      return;
+      
     var mouseOverIds= this.__mouseOverIds||{};
     var newMouseOverIds= {};
     
@@ -292,9 +293,6 @@ coherent.Page= Class.create(coherent.Responder, {
     var view= this.targetViewForEvent(event);
     if (view)
       view.onclick(event);
-    else
-      this.onclick(event);
-      // this._fireDelegates(event);
   },
 
   _ondblclick: function(event)

@@ -381,7 +381,6 @@ coherent.ScrollView= Class.create(coherent.View, {
       newPositionY = this.y + momentumY.dist;
     }
 
-
     //  Call the delegate method scrollViewDidEndDragging with a flag indicating
     //  whether the scroll will decelerate
     this.callDelegate('scrollViewDidEndDragging', this, newDuration>0);

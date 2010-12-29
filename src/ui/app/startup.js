@@ -20,7 +20,6 @@ distil.onready(function(){
   }
   Function.delay(removeLoading,0);
 
-
   //  Set up application event handlers
   var page= coherent.Page.shared;
   var wrapEventHandler;
@@ -115,4 +114,4 @@ distil.onready(function(){
       document.addEventListener('drop', wrapEventHandler("_ondrop"), false);
     }
   }
-})();
+});
