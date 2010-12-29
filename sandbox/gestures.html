@@ -17,11 +17,34 @@
         margin: 20px;
       }
       
+      .demo button
+      {
+        width: 200px;
+        height: 44px;
+        font-size: 15px;
+      }
+      
       .demo span
       {
         cursor: pointer;
         padding: 20px;
+        margin: 20px;
         background-color: white;
+        display: block;
+      }
+      
+      .demo span.up
+      {
+        float: left;
+        width: 100px;
+        height: 400px;
+      }
+      
+      .demo span.down
+      {
+        float: right;
+        width: 100px;
+        height: 400px;
       }
     </style>
     <script src="../build/distil.js?sync=true" type="text/javascript" charset="utf-8"></script>
@@ -32,9 +55,12 @@
   <body>
     <div class="demo">
       <button>Long Press</button>
+
+      <span class="up">Swipe Up</span>
+      <span class="down">Swipe Down</span>
+      <span class="right">Swipe Right</span>
+      <span class="left">Swipe Left</span>
       
-      <span style="cursor:pointer" ontouchstart="console.log('start')" ontouchend="console.log('end');event.preventDefault();" onclick="console.log('click')">Prevent default in touchend</span>
-      <span style="cursor:pointer" ontouchstart="console.log('start');event.preventDefault();" ontouchend="console.log('end')" onclick="console.log('click')">Prevent default in touchstart</span>
     </div>
     
     <script>
@@ -43,7 +69,7 @@
         NIB('demo', {
           
           main: VIEW('.demo', {
-            'button': coherent.View({
+            'button': coherent.Button({
                 action: 'buttonPressed',
                 target: REF('owner'),
                 
@@ -53,7 +79,44 @@
                     target: REF('owner')
                   })
                 ]
+              }),
+            
+            'span.right': coherent.View({
+                gestureRecognizers: [
+                  coherent.SwipeGestureRecognizer({
+                    direction: coherent.SwipeGestureDirection.Right,
+                    action: 'swipeRight'
+                  })
+                ]
+              }),
+
+            'span.left': coherent.View({
+                gestureRecognizers: [
+                  coherent.SwipeGestureRecognizer({
+                    direction: coherent.SwipeGestureDirection.Left,
+                    action: 'swipeLeft'
+                  })
+                ]
+              }),
+
+            'span.up': coherent.View({
+                gestureRecognizers: [
+                  coherent.SwipeGestureRecognizer({
+                    direction: coherent.SwipeGestureDirection.Up,
+                    action: 'swipeUp'
+                  })
+                ]
+              }),
+
+            'span.down': coherent.View({
+                gestureRecognizers: [
+                  coherent.SwipeGestureRecognizer({
+                    direction: coherent.SwipeGestureDirection.Down,
+                    action: 'swipeDown'
+                  })
+                ]
               })
+                
           }),
           
           owner: {
@@ -65,6 +128,22 @@
             buttonPressed: function()
             {
               console.log("Button pressed");
+            },
+            swipeRight: function()
+            {
+              console.log("swipe right");
+            },
+            swipeLeft: function()
+            {
+              console.log("swipe left");
+            },
+            swipeUp: function()
+            {
+              console.log("swipe up");
+            },
+            swipeDown: function()
+            {
+              console.log("swipe down");
             }
           }
           

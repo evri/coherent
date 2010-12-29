@@ -1,4 +1,4 @@
-/*jsl:import ../foundation.js*/
+/*jsl:import ../ui.js*/
 
 coherent.GestureRecognizer= Class.create({
 
@@ -40,7 +40,7 @@ coherent.GestureRecognizer= Class.create({
   {
     this.state= coherent.GestureRecognizer.Possible;
   },
-  
+
   ontouchstart: function(event)
   {
   },

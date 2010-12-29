@@ -937,32 +937,44 @@ coherent.View= Class.create(coherent.Responder, {
     recognizerArray.push(recognizer);
   },
   
-  __dispatchEventToGestureRecognizers: function(method, event)
+  __dispatchEventToGestureRecognizers: function(event)
   {
-    var recognizers= this.__gestureRecognizers;
+    var method= "on"+event.type;
+    var recognizers,
+        recognizer;
+    
+    if ('ontouchstart'==method)
+      recognizers= this.__activeRecognizers= this.__gestureRecognizers.copy();
+    else
+      recognizers= this.__activeRecognizers;
+
     var len= recognizers.length;
-    var recognizer;
-    var states= coherent.GestureRecognizer;
+    var STATES= coherent.GestureRecognizer;
     
     while (len--)
     {
       recognizer= recognizers[len];
       if (!recognizer.enabled)
         continue;
-      
+
       recognizer[method](event);
       switch (recognizer.state)
       {
-        case states.Began:
-        case states.Changed:
-        case states.Recognized:
-        case states.Cancelled:
-          coherent.Application.shared.sendAction(recognizer.action, recognizer.target, recognizer);
+        case STATES.Began:
+        case STATES.Changed:
+          coherent.Application.shared.sendAction(recognizer.action, recognizer.target||this, recognizer);
+          break;
+          
+        case STATES.Recognized:
+        case STATES.Cancelled:
+          coherent.Application.shared.sendAction(recognizer.action, recognizer.target||this, recognizer);
           recognizer.reset();
+          this.__activeRecognizers.removeObject(recognizer);
           break;
         
-        case states.Failed:
+        case STATES.Failed:
           recognizer.reset();
+          this.__activeRecognizers.removeObject(recognizer);
           break;
           
         default:
@@ -975,7 +987,7 @@ coherent.View= Class.create(coherent.Responder, {
   {
     if (this.__gestureRecognizers)
     {
-      this.__dispatchEventToGestureRecognizers('ontouchstart', event);
+      this.__dispatchEventToGestureRecognizers(event);
       return;
     }
     
@@ -988,7 +1000,7 @@ coherent.View= Class.create(coherent.Responder, {
   {
     if (this.__gestureRecognizers)
     {
-      this.__dispatchEventToGestureRecognizers('ontouchmove', event);
+      this.__dispatchEventToGestureRecognizers(event);
       return;
     }
     
@@ -1001,7 +1013,7 @@ coherent.View= Class.create(coherent.Responder, {
   {
     if (this.__gestureRecognizers)
     {
-      this.__dispatchEventToGestureRecognizers('ontouchend', event);
+      this.__dispatchEventToGestureRecognizers(event);
       return;
     }
     
