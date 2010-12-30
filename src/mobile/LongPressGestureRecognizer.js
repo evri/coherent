@@ -61,7 +61,7 @@ coherent.LongPressGestureRecognizer= Class.create(coherent.GestureRecognizer, {
   __pressDurationMet: function()
   {
     //  I need to fire my own action message, because there's no calling event
-    coherent.Application.shared.sendAction(this.action, this.target, this);
+    coherent.Application.shared.sendAction(this.action, this.target||this.view, this);
     this.reset();
     
     //  TODO: This is just awful. The only way to prevent the click event from

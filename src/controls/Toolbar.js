@@ -85,7 +85,8 @@ coherent.Toolbar= Class.create(coherent.View, {
                     action: barItem.action,
                     target: barItem.target
                   });
-
+    if (barItem.gestureRecognizers)
+      view.setGestureRecognizers(barItem.gestureRecognizers);
     view.setupBindings();
     view.init();
     view.updateBindings();
