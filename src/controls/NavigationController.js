@@ -11,6 +11,7 @@
     {
       this.__viewControllers= [];
       this.__topIndex=-1;
+      this.manageHistory= true;
       this.base(params);
       coherent.Application.shared.setNavigationController(this);
     },
@@ -59,7 +60,8 @@
         this.__backButton.setTitle(previousViewController.valueForKey('title'));
 
       toolbar.setNextResponder(viewController);
-      toolbarItems= [this.__backButton].concat(toolbarItems);
+      if (this.manageHistory)
+        toolbarItems= [this.__backButton].concat(toolbarItems);
       toolbar.setItems(toolbarItems);
       toolbar.setTitle(viewController.valueForKey('title'));
       if (!this.__topIndex)
