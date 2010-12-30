@@ -198,7 +198,7 @@ Class.extend(Array, {
    */
   insertObjectAtIndex: function(object, index)
   {
-    if (index<0 || index>=this.length)
+    if (index<0 || index>this.length)
       throw new RangeError( "index must be within the bounds of the array" );
 
     var change= new coherent.ChangeNotification(this,

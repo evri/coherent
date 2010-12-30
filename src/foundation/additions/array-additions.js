@@ -30,6 +30,11 @@ Object.applyDefaults(Array, {
       };
   })(),  
 
+  isArray: function(o)
+  {
+    return Object.prototype.toString.call(o) === '[object Array]';
+  },
+  
   indexOf: function(array, obj, fromIndex) {
     return Array.prototype.indexOf.call(array, obj, fromIndex);
   },
