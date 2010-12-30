@@ -150,12 +150,8 @@
       var methodInfo= this.constructor.schema[key];
       var previous;
 
-      if (void(0)!=value && methodInfo && methodInfo.type &&
-          ((methodInfo.primitive && value.constructor!==methodInfo.type) ||
-           (!methodInfo.primitive && !(value instanceof methodInfo.type))))
-      {
+      if (methodInfo && !methodInfo.isValidType(value))
         throw new Error("Invalid type for " + key);
-      }
 
       if (this.original[key]===value)
       {

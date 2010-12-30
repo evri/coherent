@@ -200,6 +200,17 @@
       return void(0);
     },
   
+    isValidType: function(value)
+    {
+      if (void(0)==value || !this.type)
+        return true;
+
+      if (this.primitive)
+        return value.constructor===this.type;
+      else
+        return value instanceof this.type;
+    },
+    
     fromValue: function(value)
     {
       if (!this.type)
@@ -296,6 +307,28 @@
       return void(0);
     },
     
+    isValidType: function(value)
+    {
+      if (!Array.isArray(value))
+        return false;
+
+      if (!this.type)
+        return true;
+
+      var len= value.length,
+          valid= true;
+          
+      while (valid && len--)
+      {
+        if (this.primitive)
+          valid= value[len].constructor===this.type;
+        else
+          valid= value[len] instanceof this.type;
+      }
+      
+      return valid;
+    },
+
     fromValue: function(array)
     {
       if (!this.type)
