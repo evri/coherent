@@ -2,7 +2,9 @@
 
 (function(){
 
-  var REVERSE= 'reverse';
+  var REVERSE= 'reverse',
+      WILL_SHOW_VIEW_CONTROLLER= 'navigationControllerWillShowViewController',
+      DID_SHOW_VIEW_CONTROLLER= 'navigationControllerDidShowViewController';
 
   
   coherent.NavigationController= Class.create(coherent.ViewController, {
@@ -32,8 +34,10 @@
       this.__topIndex= 0;
       viewController.view().addClassName(coherent.Style.NavigationSubview);
       viewController.view().addClassName(coherent.Style.kActiveClass);
+      this.callDelegate(WILL_SHOW_VIEW_CONTROLLER, this, viewController);
       this.view().addSubview(viewController.view());
       this.__updateToolbar();
+      this.callDelegate(DID_SHOW_VIEW_CONTROLLER, this, viewController);
     },
 
     __updateToolbar: function()
@@ -211,10 +215,12 @@
       var len= this.__viewControllers.length;
       while (this.__topIndex<--len)
         view.removeSubview(this.__viewControllers[len].view());
-        
+
+      this.callDelegate(WILL_SHOW_VIEW_CONTROLLER, this, viewController);
       this.__viewControllers.length= ++this.__topIndex;
       this.__viewControllers.addObject(viewController);
       this.__updateToolbar();
+      this.callDelegate(DID_SHOW_VIEW_CONTROLLER, this, viewController);
     },
   
     popViewController: function(animated)
@@ -233,9 +239,11 @@
       if (this.__dismissModalViewController(popAgain))
         return;
 
+      this.callDelegate(WILL_SHOW_VIEW_CONTROLLER, this, newController);
       this.__topIndex--;
       this.__animateTransition(oldController, newController, REVERSE);
       this.__updateToolbar();
+      this.callDelegate(DID_SHOW_VIEW_CONTROLLER, this, newController);
     },
 
     popToViewController: function(viewController, animated)
