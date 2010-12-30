@@ -169,6 +169,10 @@ coherent.ViewController= Class.create(coherent.Responder, {
     modalNode.className='ui-modal-view-wrapper';
     modalNode.appendChild(node);
     document.body.appendChild(modalNode);
+    modalNode.ontouchmove= function(event)
+    {
+      Event.preventDefault(event);
+    }
     
     var presentationStyle= this.modalPresentationStyle ||
                            this.parentViewController().modalPresentationStyle;
