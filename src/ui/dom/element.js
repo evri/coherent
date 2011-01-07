@@ -64,7 +64,7 @@ Object.extend(Element, {
    */
   hasClassName: function(element, className)
   {
-    var elementClassName = element.className;
+    var elementClassName = element && element.className;
     if (!elementClassName)
       return false;
     if (elementClassName==className)
@@ -79,7 +79,9 @@ Object.extend(Element, {
    */
   addClassName: function(element, className)
   {
-    if (!className)
+    if (!element)
+      console.log("Adding class " + className + " to null element");
+    if (!element || !className)
       return;
       
     if (Element.hasClassName(element, className))
@@ -183,13 +185,13 @@ Object.extend(Element, {
       @type String[]
    */
   PROPERTIES: ['backgroundColor', 'backgroundPosition', 'borderTopColor', 
-         'borderRightColor', 'borderBottomColor', 'borderLeftColor', 
-         'borderTopWidth', 'borderRightWidth', 'borderBottomWidth', 
-         'borderLeftWidth', 'color', 'display', 'fontSize', 'letterSpacing', 
-         'lineHeight', 'opacity',
-         'width', 'height', 'top', 'bottom', 'left', 'right', 
-         'marginTop', 'marginRight', 'marginBottom', 'marginLeft',
-         'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft'],
+               'borderRightColor', 'borderBottomColor', 'borderLeftColor', 
+               'borderTopWidth', 'borderRightWidth', 'borderBottomWidth', 
+               'borderLeftWidth', 'color', 'display', 'fontSize', 'letterSpacing', 
+               'lineHeight', 'opacity',
+               'width', 'height', 'top', 'bottom', 'left', 'right', 
+               'marginTop', 'marginRight', 'marginBottom', 'marginLeft',
+               'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft'],
   
   /** Retrieve the styles for an element.
       @param {Element} element - the DOM node for which to fetch styles
@@ -747,6 +749,11 @@ Object.extend(Element, {
   
 });
 
+if (coherent.Support.TransitionEndEvent)
+  Element.PROPERTIES.push(coherent.Support.TransitionEndEvent.replace('End', 'Duration'));
+
+if (coherent.Support.AnimationEndEvent)
+  Element.PROPERTIES.push(coherent.Support.AnimationEndEvent.replace('End', 'Duration'));
 
 
 /** Alias for {@link Element.getStyle}.

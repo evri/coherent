@@ -948,7 +948,7 @@ coherent.View= Class.create(coherent.Responder, {
     else
       recognizers= this.__activeRecognizers;
 
-    var len= recognizers.length;
+    var len= (recognizers && recognizers.length);
     var STATES= coherent.GestureRecognizer;
     
     while (len--)

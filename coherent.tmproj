@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>currentDocument</key>
+	<string>src/ui/dom/BodyClasses.js</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -19,19 +21,19 @@
 	<integer>270</integer>
 	<key>metaData</key>
 	<dict>
-		<key>sandbox/slideshow.html</key>
+		<key>sandbox/animations.html</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
 				<integer>0</integer>
 				<key>line</key>
-				<integer>0</integer>
+				<integer>73</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>55</integer>
+			<integer>28</integer>
 		</dict>
 		<key>spec/model/LocalStorage_spec.js</key>
 		<dict>
@@ -47,14 +49,28 @@
 			<key>firstVisibleLine</key>
 			<integer>29</integer>
 		</dict>
-		<key>src/foundation/additions/function-additions.js</key>
+		<key>src/controls/PagingView.js</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>86</integer>
+				<key>line</key>
+				<integer>214</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>156</integer>
+		</dict>
+		<key>src/css/animation.css</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
 				<integer>0</integer>
 				<key>line</key>
-				<integer>21</integer>
+				<integer>15</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -83,6 +99,20 @@
 				<integer>3</integer>
 				<key>line</key>
 				<integer>24</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>src/ui/dom/BodyClasses.js</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>2</integer>
+				<key>line</key>
+				<integer>25</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -176,9 +206,15 @@
 			<integer>0</integer>
 		</dict>
 	</dict>
+	<key>openDocuments</key>
+	<array>
+		<string>src/controls/PagingView.js</string>
+		<string>src/css/animation.css</string>
+		<string>src/ui/dom/BodyClasses.js</string>
+	</array>
 	<key>showFileHierarchyDrawer</key>
 	<false/>
 	<key>windowFrame</key>
-	<string>{{286, 0}, {1154, 878}}</string>
+	<string>{{385, 0}, {1194, 1178}}</string>
 </dict>
 </plist>

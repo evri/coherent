@@ -35,7 +35,10 @@ coherent.SwipeGestureRecognizer= Class.create(coherent.GestureRecognizer, {
         deltaY= event.changedTouches[0].pageY - this.touchY;
     
     var DIR= coherent.SwipeGestureDirection,
-        FAILED= coherent.GestureRecognizer.Failed;
+        FAILED= coherent.GestureRecognizer.Failed,
+        CROSS_SWIPE_TOLERANCE= 20,
+        CROSS_SWIPE_FACTOR= 5;
+        
     var deltaDirection;
     var deltaAcross;
     
@@ -74,7 +77,7 @@ coherent.SwipeGestureRecognizer= Class.create(coherent.GestureRecognizer, {
         break;
     }
 
-    if (deltaAcross > 20 && deltaAcross*10 > deltaDirection)
+    if (deltaAcross > CROSS_SWIPE_TOLERANCE && deltaAcross*CROSS_SWIPE_FACTOR > deltaDirection)
       this.state= FAILED;
   },
   

@@ -753,7 +753,8 @@ coherent.CollectionView= Class.create(coherent.View, {
   {
     // get the row now instead of onmousedown because it will be called after a delay.
     this.__touchedRow= this.itemNodeFromEvent(event);
-    Element.addClassName(this.__touchedRow, coherent.Style.kActiveClass);
+    if (this.__touchedRow)
+      Element.addClassName(this.__touchedRow, coherent.Style.kActiveClass);
 
     var target= this.nextResponder();
     if (target)

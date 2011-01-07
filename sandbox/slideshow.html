@@ -1,17 +1,18 @@
 <!DOCTYPE HTML>
 <html>
     <head>
-        <script src="../build/distil.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../build/distil.js?sync=true" type="text/javascript" charset="utf-8"></script>
         <script>
           distil.sync=true;
         </script>
         <script src="../build/coherent-debug.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../build/coherent-mobile-debug.js" type="text/javascript" charset="utf-8"></script>
         <script src="../src/controls/PagingView.js" type="text/javascript" charset="utf-8"></script>
-        
+        <link rel="stylesheet" href="../build/coherent-debug.css" type="text/css" media="screen" title="no title" charset="utf-8">
         <style>
           #slideshow
           {
-            width: 400px;
+            width: 600px;
             height: 400px;
             position: relative;
             overflow: hidden;
@@ -22,7 +23,7 @@
             width: 400px;
             height: 400px;
             top: 0;
-            left: 0;
+            left: 100px;
             position: absolute;
             font-family: helvetica;
             font-weight: bold;
@@ -30,43 +31,49 @@
             line-height: 400px;
             color: white;
             text-align: center;
-            opacity: 0;
           }
           
-          #slideshow div.ui-selected
-          {
-            opacity: 1;
-          }
-          
-          #slide1
+          .slide1
           {
             background-color: red;
           }
           
-          #slide2
+          .slide2
           {
             background-color: green;
           }
           
-          #slide3
+          .slide3
           {
             background-color: blue;
           }
           
-          #slide4
+          .slide4
           {
             background-color: black;
           }
           
           #slideshow .ui-next
           {
-            left: 400px;
+            left: 500px;
             top: 0;
           }
           
           #slideshow .ui-previous
           {
-            left: -400px;
+            left: -300px;
+            top: 0;
+          }
+          
+          .ui-paging.ui-previous
+          {
+            left: -300px;
+            top: 0;
+          }
+          
+          .ui-paging.ui-next
+          {
+            left: 500px;
             top: 0;
           }
           
@@ -74,57 +81,110 @@
     </head>
     
     <body>
-        <div id="slideshow">
-          <div id="slide1">1</div>
-          <div id="slide2">2</div>
-          <div id="slide3">3</div>
-          <div id="slide4">4</div>
+        <div class="demo">
+          <div id="slideshow">
+          </div>
+          
+          <div class="template"></div>
+          
+          <button class="prev">Previous</button>
+          <button class="next">Next</button>
         </div>
-        <button class="prev">Previous</button>
-        <button class="next">Next</button>
         <script>
-            distil.onready(function(){
+          distil.onready(function(){
+
+            NIB('Demo', {
             
-              var v= VIEW({
-                  '#slideshow': coherent.PagingView({
-                                  animate: {
-                                    selection: {
-                                      duration: 300
-                                    },
-                                    next: {
-                                      duration: 400,
-                                      curve: coherent.easing.inOutSine
-                                    },
-                                    previous: {
-                                      duration: 400,
-                                      curve: coherent.easing.inOutSine
-                                    }
-                                  }
-                                }),
-                  'button.next': coherent.Button({
-                                  action: function()
-                                  {
-                                    var view= coherent.View.fromNode('slideshow');
-                                    var index= view.selectedIndex();
-                                    if (index>2)
-                                      return;
-                                    view.setSelectedIndex(index+1);
-                                  }
-                                }),
-                  'button.prev': coherent.Button({
-                                  action: function()
-                                  {
-                                    var view= coherent.View.fromNode('slideshow');
-                                    var index= view.selectedIndex();
-                                    if (!index)
-                                      return;
-                                    view.setSelectedIndex(index-1);
-                                  }
-                                })
-                });
+              PageTemplate: VIEW_TEMPLATE({
+                ':root': coherent.View({
+                  textBinding: 'representedObject.index',
+                  classBinding: {
+                    keypath: 'representedObject.index',
+                    transformedValue: function(value)
+                    {
+                      return 'slide' + ((value-1)%4+1);
+                    }
+                  }
+                })
+              }),
               
-              v(document.body);
-            });
+              DemoView: VIEW('.demo', {
+                '#slideshow': coherent.PagingView({
+                                delegate: REF('owner'),
+                                gestureRecognizers: [
+                                  coherent.SwipeGestureRecognizer({
+                                    direction: coherent.SwipeGestureDirection.Right,
+                                    action: "next"
+                                  }),
+                                  coherent.SwipeGestureRecognizer({
+                                    direction: coherent.SwipeGestureDirection.Left,
+                                    action: "previous"
+                                  })
+                                ]
+                              }),
+                'button.next': coherent.Button({
+                                action: "next"
+                              }),
+                'button.prev': coherent.Button({
+                                action: "previous"
+                              })
+                }),
+    
+                owner: {
+                  view: REF('DemoView'),
+                  pagingView: REF('DemoView #slideshow'),
+                  pageTemplate: REF('PageTemplate'),
+                  
+                  numberOfPagesForPagingView: function(pagingView)
+                  {
+                    return 9;
+                  },
+                  
+                  pagingViewPageAtIndex: function(pagingView, pageIndex)
+                  {
+                    if (void(0)==pageIndex || pageIndex<0 || pageIndex>=9)
+                      return null;
+                    var oldDataModel= coherent.dataModel;
+                    var item= new coherent.KVO.Proxy(this.__context);
+                    var node= Element.query('.template').cloneNode();
+                    var representedObject= new coherent.KVO({
+                      index: pageIndex+1
+                    });
+                    
+                    coherent.dataModel= item;
+    
+                    var template= this.pageTemplate;
+                    item.setValueForKey(representedObject, 'representedObject');
+                    item.setValueForKey(template.call(this, node), 'view');
+                    item.setValueForKey(node||item.view.node, 'node');
+    
+                    coherent.dataModel= oldDataModel;
+    
+                    return item.view;
+                  },
+                  
+                  next: function()
+                  {
+                    var index= this.pagingView.selectedIndex();
+                    if (index+1===this.pagingView.numberOfPages)
+                      return;
+                    this.pagingView.setSelectedIndex(index+1);
+                  },
+                  previous: function()
+                  {
+                    var index= this.pagingView.selectedIndex();
+                    if (!index)
+                      return;
+                    this.pagingView.setSelectedIndex(index-1);
+                  }
+                }
+              });
+  
+            var controller= new coherent.ViewController({
+                                  nibName: 'Demo'
+                                });
+            coherent.Page.shared.setRootViewController(controller);
+          });
         </script>
         
     </body>

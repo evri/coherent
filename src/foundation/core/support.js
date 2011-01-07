@@ -64,7 +64,7 @@
 
     /** Does the browser support touch events? */
     Touches: !!document.createTouch,
-
+        
     /** Does the browser support the W3C Event Model? */
     StandardEventModel: !!window.addEventListener,
     
@@ -82,6 +82,22 @@
     
     /** Does the browser support the CSS matrix? */
     CssMatrix: ('WebKitCSSMatrix' in window && 'm11' in new WebKitCSSMatrix()),
+
+    /** Does the browser support the transitionEnd event and what is it called. */
+    TransitionEndEvent: (function(){
+          //  This is SO bad...
+          if ('WebKitCSSMatrix' in window && 'm11' in new WebKitCSSMatrix())
+            return 'webkitTransitionEnd';
+          return false;
+        })(),
+
+    /** Does the browser support the animationEnd event and what is it called. */
+    AnimationEndEvent: (function(){
+          //  This is SO bad...
+          if ('WebKitCSSMatrix' in window && 'm11' in new WebKitCSSMatrix())
+            return 'webkitAnimationEnd';
+          return false;
+        })(),
     
     /** Does the browser correctly handle element.cloneNode(true)? */
     CloneNode: true,
@@ -97,12 +113,12 @@
 
     /** Does the browser support separate X & Y on background position? */
     BackgroundPositionXY: a.style.backgroundPosition && 
-                (a.style.backgroundPositionX !== a.style.backgroundPositionY),
+                          (a.style.backgroundPositionX !== a.style.backgroundPositionY),
     
     /** Does the browser support the CSS3 BorderImage property? */
     BorderImage: 'inherit'===a.style.WebkitBorderImage ||
-           'inherit'===a.style.MozBorderImage ||
-           'inherit'===a.style.borderImage,
+                 'inherit'===a.style.MozBorderImage ||
+                 'inherit'===a.style.borderImage,
            
     /** Does the browser preserve leading whitespace inserted using .innerHTML? */
     PreservesLeadingWhitespace: div.firstChild.nodeType === 3,

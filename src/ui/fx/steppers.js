@@ -290,7 +290,18 @@ coherent.fx= coherent.fx||{};
     }
   });
   
-
+  coherent.fx.CssTransitionStepper= Class._create(coherent.fx.StepperBase, {
+  
+    constructor: function(element, start, end, shouldCleanup)
+    {
+      
+    },
+    
+    step: function()
+    {
+    }
+    
+  });
 
   Object.extend(coherent.fx, {
     getStepper: function(property, element, start, end, cleanup)
@@ -318,6 +329,14 @@ coherent.fx= coherent.fx||{};
         case 'opacity':
           return new coherent.fx.OpacityStepper(element, start, end, cleanup);
     
+        case 'webkitTransitionDuration':
+        case 'transitionDuration':
+          return new coherent.fx.CssTransitionStepper(element, start, end, cleanup);
+          
+        case 'webkitAnimationDuration':
+        case 'animationDuration':
+          return new coherent.fx.CssTransitionStepper(element, start, end, cleanup);
+        
         default:
           return new coherent.fx.NumericStepper(property, element, start, end, cleanup);
       }
