@@ -36,7 +36,8 @@ coherent.Application= Class.create(coherent.Responder, {
   setNavigationController: function(navigationController)
   {
     if (this.__navigationController)
-      throw new Error("Can't have more than one navigation controller in an application");
+      return;
+      // throw new Error("Can't have more than one navigation controller in an application");
     this.__navigationController= navigationController;
   },
   
