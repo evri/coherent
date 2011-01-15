@@ -42,7 +42,8 @@ coherent.LongPressGestureRecognizer= Class.create(coherent.GestureRecognizer, {
   {
     if (!this.__timer)
       return;
-      
+    
+    Event.preventDefault(event);  
     var deltaX= event.changedTouches[0].pageX - this.touchX,
         deltaY= event.changedTouches[0].pageY - this.touchY;
     
