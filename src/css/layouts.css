@@ -61,6 +61,7 @@
 .ui-navigation-content
 {
   position: relative;
+  overflow: hidden;
   -webkit-box-flex: 1;
 }
 

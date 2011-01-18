@@ -47,7 +47,7 @@
           coherent.KVO.adaptTree(hash[key]);
           continue;
         }
-        hash[key]= coherent.KVO.adaptTree(info.fromValue(hash[key]));
+        hash[key]= info.fromValue(hash[key]);
         if (!suppressNotifications)
           this.willChangeValueForKey(key);
         keys.push(key);
