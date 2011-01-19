@@ -181,7 +181,7 @@ coherent.View= Class.create(coherent.Responder, {
   action: null,
   
   /** When should the action be sent? This should be the name of the event. */
-  sendActionOn: ['click'],
+  sendActionOn: (coherent.Support.Touches ? ['touchend'] : ['click']),
   
   /** Construct a new View. Most view subclasses actually inherit this
       constructor.
@@ -1016,10 +1016,18 @@ coherent.View= Class.create(coherent.Responder, {
       this.__dispatchEventToGestureRecognizers(event);
       return;
     }
+
+    if (!this.action)
+    {
+      var target= this.nextResponder();
+      if (target)
+        target.ontouchend(event);
+      return;
+    }
     
-    var target= this.nextResponder();
-    if (target)
-      target.ontouchend(event);
+    if (this.sendActionOn.containsObject('touchend'))
+      this.sendAction();
+    Event.stop(event);
   },
 
   /** Register for drag types. */
