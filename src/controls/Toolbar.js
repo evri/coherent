@@ -123,19 +123,9 @@ coherent.Toolbar= Class.create(coherent.View, {
       else if (!(item instanceof coherent.BarButtonItem))
         item= new coherent.BarButtonItem(item);
 
-      if (item.style()===coherent.BarButtonStyle.Title)
-        this.__titleIndex= i;
-
       this.__items.push(item);
       this.addSubview(this.__viewForBarItem(item));
     }
-  },
-  
-  setTitle: function(title)
-  {
-    if (-1==this.__titleIndex)
-      return;
-    this.__items[this.__titleIndex].setTitle(title);
   }
   
 });

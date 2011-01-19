@@ -85,6 +85,29 @@ if (!Function.repeating)
     return repeatingFnWrapper;
   }
   
+if (!Function.ONCE_PER_EVENT)
+  Function.ONCE_PER_EVENT= function(fn)
+  {
+    if (fn.length>0)
+      console.log("ONCE_PER_EVENT wrapper shouldn't be used with methods that take arguments");
+
+    
+    function proxyFunction()
+    {
+      if (proxyFunction.primed)
+        return;
+      proxyFunction.primed= true;
+      wrappedFunction.self= this;
+      window.setTimeout(wrappedFunction, 0);
+    }
+    
+    function wrappedFunction()
+    {
+      proxyFunction.primed= false;
+      fn.call(wrappedFunction.self);
+    }
+  }
+
 if (!Function.prototype.delay)
   Function.prototype.delay= function(delay)
   {
