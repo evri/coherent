@@ -162,6 +162,41 @@ coherent.PagingView = Class.create(coherent.View, {
     return this.__selectedIndex;
   },
 
+  /**
+    coherent.PagingView#__setVisiblePage(pageIndex)
+    * pageIndex: the page that should be visible
+    
+    This method will display the given page. The existing visible pages will all
+    be removed before updating. In addition to the specified page, the previous and
+    next pages will also be added to the DOM.
+   */
+  __setVisiblePage: function(pageIndex)
+  {
+    var children= this.container().children;
+    var len= children.length;
+    var node;
+    
+    while (len--)
+    {
+      node= children[len];
+      node.parentNode.removeChild(node);
+    }
+    
+    var NEXT= coherent.Style.kNext,
+        PREV= coherent.Style.kPrevious;
+        
+    var pageView= this.__pageAtIndex(pageIndex),
+        previousView= this.__pageAtIndex(pageIndex-1),
+        nextView= this.__pageAtIndex(pageIndex+1);
+    
+    Element.updateClass(pageView.node, [], [NEXT, PREV]);
+    this.addSubview(pageView);
+    Element.updateClass(previousView.node, [PREV], [NEXT]);
+    this.addSubview(previousView);
+    Element.updateClass(nextView.node, [NEXT], [PREV]);
+    this.addSubview(nextView);
+  },
+  
   __presentPage: function(pageIndex, direction)
   {
     var incomingView= this.__pageAtIndex(pageIndex);
@@ -258,7 +293,11 @@ coherent.PagingView = Class.create(coherent.View, {
       return;
 
     var direction= selectedIndex > this.__selectedIndex ? 1 : -1;
-    this.__presentPage(selectedIndex, direction);
+
+    if (Math.abs(selectedIndex - this.__selectedIndex) > 1)
+      this.__setVisiblePage(selectedIndex);
+    else
+      this.__presentPage(selectedIndex, direction);
     this.__selectedIndex = selectedIndex;
   },
 
