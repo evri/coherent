@@ -181,7 +181,8 @@ coherent.View= Class.create(coherent.Responder, {
   action: null,
   
   /** When should the action be sent? This should be the name of the event. */
-  sendActionOn: (coherent.Support.Touches ? ['touchend'] : ['click']),
+  // sendActionOn: (coherent.Support.Touches ? ['touchend'] : ['click']),
+  sendActionOn: ['click'],
   
   /** Construct a new View. Most view subclasses actually inherit this
       constructor.
