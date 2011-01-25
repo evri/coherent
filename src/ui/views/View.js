@@ -1018,7 +1018,7 @@ coherent.View= Class.create(coherent.Responder, {
       return;
     }
 
-    if (!this.action)
+    if (!this.action || !this.sendActionOn.containsObject('touchend'))
     {
       var target= this.nextResponder();
       if (target)
@@ -1026,8 +1026,7 @@ coherent.View= Class.create(coherent.Responder, {
       return;
     }
     
-    if (this.sendActionOn.containsObject('touchend'))
-      this.sendAction();
+    this.sendAction();
     Event.stop(event);
   },
 
