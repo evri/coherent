@@ -62,7 +62,9 @@
       var title = new coherent.BarButtonItem({
           style: coherent.BarButtonStyle.Title,
           title: currentNavigationItem.title(),
-          customView: currentNavigationItem.titleView()
+          customView: currentNavigationItem.titleView(),
+          action: 'titleWasTapped',
+          target: this
         });
       var right= currentNavigationItem.rightBarButtonItem();
 
