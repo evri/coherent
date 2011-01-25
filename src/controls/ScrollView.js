@@ -21,7 +21,8 @@ coherent.ScrollView= Class.create(coherent.View, {
 
   pagingEnabled: false,
   bounces: HAS_3D,
-  bouncesWhenContentFits: false,
+  alwaysBounceHorizontal: false,
+  alwaysBounceVertical: false,
   directionalLockEnabled: false,
   hasMomentum: HAS_3D,
   updateOnDOMChanges: true,
@@ -129,8 +130,8 @@ coherent.ScrollView= Class.create(coherent.View, {
       this.setPosition(resetX, resetY, true);
     }
     
-    this.scrollX = this.contentWidth > this.viewportWidth;
-    this.scrollY = !this.bouncesWhenContentFits && !this.scrollX || this.contentHeight > this.viewportHeight;
+    this.scrollX = this.contentWidth > this.viewportWidth || (this.bounces && this.alwaysBounceHorizontal);
+    this.scrollY = this.contentHeight > this.viewportHeight || (this.bounces && this.alwaysBounceVertical);
 
     // Update horizontal scrollbar
     if (this.hScrollbar && this.scrollX)
