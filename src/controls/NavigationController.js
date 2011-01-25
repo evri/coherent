@@ -57,7 +57,6 @@
       var currentNavigationItem = viewController.navigationItem();
       var previousNavigationItem = previousViewController && previousViewController.navigationItem();
 
-      var back = previousNavigationItem && previousNavigationItem.backBarButtonItem();
       var left = currentNavigationItem.leftBarButtonItem();
       var title = new coherent.BarButtonItem({
           style: coherent.BarButtonStyle.Title,
@@ -68,15 +67,16 @@
         });
       var right= currentNavigationItem.rightBarButtonItem();
 
+      if (!left && previousNavigationItem)
+      {
+        left= previousNavigationItem.backBarButtonItem();
+        left.target= this;
+        left.action= 'back';
+      }
+      
       var navigationBar= this.navigationBar;
       var items= [];
       
-      if (back)
-      {
-        back.target= this;
-        back.action= 'back';
-        items.push(back);
-      }
       if (left)
         items.push(left);
       if (title)
@@ -116,16 +116,16 @@
     },
 
     /**
-          coherent.NavigationController#setTopViewController(viewController, state)
-    
-          - viewController (coherent.ViewController): A view controller to make visible
-              at the top of the heirarchy.
-          - state (Any): An application specific data structure that may be useful for
-              creating view controllers.
-    
-          If the `viewController` parameter has already been displayed, this method will
-          pop all view controllers above it in the stack. However, if it hasn't been
-          displayed, it will be pushed onto the stack.
+      coherent.NavigationController#setTopViewController(viewController, state)
+
+      - viewController (coherent.ViewController): A view controller to make visible
+          at the top of the heirarchy.
+      - state (Any): An application specific data structure that may be useful for
+          creating view controllers.
+
+      If the `viewController` parameter has already been displayed, this method will
+      pop all view controllers above it in the stack. However, if it hasn't been
+      displayed, it will be pushed onto the stack.
      */
     setTopViewController: function(viewController)
     {
