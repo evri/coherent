@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>src/ui/views/SegmentedControl.js</string>
+	<string>src/controls/ScrollView.js</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -112,14 +112,14 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>106</integer>
 				<key>line</key>
-				<integer>357</integer>
+				<integer>133</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>325</integer>
+			<integer>119</integer>
 		</dict>
 		<key>src/css/layouts.css</key>
 		<dict>
@@ -291,7 +291,7 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>72</integer>
+			<integer>35</integer>
 		</dict>
 		<key>src/ui/views/ToggleButton.js</key>
 		<dict>
