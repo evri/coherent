@@ -1,5 +1,6 @@
 /*jsl:import ../core/base.js*/
 /*jsl:declare XHR*/
+/*jsl:declare JSON*/
 /*jsl:declare XMLHttpRequest*/
 /*jsl:declare ActiveXObject*/
 
@@ -324,7 +325,7 @@
       xhr.setRequestHeader(h, headers[h]);
 
     if (POST_METHOD == method || PUT_METHOD == method)
-      xhr.setRequestHeader("Content-Type", options.contentType || );
+      xhr.setRequestHeader("Content-Type", options.contentType);
 
     if (async)
       xhr.onreadystatechange = readyStateChanged;
@@ -374,7 +375,7 @@
     {
       method = method.toUpperCase();
       options = options || {};
-      options.contentType = options.contentType || ;
+      options.contentType = options.contentType || FORM_CONTENT_TYPE;
       options.parameters = parameters;
       return send(url, method, options);
     }
