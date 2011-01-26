@@ -336,6 +336,9 @@
     if (!async)
       readyStateChanged();
 
+    //  Stash the actual request object so callbacks may use it if necessary.
+    deferred.request= xhr;
+
     XHR.numberOfActiveRequests++;
     return deferred;
   }

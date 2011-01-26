@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>currentDocument</key>
-	<string>src/controls/ScrollView.js</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -21,20 +19,6 @@
 	<integer>270</integer>
 	<key>metaData</key>
 	<dict>
-		<key>Buildfile</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>0</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-		</dict>
 		<key>sandbox/animations.html</key>
 		<dict>
 			<key>caret</key>
@@ -62,64 +46,6 @@
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>29</integer>
-		</dict>
-		<key>src/controls/BarButtonItem.js</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>35</integer>
-			</dict>
-			<key>columnSelection</key>
-			<false/>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>29</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>35</integer>
-			</dict>
-		</dict>
-		<key>src/controls/NavigationController.js</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>87</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>41</integer>
-		</dict>
-		<key>src/controls/ScrollView.js</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>106</integer>
-				<key>line</key>
-				<integer>133</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>119</integer>
 		</dict>
 		<key>src/css/layouts.css</key>
 		<dict>
@@ -221,20 +147,6 @@
 				<integer>32</integer>
 			</dict>
 		</dict>
-		<key>src/ui/app/Page.js</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>24</integer>
-				<key>line</key>
-				<integer>444</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>422</integer>
-		</dict>
 		<key>src/ui/formatters/NumberFormatter.js</key>
 		<dict>
 			<key>caret</key>
@@ -279,20 +191,6 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
-		<key>src/ui/views/SegmentedControl.js</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>0</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>35</integer>
-		</dict>
 		<key>src/ui/views/ToggleButton.js</key>
 		<dict>
 			<key>caret</key>
@@ -336,14 +234,6 @@
 			<integer>0</integer>
 		</dict>
 	</dict>
-	<key>openDocuments</key>
-	<array>
-		<string>src/controls/NavigationController.js</string>
-		<string>src/controls/BarButtonItem.js</string>
-		<string>src/ui/views/SegmentedControl.js</string>
-		<string>src/ui/app/Page.js</string>
-		<string>src/controls/ScrollView.js</string>
-	</array>
 	<key>showFileHierarchyDrawer</key>
 	<false/>
 	<key>windowFrame</key>
