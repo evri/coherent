@@ -3,7 +3,7 @@
 coherent.Model.ClassMethods= {
 
   uniqueId: 'id',
-  
+
   add: function(model)
   {
     if (-1!==this.collection.indexOf(model))
@@ -99,6 +99,24 @@ coherent.Model.ClassMethods= {
   sort: function(sortFunction)
   {
     return this.collection.slice().sort(sortFunction);
+  },
+  
+  create: function(hash)
+  {
+    var id= hash[this.uniqueId];
+    var obj;
+    
+    if (void(0)!=id)
+      obj= this.find(id);
+
+    if (obj)
+      obj.merge(hash);
+    else
+    {
+      obj= new this(hash);
+      this.add(obj);
+    }
+    return obj;
   }
   
 };

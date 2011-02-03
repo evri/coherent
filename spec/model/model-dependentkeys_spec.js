@@ -1,7 +1,7 @@
 describe("Model dependent keys", function() {
 
   beforeEach(function(){
-    coherent.Model._resetModels();
+    coherent.Model.__resetModels();
   });
 
   it("should create model with keyDependencies", function() {

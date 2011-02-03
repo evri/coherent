@@ -3,7 +3,7 @@ describe("Model ToMany relations", function()
 
   beforeEach(function()
   {
-    coherent.Model._resetModels();
+    coherent.Model.__resetModels();
 
     this.Person = Model("Person", {
       cars: Model.ToMany(

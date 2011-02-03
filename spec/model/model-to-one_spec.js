@@ -1,7 +1,7 @@
 describe("Model ToOne relations", function() {
 
   beforeEach(function(){
-    coherent.Model._resetModels();
+    coherent.Model.__resetModels();
     
     this.M1= Model("Model1", {
       m2: Model.ToOne({

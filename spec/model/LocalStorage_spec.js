@@ -1,7 +1,7 @@
 describe("LocalStorage", function() {
 
   beforeEach(function(){
-    coherent.Model._resetModels();
+    coherent.Model.__resetModels();
     
     this.Model= Model("foo", {
       persistence: LocalStorage

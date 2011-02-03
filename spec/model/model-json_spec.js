@@ -1,7 +1,7 @@
 describe("Model support for JSON", function() {
 
   beforeEach(function(){
-    coherent.Model._resetModels();
+    coherent.Model.__resetModels();
   });
   
   it("should serialise to JSON", function() {

@@ -184,6 +184,7 @@
         if (event.target != oldNode)
           return;
         Event.stopObserving(oldNode, 'webkitAnimationEnd', oldHandler);
+        Element.setStyle(oldNode, 'display', 'none');
       }
 
       function ontransitionendNew(event)
@@ -195,6 +196,7 @@
 
       var oldHandler = Event.observe(oldNode, 'webkitAnimationEnd', ontransitionendOld);
       var newHandler = Event.observe(newNode, 'webkitAnimationEnd', ontransitionendNew);
+      Element.setStyle(newNode, 'display', '');
 
       if (direction === REVERSE)
       {
