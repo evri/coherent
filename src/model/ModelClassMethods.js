@@ -103,6 +103,13 @@ coherent.Model.ClassMethods= {
   
   create: function(hash)
   {
+    if ('object'!==typeof(hash))
+    {
+      var tmp= {};
+      tmp[this.uniqueId]= hash;
+      hash= tmp;
+    }
+      
     var id= hash[this.uniqueId];
     var obj;
     

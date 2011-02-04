@@ -1,161 +1,176 @@
 /*jsl:import ../model.js*/
 
-(function(){
+(function()
+{
 
   /** Define the base class for all Model objects. */
-  coherent.ModelObject= Class.create(coherent.KVO, {
+  coherent.ModelObject = Class.create(coherent.KVO, {
 
+    /**
+      coherent.ModelObject#constructor(hash) -> coherent.ModelObject
+      - hash (Object): The object used to initialise the properties of this model instance.
+     */
     constructor: function(hash)
     {
-      this.changes= {};
-      this.original= {};
-      this.changeCount= 0;
+      this.changes = {};
+      this.original = {};
+      this.changeCount = 0;
       this.merge(hash, true);
     },
 
+    /**
+      coherent.ModelObject#merge(hash)
+      - hash (Object): A dictionary of key-value pairs that should be merged into
+        the definition of this model instance.
+
+      This method is largely used for merging a dictionary of external values with
+      the properties of this model instance. This method will perform type
+      conversion that coherent.KVO#setValuesFromDictionary does not.
+     */
     merge: function(hash, suppressNotifications)
     {
-      var schema= this.constructor.schema;
+      var schema = this.constructor.schema;
       var info;
       var value;
-    
-      hash= Object.extend({}, hash);
+
+      hash = Object.extend({}, hash);
 
       if (!schema.__initialised)
       {
         for (var p in schema)
         {
-          info= schema[p];
-          /*  It's possible to specify the type of a property as a string. This
-              makes it easy to avoid circular references when you're defining your
-              models. However, that's not particularly useful when actually using
-              the property, so this would be a good place to fix that up.
+          info = schema[p];
+          /*
+            It's possible to specify the type of a property as a string. This
+            makes it easy to avoid circular references when you're defining your
+            models. However, that's not particularly useful when actually using
+            the property, so this would be a good place to fix that up.
            */
-          if ('string'===typeof(info.type))
-            info.type= coherent.Model.modelWithName(info.type);
+          if ('string' === typeof(info.type))
+            info.type = coherent.Model.modelWithName(info.type);
         }
-        schema.__initialised= true;
+        schema.__initialised = true;
       }
-      
-      var keys= [];
-      
+
+      var keys = [];
+
       for (var key in hash)
       {
-        info= schema[key];
+        info = schema[key];
         if (!info)
         {
           coherent.KVO.adaptTree(hash[key]);
           continue;
         }
-        hash[key]= info.fromValue(hash[key]);
+        hash[key] = info.fromValue(hash[key]);
         if (!suppressNotifications)
           this.willChangeValueForKey(key);
         keys.push(key);
       }
-    
-      this.original= Object.extend(this.original, hash);
-      this.changes= {};
-      this.changeCount=0;
+
+      this.original = Object.extend(this.original, hash);
+      this.changes = {};
+      this.changeCount = 0;
 
       if (!suppressNotifications)
       {
-        var len= keys.length;
-        for (var i=0; i<len; ++i)
+        var len = keys.length;
+        for (var i = 0; i < len; ++i)
           this.didChangeValueForKey(keys[i]);
       }
     },
-    
+
     observeChildObjectChangeForKeyPath: function(change, keypath, context)
     {
       //  Faster than calling base.
       coherent.KVO.prototype.observeChildObjectChangeForKeyPath.call(this, change, keypath, context);
 
       //  Ignore notifications from deeper in the object graph
-      if ('*'!==keypath)
+      if ('*' !== keypath)
         return;
-      
+
       //  Handle insertion & deletion from to-many relations
       //  The context holds the key name of the child that's changing.
-      var info= this.constructor.schema[context];
+      var info = this.constructor.schema[context];
       if (!info || !info.inverse)
         return;
 
-      var inverse= info.type.schema[info.inverse];
+      var inverse = info.type.schema[info.inverse];
       var len, i;
-      
+
       switch (change.changeType)
       {
         case coherent.ChangeType.insertion:
           //  relate each of the new items to this object
-          for (i=0, len= change.newValue.length; i<len; ++i)
+          for (i = 0, len = change.newValue.length; i < len; ++i)
             inverse.relateObjects(change.newValue[i], this);
           break;
-          
+
         case coherent.ChangeType.deletion:
-          for (i=0, len= change.oldValue.length; i<len; ++i)
+          for (i = 0, len = change.oldValue.length; i < len; ++i)
             inverse.unrelateObjects(change.oldValue[i], this);
           break;
-          
+
         case coherent.ChangeType.replacement:
-          for (i=0, len= change.oldValue.length; i<len; ++i)
+          for (i = 0, len = change.oldValue.length; i < len; ++i)
           {
             inverse.unrelateObjects(change.oldValue[i], this);
             inverse.relateObjects(change.newValue[i], this);
           }
           break;
-        
+
         default:
           //  I don't think there's anything I should do here...
           break;
       }
     },
-    
+
     id: function(key)
     {
       return this.original[this.constructor.uniqueId];
     },
-  
+
     isNew: function()
     {
-      return void(0)==this.id();
+      return void(0) == this.id();
     },
-  
+
     isUpdated: function()
     {
-      return this.changeCount>0;
+      return this.changeCount > 0;
     },
-  
+
     reset: function()
     {
-      this.changes= {};
-      this.changeCount= 0;
+      this.changes = {};
+      this.changeCount = 0;
     },
-  
+
     primitiveValueForKey: function(key)
     {
       if (key in this.changes)
         return this.changes[key];
       else if (key in this.original)
         return this.original[key];
-    
-      var info= this.constructor.schema[key];
+
+      var info = this.constructor.schema[key];
       if (info instanceof coherent.Model.ToMany)
-        return this.changes[key]= [];
-        
+        return this.changes[key] = [];
+
       return null;
     },
-  
+
     setPrimitiveValueForKey: function(value, key)
     {
-      var methodInfo= this.constructor.schema[key];
+      var methodInfo = this.constructor.schema[key];
       var previous;
 
       if (methodInfo && !methodInfo.isValidType(value))
         throw new Error("Invalid type for " + key);
 
-      if (this.original[key]===value)
+      if (this.original[key] === value)
       {
-        previous= key in this.changes ? this.changes[key] : null;
+        previous = key in this.changes ? this.changes[key] : null;
         delete this.changes[key];
         this.changeCount--;
       }
@@ -163,14 +178,14 @@
       {
         if (!(key in this.changes))
           this.changeCount++;
-        previous= key in this.changes ? this.changes[key] : this.original[key];
-        this.changes[key]= value;
+        previous = key in this.changes ? this.changes[key] : this.original[key];
+        this.changes[key] = value;
       }
-    
+
       if (!methodInfo || !methodInfo.inverse)
         return;
-      
-      var inverse= methodInfo.type.schema[methodInfo.inverse];
+
+      var inverse = methodInfo.type.schema[methodInfo.inverse];
       if (previous)
         inverse.unrelateObjects(previous, this);
       if (value)
@@ -179,48 +194,51 @@
 
     infoForKey: function(key)
     {
-      if (coherent.KVO.kAllPropertiesKey==key)
+      if (coherent.KVO.kAllPropertiesKey == key)
         return null;
-  
+
       if (!this.__kvo)
         this.initialiseKeyValueObserving();
 
-      var keys= this.__kvo.keys;
+      var keys = this.__kvo.keys;
       if (key in keys)
         return keys[key];
-      return keys[key]= new coherent.ModelKeyInfo(key, this);
+      return keys[key] = new coherent.ModelKeyInfo(key, this);
     },
-    
+
     toJSON: function()
     {
-      var json= Object.extend({}, this.original);
+      var json = Object.extend({}, this.original);
       Object.extend(json, this.changes);
-      
-      var schema= this.constructor.schema;
+
+      var schema = this.constructor.schema;
       var info, value;
-      
+
       for (var p in schema)
       {
-        info= schema[p];
+        info = schema[p];
         if (info.composite || !(info.type && info.type.prototype instanceof coherent.ModelObject))
           continue;
-        value= json[p];
+        value = json[p];
         if (!value)
           continue;
-          
+
         if (info instanceof coherent.Model.ToOne)
-          json[p]= value.id();
+          json[p] = value.id();
         else if (info instanceof coherent.Model.ToMany)
-          json[p]= value.map(function(obj){ return obj.id(); });
+          json[p] = value.map(function(obj)
+          {
+            return obj.id();
+          });
       }
       return json;
     },
-    
+
     validateForSave: function()
     {
       return true;
     },
-    
+
     validateForUpdate: function()
     {
       return true;
@@ -233,18 +251,18 @@
 
     save: function(callback)
     {
-      var model= this.constructor;
-      var isNew= this.isNew();
-      var error= isNew ? this.validateForSave() : this.validateForUpdate();
-      
+      var model = this.constructor;
+      var isNew = this.isNew();
+      var error = isNew ? this.validateForSave() : this.validateForUpdate();
+
       if (error instanceof coherent.Error)
       {
         if (callback)
           callback(error);
         return;
       }
-      
-      var wrappedCallback= function(error)
+
+      var wrappedCallback = function(error)
       {
         if (!error)
         {
@@ -256,32 +274,32 @@
         if (callback)
           callback(error);
       };
-      
+
       if (model.persistence)
         model.persistence[isNew ? 'create' : 'update'](this, wrappedCallback);
       else
         wrappedCallback.call(this, null);
     },
-    
+
     destroy: function(callback)
     {
-      var model= this.constructor;
-      var error= this.validateForDestroy();
+      var model = this.constructor;
+      var error = this.validateForDestroy();
       if (error instanceof coherent.Error)
       {
         if (callback)
           callback(error);
         return;
       }
-      
-      var wrappedCallback= function(error)
+
+      var wrappedCallback = function(error)
       {
         if (!error)
           model.remove(this);
         if (callback)
           callback(error);
       };
-      
+
       if (model.persistence)
         model.persistence.destroy(this, wrappedCallback);
       else

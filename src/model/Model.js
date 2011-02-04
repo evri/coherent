@@ -3,46 +3,10 @@
 
 (function()
 {
-
   var PRIMITIVE_TYPES = [String, Number, RegExp, Boolean, Date];
 
   /** Hash from name of model to the model definition */
   var models = {};
-
-  function makeGetter(key)
-  {
-    function getter()
-    {
-      var value = this.primitiveValueForKey(getter.__key);
-
-      var keyInfo = this.infoForKey(getter.__key);
-      if (!keyInfo)
-        return value;
-
-      if (value && value.addObserverForKeyPath)
-        coherent.KVO.linkChildToParent(value, this, keyInfo);
-      else if (keyInfo.parentLink)
-        coherent.KVO.breakParentChildLink(keyInfo);
-
-      return value;
-    }
-    getter.__key = key;
-    return getter;
-  }
-
-  function makeSetter(key)
-  {
-    function setter(value)
-    {
-      var keyInfo = this.infoForKey(setter.__key);
-      this.willChangeValueForKey(setter.__key, keyInfo);
-      var result = this.setPrimitiveValueForKey(value, setter.__key);
-      this.didChangeValueForKey(setter.__key, keyInfo);
-      return result;
-    }
-    setter.__key = key;
-    return setter;
-  }
 
   coherent.Model = function(name, decl)
   {
@@ -175,6 +139,8 @@
     return Klass;
   }
 
+  coherent.Model.PRIMITIVE_TYPES = PRIMITIVE_TYPES;
+  
   coherent.Model.__resetModels = function()
   {
     models = {};
@@ -188,210 +154,59 @@
     return model;
   }
 
-  coherent.Model.Property = Class._create({
 
-      constructor: function(decl)
-      {
-        if (!(this instanceof coherent.Model.Property))
-          return new coherent.Model.Property(decl);
+  /** private
+    makeGetter(key) -> Function
+    - key (String): the name of the property this getter function returns
+  
+    Create a function that will fetch a value from the ModelObject instance.
+    This method automatically handles linking values back to their parents and
+    accesses the primitive value stores.
+   */
 
-        Object.extend(this, decl);
-        Object.applyDefaults(this, coherent.Model.Property.DEFAULTS);
-        this.primitive = (-1 !== PRIMITIVE_TYPES.indexOf(this.type));
-        return void(0);
-      },
+  function makeGetter(key)
+  {
+    function getter()
+    {
+      var value = this.primitiveValueForKey(getter.__key);
 
-      isValidType: function(value)
-      {
-        if (void(0) == value || !this.type)
-          return true;
-
-        if (this.primitive)
-          return value.constructor === this.type;
-        else
-          return value instanceof this.type;
-      },
-
-      fromValue: function(value)
-      {
-        if (!this.type)
-          return value;
-
-        if (null === value)
-          value = new(this.type)();
-        else if (Date === this.type)
-          value = new Date(Date.parse(value));
-        else if (!this.composite)
-          value = this.type.create(value);
-        else
-          value = new(this.type)(value);
-
-        if (this.primitive && Date !== this.type)
-          value = value.valueOf();
-
+      var keyInfo = this.infoForKey(getter.__key);
+      if (!keyInfo)
         return value;
-      }
 
-    });
+      if (value && value.addObserverForKeyPath)
+        coherent.KVO.linkChildToParent(value, this, keyInfo);
+      else if (keyInfo.parentLink)
+        coherent.KVO.breakParentChildLink(keyInfo);
 
-  coherent.Model.Property.DEFAULTS = {
-    composite: true
-  };
-
-
-
-  coherent.Model.ToOne = Class._create(coherent.Model.Property, {
-
-    constructor: function(decl)
-    {
-      if (!(this instanceof coherent.Model.ToOne))
-        return new coherent.Model.ToOne(decl);
-
-      decl = Object.applyDefaults(decl, coherent.Model.ToOne.DEFAULTS);
-      coherent.Model.Property.call(this, decl);
-      return void(0);
-    },
-
-    unrelateObjects: function(object, relatedObject)
-    {
-      object.setValueForKey(null, this.key);
-    },
-
-    relateObjects: function(object, relatedObject)
-    {
-      var previous = object.valueForKey(this.key);
-      if (previous === relatedObject)
-        return;
-      object.setValueForKey(relatedObject, this.key);
-    },
-
-    fixupInverseRelation: function(oldValue, newValue)
-    {
-      var inverse = this.type.schema[this.inverse];
-      var oldValueInverse = oldValue ? oldValue.primitiveValueForKey(this.inverse) : null;
-      var newValueInverse = newValue ? newValue.primitiveValueForKey(this.inverse) : null;
-
-      if (inverse instanceof coherent.Model.ToOne)
-      {
-        if (oldValue && this === oldValueInverse)
-          oldValue.setValueForKey(null, this.inverse);
-        if (newValue && this !== newValueInverse)
-          newValue.setValueForKey(this, this.inverse);
-      }
-      else if (inverse instanceof coherent.Model.ToMany)
-      {
-        var oldValueIndexOfThis = oldValueInverse ? oldValueInverse.indexOfObject(this) : -1;
-        var newValueIndexOfThis = newValueInverse ? newValueInverse.indexOfObject(this) : -1;
-
-        if (oldValueInverse && -1 !== oldValueIndexOfThis)
-          oldValueInverse.removeObjectAtIndex(oldValueIndexOfThis);
-        if (newValue && -1 === newValueIndexOfThis)
-          newValueInverse.addObject(this);
-      }
+      return value;
     }
+    getter.__key = key;
+    return getter;
+  }
 
-  });
-
-  coherent.Model.ToOne.DEFAULTS = {
-    composite: false
-  };
-
-
-
-  coherent.Model.ToMany = Class._create(coherent.Model.Property, {
-
-    constructor: function(decl)
+  /** private
+    makeSetter(key) -> Function
+    - key (String): the name of the property this setter function modifies
+  
+    Create a function to update the value of a property for a ModelObject
+    instance. This method automatically handles triggering change notifications
+    and updates the primitive value store.
+   */
+  function makeSetter(key)
+  {
+    function setter(value)
     {
-      if (!(this instanceof coherent.Model.ToMany))
-        return new coherent.Model.ToMany(decl);
-
-      decl = Object.applyDefaults(decl, coherent.Model.ToMany.DEFAULTS);
-      coherent.Model.Property.call(this, decl);
-      return void(0);
-    },
-
-    isValidType: function(value)
-    {
-      if (!Array.isArray(value))
-        return false;
-
-      if (!this.type)
-        return true;
-
-      var len = value.length,
-          valid = true;
-
-      while (valid && len--)
-      {
-        if (this.primitive)
-          valid = value[len].constructor === this.type;
-        else
-          valid = value[len]
-            instanceof this.type;
-        }
-
-        return valid;
-      },
-
-      fromValue: function(array)
-      {
-        if (!this.type)
-          return array;
-
-        if (null === array)
-          return [];
-
-        var len = array.length;
-        var value;
-
-        while (len--)
-        {
-          value = array[len];
-          if (void(0) == value)
-            value = new this.type();
-          else if (Date === this.type)
-            value = new Date(Date.parse(value));
-          else if (!this.composite)
-            value = this.type.create(value);
-          else
-            value = new this.type(value);
-
-          if (this.primitive && Date != this.type)
-            value = value.valueOf();
-
-          array[len] = value;
-        }
-
-        return array;
-      },
-
-      relateObjects: function(object, relatedObject)
-      {
-        var array = object.valueForKey(this.key);
-        var index = array.indexOfObject(relatedObject);
-        if (-1 !== index)
-          return;
-        array.addObject(relatedObject);
-      },
-
-      unrelateObjects: function(object, relatedObject)
-      {
-        var array = object.valueForKey(this.key);
-        var index = array.indexOfObject(relatedObject);
-        if (-1 === index)
-          return;
-        array.removeObjectAtIndex(index);
-      }
-
-    });
-
-  coherent.Model.ToMany.DEFAULTS = {
-    defaultValue: [],
-    composite: false
-  };
-
-
+      var keyInfo = this.infoForKey(setter.__key);
+      this.willChangeValueForKey(setter.__key, keyInfo);
+      var result = this.setPrimitiveValueForKey(value, setter.__key);
+      this.didChangeValueForKey(setter.__key, keyInfo);
+      return result;
+    }
+    setter.__key = key;
+    return setter;
+  }
 
   Object.markMethods(coherent.Model);
   coherent.__export("Model");
-  })();
+})();

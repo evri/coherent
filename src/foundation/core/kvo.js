@@ -187,6 +187,42 @@ coherent.KVO= Class.create({
     return keyInfo.get(this);
   },
 
+  /**
+    coherent.KVO#dictionaryWithValuesForKeys(keys) -> Object
+    - keys (Array of Strings): a list of keys that should be used to populate the dictionary
+    
+    This method will create a new dictionary object that contains the values for
+    each key listed in the key array.
+   */
+  dictionaryWithValuesForKeys: function(keys)
+  {
+    var len= (keys||[]).length,
+        obj= {};
+    var key;
+    
+    while (len--)
+    {
+      key= keys[len];
+      obj[key]= this.valueForKey(key);
+    }
+    return obj;
+  },
+  
+  /**
+    coherent.KVO#setValuesFromDictionary(hash)
+    - hash (Object): The dictionary of keys and their values used to update this
+      object.
+    
+    This method will iterate over the keys in the hash and update the
+    corresponding property of this object with the value from the hash. This
+    method does not call validateValueForKey.
+   */
+  setValuesFromDictionary: function(hash)
+  {
+    for (var p in hash)
+      this.setValueForKey(hash[p], p);
+  },
+  
   /** Determine whether the value may be assigned to the property represented
       by keyPath.
   

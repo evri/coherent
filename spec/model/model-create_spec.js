@@ -56,6 +56,18 @@ describe("Model create", function()
     expect(m1).toBe(m2);
   });
 
+  it("should find the object when passed only the id", function()
+  {
+    var m1 = this.M.create({
+        id: "zebra",
+        name: "Zebra",
+        age: 10
+      });
+
+    var m2 = this.M.create("zebra");
+    expect(m1).toBe(m2);
+  });
+
   it("should merge new values when created multiple times", function()
   {
     var m1 = this.M.create({
