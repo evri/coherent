@@ -68,7 +68,7 @@
             get: value.get ? wrapMethod(wrapGetMethod, value.get, key) : makeGetter(key),
             set: value.set ? wrapMethod(wrapSetMethod, value.set, key) : makeSetter(key),
             enumerable: true
-          }
+          };
           delete decl[key];
           Object.defineProperty(decl, key, descriptor);
         }
