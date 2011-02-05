@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>src/foundation/additions/array-additions.js</string>
+	<string>src/ui/views/CollectionView.js</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -35,19 +35,47 @@
 			<key>firstVisibleLine</key>
 			<integer>28</integer>
 		</dict>
+		<key>sandbox/gestures.html</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>98</integer>
+		</dict>
 		<key>spec/model/LocalStorage_spec.js</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>14</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>61</integer>
+				<integer>0</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>29</integer>
+		</dict>
+		<key>spec/model/model-create-non-composite_spec.js</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>111</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
 		</dict>
 		<key>src/controls/NavigationController.js</key>
 		<dict>
@@ -121,20 +149,6 @@
 			<key>firstVisibleLine</key>
 			<integer>38</integer>
 		</dict>
-		<key>src/foundation/additions/array-additions.js</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>0</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>90</integer>
-		</dict>
 		<key>src/foundation/core/KeyPathTrie.js</key>
 		<dict>
 			<key>caret</key>
@@ -148,6 +162,20 @@
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
+		</dict>
+		<key>src/foundation/core/kvo.js</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>5</integer>
+				<key>line</key>
+				<integer>195</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>180</integer>
 		</dict>
 		<key>src/foundation/core/model.js</key>
 		<dict>
@@ -196,42 +224,116 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>7</integer>
+				<integer>42</integer>
 				<key>line</key>
-				<integer>90</integer>
+				<integer>106</integer>
 			</dict>
+			<key>columnSelection</key>
+			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>61</integer>
+			<integer>5</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>29</integer>
+				<key>line</key>
+				<integer>106</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>42</integer>
+				<key>line</key>
+				<integer>106</integer>
+			</dict>
 		</dict>
 		<key>src/model/ModelClassMethods.js</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>5</integer>
 				<key>line</key>
-				<integer>0</integer>
+				<integer>68</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>25</integer>
+		</dict>
+		<key>src/model/ModelObject.js</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>12</integer>
+				<key>line</key>
+				<integer>47</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>25</integer>
+		</dict>
+		<key>src/model/Property.js</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>46</integer>
+				<key>line</key>
+				<integer>11</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
-		<key>src/model/REST.js</key>
+		<key>src/model/ToMany.js</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>4</integer>
+				<integer>34</integer>
 				<key>line</key>
-				<integer>45</integer>
+				<integer>89</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>31</integer>
+			<integer>0</integer>
+		</dict>
+		<key>src/model/ToOne.js</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>1</integer>
+			</dict>
+			<key>columnSelection</key>
+			<false/>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>1</integer>
+			</dict>
 		</dict>
 		<key>src/ui/app/Application.js</key>
 		<dict>
@@ -306,6 +408,20 @@
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
+		</dict>
+		<key>src/ui/views/CollectionView.js</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>31</integer>
+				<key>line</key>
+				<integer>399</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>365</integer>
 		</dict>
 		<key>src/ui/views/Image.js</key>
 		<dict>
@@ -383,18 +499,19 @@
 	<key>openDocuments</key>
 	<array>
 		<string>src/model/Model.js</string>
-		<string>src/foundation/additions/array-additions.js</string>
 		<string>src/model/ModelClassMethods.js</string>
-		<string>src/controls/ScrollView.js</string>
-		<string>src/css/animation.css</string>
-		<string>src/controls/NavigationController.js</string>
-		<string>src/ui/views/Image.js</string>
-		<string>src/model/REST.js</string>
-		<string>src/model/LocalStorage.js</string>
+		<string>sandbox/gestures.html</string>
+		<string>spec/model/model-create-non-composite_spec.js</string>
+		<string>src/foundation/core/kvo.js</string>
+		<string>src/ui/views/CollectionView.js</string>
+		<string>src/model/ModelObject.js</string>
+		<string>src/model/ToMany.js</string>
+		<string>src/model/ToOne.js</string>
+		<string>src/model/Property.js</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<false/>
 	<key>windowFrame</key>
-	<string>{{242, 300}, {1243, 878}}</string>
+	<string>{{204, 33}, {1220, 1145}}</string>
 </dict>
 </plist>

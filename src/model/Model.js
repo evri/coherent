@@ -8,6 +8,7 @@
   /** Hash from name of model to the model definition */
   var models = {};
 
+  /** Create a new Model object. */
   coherent.Model = function(name, decl)
   {
     if (name in models)
@@ -19,13 +20,18 @@
     var setKey;
     var validateKey;
     var setter;
+    var getter;
     var wrapMethod = coherent.KeyInfo.wrapMethod;
     var wrapGetMethod = coherent.KeyInfo.wrapGetMethod;
     var wrapSetMethod = coherent.KeyInfo.wrapSetMethod;
     var Property = coherent.Model.Property;
     var schema = {};
     var primitive;
-
+    var USE_PROPERTIES = coherent.Model.USE_PROPERTIES;
+    
+    if (USE_PROPERTIES && !coherent.Support.DefineProperty)
+      throw new Error("coherent.Model.USE_PROPERTIES is set to true, but the Object.defineProperty is not supported");
+      
     Klass.modelName = name;
     Klass.schema = schema;
     models[name] = Klass;
@@ -56,15 +62,28 @@
       {
         value.key = key;
 
-        if (value.get)
-          decl[key] = wrapMethod(wrapGetMethod, value.get, key);
+        if (USE_PROPERTIES)
+        {
+          var descriptor= {
+            get: value.get ? wrapMethod(wrapGetMethod, value.get, key) : makeGetter(key),
+            set: value.set ? wrapMethod(wrapSetMethod, value.set, key) : makeSetter(key),
+            enumerable: true
+          }
+          delete decl[key];
+          Object.defineProperty(decl, key, descriptor);
+        }
         else
-          decl[key] = makeGetter(key);
-        if (value.set)
-          decl[setKey] = wrapMethod(wrapSetMethod, value.set, key);
-        else if (!value.readOnly)
-          decl[setKey] = makeSetter(key);
-
+        {
+          if (value.get)
+            decl[key] = wrapMethod(wrapGetMethod, value.get, key);
+          else
+            decl[key] = makeGetter(key);
+          if (value.set)
+            decl[setKey] = wrapMethod(wrapSetMethod, value.set, key);
+          else if (!value.readOnly)
+            decl[setKey] = makeSetter(key);
+        }
+        
         classInfo.methods[key] = {
           getter: value.get,
           setter: value.set,
@@ -81,19 +100,34 @@
       primitive = (-1 !== PRIMITIVE_TYPES.indexOf(value));
       if (primitive || 'modelName' in value)
       {
-        decl[key] = makeGetter(key);
-        decl[setKey] = makeSetter(key);
+        getter= makeGetter(key);
+        setter= makeSetter(key);
+        
+        if (USE_PROPERTIES)
+        {
+          delete decl[key];
+          Object.defineProperty(decl, key, {
+            get: getter,
+            set: setter,
+            enumerable: true
+          });
+        }
+        else
+        {
+          decl[key] = getter;
+          decl[setKey] = setter;
+        }
         schema[key] = new Property({
             key: key,
-            get: decl[key],
-            set: decl[setKey],
+            get: getter,
+            set: setter,
             validate: decl[validateKey],
             type: value,
             primitive: primitive
           });
         classInfo.methods[key] = {
-          getter: decl[key],
-          setter: decl[setKey],
+          getter: getter,
+          setter: setter,
           validator: decl[validateKey]
         };
         continue;
@@ -140,6 +174,8 @@
   }
 
   coherent.Model.PRIMITIVE_TYPES = PRIMITIVE_TYPES;
+  
+  coherent.Model.USE_PROPERTIES = false;
   
   coherent.Model.__resetModels = function()
   {

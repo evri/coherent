@@ -183,13 +183,14 @@
       }
 
       if (!methodInfo || !methodInfo.inverse)
-        return;
+        return value;
 
       var inverse = methodInfo.type.schema[methodInfo.inverse];
       if (previous)
         inverse.unrelateObjects(previous, this);
       if (value)
         inverse.relateObjects(value, this);
+      return value;
     },
 
     infoForKey: function(key)

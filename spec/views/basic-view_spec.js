@@ -24,7 +24,6 @@ describe("View", function() {
 
     it("should set & update html", function() {
       var updatedHTML= "Some new <i>HTML</i>.";
-      debugger;
       var view= new coherent.View('view', {
         htmlBinding: 'context.html'
       });

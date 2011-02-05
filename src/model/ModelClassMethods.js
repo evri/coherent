@@ -1,9 +1,28 @@
 /*jsl:import ../model.js*/
 
+/**
+  mixin coherent.Model.ClassMethods
+  
+  These are methods that are added to each Model class. This makes it easy to
+  find, count, and perform operations on the set of all instances of that Model.
+ */
 coherent.Model.ClassMethods= {
 
+  /**
+    coherent.Model.uniqueId
+    
+    A string representing the name of the unique ID used to track instances of
+    the Model. By default, the uniqueId is 'id'.
+   */
   uniqueId: 'id',
 
+  /**
+    coherent.Model.add(model)
+    - model (ModelObject): the instance of a Model that should be tracked.
+    
+    This method stores a reference to the model instance so that it may be found
+    using other methods.
+   */
   add: function(model)
   {
     if (-1!==this.collection.indexOf(model))
@@ -11,6 +30,12 @@ coherent.Model.ClassMethods= {
     this.collection.push(model);
   },
 
+  /**
+    coherent.Model.all() -> Array of Model instances
+    
+    This method will return a **copy** of the collection of all instances of the
+    model currently tracked.
+   */
   all: function()
   {
     return this.collection.slice();
@@ -103,14 +128,16 @@ coherent.Model.ClassMethods= {
   
   create: function(hash)
   {
+    var id;
+    
     if ('object'!==typeof(hash))
     {
-      var tmp= {};
-      tmp[this.uniqueId]= hash;
-      hash= tmp;
+      id= hash;
+      (hash={})[this.uniqueId]= id;
     }
+    else
+      id= hash[this.uniqueId];
       
-    var id= hash[this.uniqueId];
     var obj;
     
     if (void(0)!=id)
