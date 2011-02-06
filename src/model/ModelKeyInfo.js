@@ -39,11 +39,12 @@ coherent.ModelKeyInfo= Class._create({
     this.changeCount=0;
     this.getter= classKeyInfo.getter;
     this.setter= classKeyInfo.setter;
-
-    if (this.getter)
-      this.mutable= !!this.setter;
-    else
-      this.mutable= ('function'!==typeof(obj[key]) || !!obj['set'+key.titleCase()]);
+    this.mutable= classKeyInfo.mutable;
+    
+    // if (this.getter)
+    //   this.mutable= !!this.setter;
+    // else
+    //   this.mutable= ('function'!==typeof(obj[key]) || !!obj['set'+key.titleCase()]);
   },
   
   /** Retrieve the value of this key for a given object. If the value can have

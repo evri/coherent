@@ -3,6 +3,7 @@
 
 (function()
 {
+
   var PRIMITIVE_TYPES = [String, Number, RegExp, Boolean, Date];
 
   /** Hash from name of model to the model definition */
@@ -28,10 +29,10 @@
     var schema = {};
     var primitive;
     var USE_PROPERTIES = coherent.Model.USE_PROPERTIES;
-    
+
     if (USE_PROPERTIES && !coherent.Support.DefineProperty)
       throw new Error("coherent.Model.USE_PROPERTIES is set to true, but the Object.defineProperty is not supported");
-      
+
     Klass.modelName = name;
     Klass.schema = schema;
     models[name] = Klass;
@@ -64,11 +65,11 @@
 
         if (USE_PROPERTIES)
         {
-          var descriptor= {
-            get: value.get ? wrapMethod(wrapGetMethod, value.get, key) : makeGetter(key),
-            set: value.set ? wrapMethod(wrapSetMethod, value.set, key) : makeSetter(key),
-            enumerable: true
-          };
+          var descriptor = {
+                get: value.get ? wrapMethod(wrapGetMethod, value.get, key) : makeGetter(key),
+                set: value.set ? wrapMethod(wrapSetMethod, value.set, key) : makeSetter(key),
+                enumerable: true
+              };
           delete decl[key];
           Object.defineProperty(decl, key, descriptor);
         }
@@ -83,10 +84,11 @@
           else if (!value.readOnly)
             decl[setKey] = makeSetter(key);
         }
-        
+
         classInfo.methods[key] = {
           getter: value.get,
           setter: value.set,
+          mutable: !value.get || !! value.set,
           validator: value.validate
         };
 
@@ -100,9 +102,9 @@
       primitive = (-1 !== PRIMITIVE_TYPES.indexOf(value));
       if (primitive || 'modelName' in value)
       {
-        getter= makeGetter(key);
-        setter= makeSetter(key);
-        
+        getter = makeGetter(key);
+        setter = makeSetter(key);
+
         if (USE_PROPERTIES)
         {
           delete decl[key];
@@ -128,6 +130,7 @@
         classInfo.methods[key] = {
           getter: getter,
           setter: setter,
+          mutable: true,
           validator: decl[validateKey]
         };
         continue;
@@ -151,6 +154,7 @@
       classInfo.methods[key] = {
         setter: setter,
         getter: value,
+        mutable: true,
         validator: decl[validateKey]
       };
 
@@ -174,9 +178,9 @@
   }
 
   coherent.Model.PRIMITIVE_TYPES = PRIMITIVE_TYPES;
-  
+
   coherent.Model.USE_PROPERTIES = false;
-  
+
   coherent.Model.__resetModels = function()
   {
     models = {};
@@ -229,6 +233,7 @@
     instance. This method automatically handles triggering change notifications
     and updates the primitive value store.
    */
+
   function makeSetter(key)
   {
     function setter(value)
@@ -245,4 +250,5 @@
 
   Object.markMethods(coherent.Model);
   coherent.__export("Model");
+
 })();
