@@ -2,10 +2,11 @@
 
 coherent.NavigationItem = Class.create(coherent.KVO, {
 
-  constructor: function(viewController)
+  constructor: function(viewController, params)
   {
     this.__viewController = viewController;
     this.__navigationController = null;
+    this.base(params);
   },
 
   backBarButtonItem: function()
@@ -18,9 +19,14 @@ coherent.NavigationItem = Class.create(coherent.KVO, {
 
   title: function()
   {
-    return this.__viewController.valueForKey('title');
+    return this.__title || this.__viewController.valueForKey('title');
   },
 
+  setTitle: function(title)
+  {
+    this.__title= title;
+  },
+  
   /**
           Create a new View that will represent the title.
    */
