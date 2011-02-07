@@ -42,6 +42,33 @@ if (!Function.delay)
       window.clearTimeout(delayedFnWrapper.timer);
       delayedFnWrapper.timer= 0;
     }
+
+    var fnType= typeof(fn);
+    var delayType= typeof(delay);
+    var scopeType= typeof(scope);
+    var tmp;
+    
+    if ('function'!==fnType)
+    {
+      tmp=fn;
+      if ('function'===delayType)
+      {
+        fn= delay;
+        delay= tmp;
+      }
+      else if ('function'===scopeType)
+      {
+        fn= scope;
+        scope= tmp;
+      }
+    }
+    
+    if ('number'!==delayType)
+    {
+      tmp= delay;
+      delay= scope;
+      scope= tmp;
+    }
     delayedFnWrapper.fn= fn;
     delayedFnWrapper.args= args||[];
     delayedFnWrapper.scope= scope||fn;
@@ -74,6 +101,33 @@ if (!Function.repeating)
       if (!isNaN(delay))
         repeatingFnWrapper.delay= delay;
       repeatingFnWrapper.timer= window.setTimeout(repeatingFnWrapper, repeatingFnWrapper.delay);
+    }
+
+    var fnType= typeof(fn);
+    var delayType= typeof(delay);
+    var scopeType= typeof(scope);
+    var tmp;
+    
+    if ('function'!==fnType)
+    {
+      tmp=fn;
+      if ('function'===delayType)
+      {
+        fn= delay;
+        delay= tmp;
+      }
+      else if ('function'===scopeType)
+      {
+        fn= scope;
+        scope= tmp;
+      }
+    }
+    
+    if ('number'!==delayType)
+    {
+      tmp= delay;
+      delay= scope;
+      scope= tmp;
     }
     repeatingFnWrapper.fn= fn;
     repeatingFnWrapper.args= args||[];
