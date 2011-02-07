@@ -113,5 +113,7 @@ distil.onready(function(){
       document.addEventListener('dragover', wrapEventHandler("_ondragover"), false);
       document.addEventListener('drop', wrapEventHandler("_ondrop"), false);
     }
+    
+    window.addEventListener('orientationchange', wrapEventHandler("_onorientationchange"), false);
   }
 });
