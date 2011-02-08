@@ -1,74 +1,129 @@
 /*jsl:import ../model.js*/
 /*jsl:import ../foundation/net/XHR.js*/
 
-define("coherent", function(coherent){
+/*jsl:declare REST*/
 
-  var pathFromStringByReplacingParameters= function(resource, object)
+define("coherent", function(coherent)
+{
+  var PARAM_REGEX = /(?:\/?:([\w\d]+))|(?:\/?:\{([\w\d]+(?:\.[\w\d]+)*)\})/g;
+
+  function pathFromStringByReplacingParameters(resource, object)
   {
-    return resource.replace(this.PARAM_REGEX, function(match, key, keypath){
-      return key ? object.valueForKey(key) : object.valueForKeyPath(keypath);
+    return resource.replace(PARAM_REGEX, function(match, key, keypath)
+    {
+      var value;
+      var keyname= (key||keypath);
+      var slash= ('/'===keyname.charAt(0));
+      if (slash)
+        keyname= keyname.slice(1);
+        
+      if (object.valueForKey)
+        value= key ? object.valueForKey(keyname) : object.valueForKeyPath(keyname);
+      else
+        value= key ? object[keyname] : Object.get(object, keyname);
+      
+      if (slash && '/'!==value.charAt(0))
+        return '/' + value;
+      else
+        return value;
     });
-  };
-  
-  coherent.REST= Class.create({
+  }
 
-    PARAM_REGEX: /(?::([\w\d]+))|(?::\{([\w\d]+(?:\.[\w\d]+)*)\})/g,
-    DEFAULT_XHR_OPTIONS: {
-      responseContentType: 'application/json'
-    },
-    
-    constructor: function(model, params)
-    {
-      this.model= model;
-      Object.extend(this, params);
-    },
-  
-    /**
-      coherent.REST#extractObject(json) -> Object
-      
-      - json (Object): The data retrieve from the server.
-      
-      Sometimes the server doesn't return the resource directly, but wraps it in
-      an envelope or you need to perform some other processing before it's ready
-      for passing to the Model's constructor. Override this method (usually in 
-      the parameters when you're defining the REST resource) and you can massage
-      the data.
-     */
-    extractObject: function(json)
-    {
-      return json;
-    },
-    
-    createObject: function(json)
-    {
-      return new this.model(json);
-    },
-    
-    fetch: function(id, callback)
-    {
-      var params= { id: id };
-      params[this.model.uniqueId]= id;
-      
-      var url= pathFromStringByReplacingParameters(this.resource, params);
-      var d= XHR.get(url, null, this.DEFAULT_XHR_OPTIONS);
-      
-      function oncomplete(json)
+  coherent.REST = Class.create({
+
+      XHR_OPTIONS: {
+        allowCache: true,
+        responseContentType: 'application/json'
+      },
+      PREFETCH_OPTIONS: {
+        allowCache: false,
+        responseContentType: 'application/json'
+      },
+
+      constructor: function(model, params)
       {
-        if (callback)
-          callback(this.createObject(json), null);
-      }
-      function onfailed(error)
+        this.model = model;
+        this.__prefetches = {};
+        Object.extend(this, params);
+      },
+
+      /**
+        coherent.REST#extractObject(json) -> Object
+      
+        - json (Object): The data retrieve from the server.
+      
+        Sometimes the server doesn't return the resource directly, but wraps it in
+        an envelope or you need to perform some other processing before it's ready
+        for passing to the Model's constructor. Override this method (usually in
+        the parameters when you're defining the REST resource) and you can massage
+        the data.
+       */
+      extractObject: function(json)
       {
-        if (callback)
-          callback(null, error);
+        return json;
+      },
+
+      cachePrefetch: function(id, data)
+      {
+        return data;
+      },
+
+      prefetch: function(id)
+      {
+        var params = {
+              id: id
+            };
+        params[this.model.uniqueId] = id;
+
+        var url = pathFromStringByReplacingParameters(this.resource, params);
+        var d = XHR.get(url, null, this.XHR_OPTIONS);
+
+        function oncomplete(json)
+        {
+          delete this.__prefetches[id];
+          return this.cachePrefetch(id, json);
+        }
+        function onfailed(error)
+        {
+          delete this.__prefetches[id];
+          return error;
+        }
+        d.addCallback(oncomplete, this);
+        d.addErrorHandler(onfailed, this);
+        this.__prefetches[id] = d;
+        return d;
+      },
+
+      fetch: function(id)
+      {
+        //  Try to use the earlier prefetch deferred value if it's still around
+        var d = this.__prefetches[id];
+
+        if (!d)
+        {
+          var params = {
+                id: id
+              };
+          params[this.model.uniqueId] = id;
+
+          var url = pathFromStringByReplacingParameters(this.resource, params);
+          d = XHR.get(url, null, this.XHR_OPTIONS);
+        }
+
+        d.addCallback(this.extractObject, this);
+        return d;
+      },
+
+      __factory__: function(params)
+      {
+        var klass = this;
+        return function()
+        {
+          return new klass(this, params);
+        };
       }
-      d.addCallback(this.extractObject, this);
-      d.addCallback(oncomplete, this);
-      d.addErrorHandler(onfailed, this);
-    }
-  
-  
-  });
+
+    });
 
   coherent.__export('REST');
 

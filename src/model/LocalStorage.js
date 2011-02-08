@@ -51,40 +51,48 @@ coherent.LocalStorage= Class.create({
     this.writeIndex(index);
   },
   
-  fetch: function(id, callback)
+  fetch: function(id)
   {
     var data= localStorage.getItem(id);
     if (data)
-      data= new this.model(JSON.parse(data));
-      
-    if (callback)
-      callback(data||null, data ? null : true);
+      data= JSON.parse(data);
+    
+    var d= new coherent.Deferred();
+    if (data)
+      d.callback(data);
+    else
+      d.failure(new Error("Unable to retrieve " + this.model.modelName + " with ID " + id));
+    return d;
   },
   
-  create: function(object, callback)
+  create: function(object)
   {
     var id= [this.model.modelName, object.__uid].join('-');
     object.setPrimitiveValueForKey(id, this.model.uniqueId);
     localStorage.setItem(id, JSON.stringify(object));
     this.addToIndex(id);
-    if (callback)
-      callback.call(object, null);
+
+    var d= new coherent.Deferred();
+    d.callback({});
+    return d;
   },
   
-  update: function(object, callback)
+  update: function(object)
   {
     localStorage.setItem(object.id(), JSON.stringify(object));
-    if (callback)
-      callback.call(object, null);
+    var d= new coherent.Deferred();
+    d.callback({});
+    return d;
   },
   
-  destroy: function(object, callback)
+  destroy: function(object)
   {
     var id= object.id();
     localStorage.removeItem(id);
     this.removeFromIndex(id);
-    if (callback)
-      callback.call(object, null);
+    var d= new coherent.Deferred();
+    d.callback(object);
+    return d;
   },
   
   __factory__: function(params)

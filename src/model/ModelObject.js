@@ -22,7 +22,7 @@
       coherent.ModelObject#merge(hash)
       - hash (Object): A dictionary of key-value pairs that should be merged into
         the definition of this model instance.
-
+    
       This method is largely used for merging a dictionary of external values with
       the properties of this model instance. This method will perform type
       conversion that coherent.KVO#setValuesFromDictionary does not.
@@ -235,6 +235,9 @@
       return json;
     },
 
+    awakeFromFetch: function()
+    {},
+
     validateForSave: function()
     {
       return true;
@@ -250,36 +253,81 @@
       return true;
     },
 
-    save: function(callback)
+    prefetch: function()
+    {
+      var model = this.constructor;
+      if (this.isNew())
+        return;
+      model.prefetch(this.id());
+    },
+    
+    fetch: function()
+    {
+      var model = this.constructor;
+
+      function oncomplete(json)
+      {
+        this.merge(json);
+        this.awakeFromFetch();
+        this.__fetching= null;
+        return this;
+      }
+
+      if (this.__fetching)
+        return this.__fetching;
+
+      var d;
+      
+      if (model.persistence && !this.isNew())
+      {
+        d= model.persistence.fetch(this.id());
+        d.addCallback(oncomplete, this);
+        this.__fetching= d;
+      }
+      else
+      {
+        d= new coherent.Deferred();
+        d.callback(this);
+      }
+      return d;
+    },
+
+    save: function()
     {
       var model = this.constructor;
       var isNew = this.isNew();
       var error = isNew ? this.validateForSave() : this.validateForUpdate();
-
+      var d;
+      
       if (error instanceof coherent.Error)
       {
-        if (callback)
-          callback(error);
-        return;
+        d= new coherent.Deferred();
+        d.failure(error);
+        return d;
       }
 
-      var wrappedCallback = function(error)
+      function oncomplete(json)
       {
-        if (!error)
-        {
-          this.merge(this.changes);
-          this.reset();
-          if (isNew)
-            model.add(this);
-        }
-        if (callback)
-          callback(error);
-      };
-
+        this.merge(this.changes);
+        if (json)
+          this.merge(json);
+        this.reset();
+        if (isNew)
+          model.add(this);
+        return this;
+      }
+      
       if (model.persistence)
-        model.persistence[isNew ? 'create' : 'update'](this, wrappedCallback);
+      {
+        d= model.persistence[isNew ? 'create' : 'update'](this);
+        d.addCallback(oncomplete, this);
+      }
       else
-        wrappedCallback.call(this, null);
+      {
+        d= new coherent.Deferred();
+        d.callback(this);
+      }
+      return d;
     },
 
     destroy: function(callback)
@@ -294,12 +342,12 @@
       }
 
       var wrappedCallback = function(error)
-      {
-        if (!error)
-          model.remove(this);
-        if (callback)
-          callback(error);
-      };
+          {
+            if (!error)
+              model.remove(this);
+            if (callback)
+              callback(error);
+          };
 
       if (model.persistence)
         model.persistence.destroy(this, wrappedCallback);

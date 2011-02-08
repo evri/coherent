@@ -73,38 +73,6 @@ coherent.Model.ClassMethods= {
     
     return null;
   },
-
-  /**
-    coherent.Model.fetch(id, callback)
-    
-    - id: The ID of the model object that should be loaded.
-    
-    This method asks the persistence layer associated with this Model to load an
-    object based on its ID.
-  */
-  fetch: function(id, callback)
-  {
-    var obj= this.find(id);
-    if (obj)
-    {
-      if (callback)
-        callback(obj, null);
-      return;
-    }
-    
-    if (!this.persistence)
-      throw new Error("No persistence layer defined");
-    
-    var _this= this;
-    var wrappedCallback=function(obj, error)
-    {
-      if (!error && obj)
-        _this.collection.push(obj);
-      if (callback)
-        callback(obj, error);
-    };
-    this.persistence.fetch(id, wrappedCallback);
-  },
   
   forEach: function(iterator)
   {
@@ -151,6 +119,53 @@ coherent.Model.ClassMethods= {
       this.add(obj);
     }
     return obj;
+  },
+  
+  /**
+    coherent.Model.fetch(id, callback)
+    
+    - id: The ID of the model object that should be loaded.
+    
+    This method asks the persistence layer associated with this Model to load an
+    object based on its ID.
+  */
+  fetch: function(id, callback)
+  {
+    if (!this.persistence)
+      throw new Error("No persistence layer defined");
+
+    var obj= this.create(id);
+    var d= obj.fetch(callback);
+    
+    if (callback)
+    {
+      d.addCallback(function(obj)
+      {
+        callback(obj, null);
+      });
+      d.addErrorHandler(function(error)
+      {
+        callback(null, error);
+      });
+    }
+    return obj;
+  },
+  
+  /**
+    coherent.Model.prefetch(id)
+    
+    - id: The ID of the model object that should be loaded into the cache
+    
+    This method asks the persistence layer associated with this Model to warm up
+    its cache to include this object. This speeds up applications without incurring
+    the memory overhead of creating all the objects associated with the model.
+   */
+  prefetch: function(id)
+  {
+    if (!this.persistence)
+      throw new Error("No persistence layer defined");
+    
+    this.persistence.prefetch(id);
   }
   
 };
