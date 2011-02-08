@@ -51,8 +51,14 @@ coherent.LocalStorage= Class.create({
     this.writeIndex(index);
   },
   
-  fetch: function(id)
+  prefetch: function(object)
   {
+    return this.fetch(object);
+  },
+  
+  fetch: function(object)
+  {
+    var id= object.id();
     var data= localStorage.getItem(id);
     if (data)
       data= JSON.parse(data);

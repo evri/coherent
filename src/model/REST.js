@@ -68,14 +68,10 @@ define("coherent", function(coherent)
         return data;
       },
 
-      prefetch: function(id)
+      prefetch: function(object)
       {
-        var params = {
-              id: id
-            };
-        params[this.model.uniqueId] = id;
-
-        var url = pathFromStringByReplacingParameters(this.resource, params);
+        var id = object.valueForKey ? object.valueForKey('id') : Object.get('id');
+        var url = pathFromStringByReplacingParameters(this.resource, object);
         var d = XHR.get(url, null, this.XHR_OPTIONS);
 
         function oncomplete(json)
@@ -90,23 +86,19 @@ define("coherent", function(coherent)
         }
         d.addCallback(oncomplete, this);
         d.addErrorHandler(onfailed, this);
-        this.__prefetches[id] = d;
+        this.__prefetches[object.id] = d;
         return d;
       },
 
-      fetch: function(id)
+      fetch: function(object)
       {
         //  Try to use the earlier prefetch deferred value if it's still around
+        var id = object.valueForKey ? object.valueForKey('id') : Object.get('id');
         var d = this.__prefetches[id];
 
         if (!d)
         {
-          var params = {
-                id: id
-              };
-          params[this.model.uniqueId] = id;
-
-          var url = pathFromStringByReplacingParameters(this.resource, params);
+          var url = pathFromStringByReplacingParameters(this.resource, object);
           d = XHR.get(url, null, this.XHR_OPTIONS);
         }
 

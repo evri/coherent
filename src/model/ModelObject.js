@@ -256,9 +256,9 @@
     prefetch: function()
     {
       var model = this.constructor;
-      if (this.isNew())
+      if (!model.persistence || this.isNew())
         return;
-      model.prefetch(this.id());
+      model.persistence.prefetch(this);
     },
     
     fetch: function()
@@ -280,7 +280,7 @@
       
       if (model.persistence && !this.isNew())
       {
-        d= model.persistence.fetch(this.id());
+        d= model.persistence.fetch(this);
         d.addCallback(oncomplete, this);
         this.__fetching= d;
       }
