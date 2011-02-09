@@ -72,7 +72,7 @@ define("coherent", function(coherent)
       {
         var id = object.valueForKey ? object.valueForKey('id') : Object.get('id');
         var url = pathFromStringByReplacingParameters(this.resource, object);
-        var d = XHR.get(url, null, this.XHR_OPTIONS);
+        var d = XHR.get(url, null, this.PREFETCH_XHR_OPTIONS || this.XHR_OPTIONS);
 
         function oncomplete(json)
         {

@@ -96,4 +96,18 @@ var InvalidStateError= coherent.defineError('InvalidStateError');
 
   });
 
+  coherent.Deferred.createCompleted= function(value)
+  {
+    var d= new coherent.Deferred();
+    d.callback(value);
+    return d;
+  }
+
+  coherent.Deferred.createFailed= function(error)
+  {
+    var d= new coherent.Deferred();
+    d.failure(error);
+    return d;
+  }
+  
 })();

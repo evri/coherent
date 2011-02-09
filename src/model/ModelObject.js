@@ -277,18 +277,13 @@
         return this.__fetching;
 
       var d;
+
+      if (!model.persistence || this.isNew())
+        return coherent.Deferred.createCompleted(this);
       
-      if (model.persistence && !this.isNew())
-      {
-        d= model.persistence.fetch(this);
-        d.addCallback(oncomplete, this);
-        this.__fetching= d;
-      }
-      else
-      {
-        d= new coherent.Deferred();
-        d.callback(this);
-      }
+      d= model.persistence.fetch(this);
+      d.addCallback(oncomplete, this);
+      this.__fetching= d;
       return d;
     },
 
