@@ -17,7 +17,8 @@ describe("View", function() {
       this.context= new coherent.KVO({
         html: "This <b>html</b> is wonderful.",
         text: "Bindings are supercool.",
-        visible: false
+        visible: false,
+        data: "Foo"
       });
       coherent.dataModel.setValueForKey(this.context, "context");
     });
@@ -50,5 +51,43 @@ describe("View", function() {
       expect(view.node).toHaveText(updatedText);
     });
    
+    it("should create binding for data attribute", function()
+    {
+      var view= new coherent.View('view', {
+        dataSourceValueBinding: 'context.data'
+      });
+      view.setupBindings();
+      view.init();
+      view.updateBindings();
+      expect(view.bindings).toHaveProperty('dataSourceValue');
+    });
+
+    it("should not create binding for data attribute with an invalid name", function()
+    {
+      var view= new coherent.View('view', {
+        dataBinding: 'context.data',
+        datazBinding: 'context.data'
+      });
+      view.setupBindings();
+      view.init();
+      view.updateBindings();
+      expect(view.bindings).not.toHaveProperty('data');
+      expect(view.bindings).not.toHaveProperty('dataz');
+    });
+    
+    it("should set & update data bindings", function()
+    {
+      var updatedData= "dataValue";
+      var view= new coherent.View('view', {
+        dataSourceValueBinding: 'context.data'
+      });
+      view.setupBindings();
+      view.init();
+      view.updateBindings();
+      
+      expect(view.node).toHaveAttr('data-source-value', 'Foo');
+      this.context.setValueForKey(updatedData, "data");
+      expect(view.node).toHaveAttr('data-source-value', updatedData);
+    });
   });
 });

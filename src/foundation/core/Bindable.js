@@ -186,11 +186,15 @@ coherent.Bindable= Class.create(coherent.KVO, {
     var setter;
     var adaptTree= coherent.KVO.adaptTree;
     var type;
+    var bindingNames= [];
     
     for (p in parameters)
     {
       if (-1!==p.search(/Binding$/))
+      {
+        bindingNames.push(p);
         continue;
+      }
       v= parameters[p];
       type= coherent.typeOf(v);
       if (v && 'function'===type && v.__factoryFn__)
@@ -207,6 +211,7 @@ coherent.Bindable= Class.create(coherent.KVO, {
         this[p]= v;
     }
 
+    this.__bindingNames= bindingNames;
     this.__parameters= parameters;
   },
   
