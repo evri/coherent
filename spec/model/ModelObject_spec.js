@@ -78,23 +78,13 @@ describe("ModelObject", function() {
     it("should invoke callback when saved", function() {
       var object= new this.Model();
       var called= 0;
-      function callback()
+      function callback(data)
       {
         called++;
       }
-      object.save(callback);
+      var d= object.save();
+      d.addCallback(callback);
       expect(called).toBe(1);
-    });
-
-    it("should invoke callback with null when saved successfully", function() {
-      var object= new this.Model();
-      var passed= 0;
-      function callback(error)
-      {
-        passed= error;
-      }
-      object.save(callback);
-      expect(passed).toBe(null);
     });
 
     it("should call validateForSave when saved", function() {

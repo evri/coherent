@@ -206,7 +206,7 @@
         }
         else
         {
-          var contentType = options.responseContentType || xhr.getResponseHeader("Content-Type");
+          var contentType = options.responseContentType || xhr.getResponseHeader("Content-Type") || "";
 
           // Response is JSON
           if (contentType.match(/(?:application\/(?:x-)?json)|(?:text\/json)/))
@@ -225,7 +225,7 @@
             }
           }
           // Response is XML
-          if (contentType.match(/(?:application|text)\/xml/))
+          else if (contentType.match(/(?:application|text)\/xml/))
           {
             result = xhr.responseXML;
           }

@@ -819,8 +819,25 @@ coherent.KVO.Proxy= Class._create(coherent.KVO, {
       return keys[key].get(this);
 
     return this.__original.valueForKey(key);
-  }
+  },
+  
+  addObserverForKeyPath: function(observer, callback, keyPath, context)
+  {
+    var path= keyPath.split('.');
+    if (path[0] in this.__original)
+      this.__original.addObserverForKeyPath(observer, callback, keyPath, context);
+    else
+      this.base(observer, callback, keyPath, context);
+  },
 
+  removeObserverForKeyPath: function(observer, keyPath)
+  {
+    var path= keyPath.split('.');
+    if (path[0] in this.__original)
+      this.__original.removeObserverForKeyPath(observer, keyPath);
+    else
+      this.base(observer, keyPath);
+  }
 });
   
 /** Add KVO methods to an object that doesn't already have them.
