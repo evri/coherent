@@ -311,9 +311,6 @@ coherent.ScrollView= Class.create(coherent.View, {
         
   ontouchend: function(e)
   {
-    if (!this.dragging)
-      return;
-
     var time = e.timeStamp - this.scrollStartTime,
         point = HAS_TOUCH ? e.changedTouches[0] : e,
         target,ev,
@@ -323,9 +320,7 @@ coherent.ScrollView= Class.create(coherent.View, {
         newPositionX = this.x, newPositionY = this.y,
         snap;
 
-    this.dragging = false;
-
-    if (!this.moved)
+    if (!this.moved || !this.dragging)
     {
       this.resetPosition();
 
@@ -333,6 +328,7 @@ coherent.ScrollView= Class.create(coherent.View, {
       {
         // Find the last touched element
         target = point.target;
+        
         while (target.nodeType != 1)
           target = target.parentNode;
 
@@ -349,6 +345,8 @@ coherent.ScrollView= Class.create(coherent.View, {
 
       return;
     }
+
+    this.dragging = false;
 
     // Prevent slingshot effect
     if (!this.pagingEnabled && time > 250)

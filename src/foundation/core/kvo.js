@@ -823,13 +823,15 @@ coherent.KVO.Proxy= Class._create(coherent.KVO, {
   
   addObserverForKeyPath: function(observer, callback, keyPath, context)
   {
-    var path= keyPath.split('.');
-    if (path[0] in this.__original)
+    var path = keyPath.split('.');
+    var first = path[0];
+    
+    if (('representedObject'!==first) && (first in this.__original))
       this.__original.addObserverForKeyPath(observer, callback, keyPath, context);
     else
       this.base(observer, callback, keyPath, context);
   },
-
+  
   removeObserverForKeyPath: function(observer, keyPath)
   {
     var path= keyPath.split('.');
