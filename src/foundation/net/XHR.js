@@ -330,9 +330,28 @@
     if (async)
       xhr.onreadystatechange = readyStateChanged;
 
-    xhr.send(body);
-    xhrSent = true;
+    try
+    {
+      xhr.send(body);
+      xhrSent = true;
+    }
+    catch (e)
+    {
+      if (timeout)
+        window.clearTimeout(timeout);
+      xhr.onreadystatechange = noop;
 
+      var err= new Error("Failed to send XHR");
+      err.error= e;
+      
+      xhr.onreadystatechange = noop;
+      xhr = null;
+      XHR.numberOfActiveRequests--;
+
+      deferred.failure(err);
+      return deferred;
+    }
+    
     if (!async)
       readyStateChanged();
 
