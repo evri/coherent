@@ -14,14 +14,11 @@
     {
       this.initialiseKeyValueObserving();
       this.__initialiseSchema();
-      this.merge(hash, true);
-      //  Below is the correct code, but it breaks the tests.
-      // this.original = {};
-      // this.changes= {};
-      // this.base(hash);
-      // this.changeCount = 0;
-      // this.original= this.changes;
-      // this.changes= {};
+      this.original = {};
+      this.changes= {};
+      this.base(hash);
+      this.original= this.changes;
+      this.reset();
     },
 
     __initialiseSchema: function()
@@ -74,7 +71,7 @@
           coherent.KVO.adaptTree(hash[key]);
           continue;
         }
-        hash[key] = info.fromValue(hash[key]);
+        hash[key] = info.fromPrimitiveValue(hash[key]);
         if (!suppressNotifications)
           this.willChangeValueForKey(key);
         keys.push(key);

@@ -111,13 +111,15 @@ coherent.Model.ClassMethods = {
     if (void(0) != id)
       obj = this.find(id);
 
-    if (obj)
-      obj.merge(hash);
-    else
-    {
-      obj = new this(hash);
+    var missing= !obj;
+    
+    if (missing)
+      obj= new this();
+      
+    obj.merge(hash);
+
+    if (missing)
       this.add(obj);
-    }
     return obj;
   },
 

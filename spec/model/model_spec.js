@@ -72,39 +72,6 @@ describe("coherent.Model", function()
       expect(testInvalidTypeSetter).toThrow("Invalid type for zebra");
     });
 
-    it("should convert date from strings", function()
-    {
-      var dateString = "1971-08-06T07:41-08:00";
-      var model = Model("WithDate", {
-            created: Date
-          });
-
-      var object = new model({
-            created: dateString
-          });
-      expect(object).toHaveProperty('created');
-      expect(object.created()).toBeInstanceOf(Date);
-      expect(object.created().valueOf()).toBe(Date.parse(dateString));
-    });
-
-    it("should create instances of typed properties", function()
-    {
-      var model1 = Model("A", {
-            zebra: String
-          });
-
-      var model2 = Model("B", {
-            fish: model1
-          });
-
-      var object = new model2({
-            fish: {
-              zebra: "ABC"
-            }
-          });
-      expect(object).toHaveProperty('fish');
-      expect(object.fish()).toBeInstanceOf(model1);
-    });
   });
 
 

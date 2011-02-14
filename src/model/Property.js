@@ -24,7 +24,7 @@ coherent.Model.Property = Class._create({
         return value instanceof this.type;
     },
 
-    fromValue: function(value)
+    fromPrimitiveValue: function(value)
     {
       if (!this.type || this.isValidType(value))
         return value;

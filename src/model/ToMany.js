@@ -35,7 +35,7 @@ coherent.Model.ToMany = Class._create(coherent.Model.Property, {
       return valid;
     },
 
-    fromValue: function(array)
+    fromPrimitiveValue: function(array)
     {
       if (!this.type)
         return array;

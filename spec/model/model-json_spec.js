@@ -99,20 +99,43 @@ describe("Model support for JSON", function()
           nack: Model.Property({
             type: Number,
             key: "feegle"
-          }));
+          })
         });
-    
-    var stuff= new Stuff();
+
+    var stuff = new Stuff();
     stuff.setWiggle("wiggle");
-    stuff.setNack("feegle");
-    
-    var json = JSON.parse(JSON.stringify(p));
-    
+    stuff.setNack(50);
+
+    var json = JSON.parse(JSON.stringify(stuff));
+
     expect(json).not.toHaveProperty("wiggle");
     expect(json).toHaveProperty("waggle");
     expect(json.waggle).toBe("wiggle");
-    
+
     expect(json).not.toHaveProperty("nack");
     expect(json).toHaveProperty("feegle");
-    expect(json.feegle).toBe("feegle");
+    expect(json.feegle).toBe(50);
   });
+
+  it("should create from external key names", function()
+  {
+    var Stuff = Model("Stuff", {
+          wiggle: Model.Property({
+            type: String,
+            key: "waggle"
+          }),
+          nack: Model.Property({
+            type: Number,
+            key: "feegle"
+          })
+        });
+
+    var stuff = Stuff.create({
+          waggle: "number 1",
+          feegle: 20
+        });
+    
+    expect(stuff.wiggle()).toBe("number 1");
+    expect(stuff.nack()).toBe(20);
+  });
+});

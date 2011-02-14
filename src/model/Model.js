@@ -61,7 +61,8 @@
 
       if (value instanceof Property)
       {
-        value.key = key;
+        if (!value.key)
+          value.key = key;
 
         if (USE_PROPERTIES)
         {
