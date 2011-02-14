@@ -14,11 +14,12 @@
     {
       this.initialiseKeyValueObserving();
       this.__initialiseSchema();
-      this.original = {};
-      this.changes= {};
-      this.base(hash);
-      this.original= this.changes;
-      this.reset();
+      this.merge(hash, true);
+      // this.original = {};
+      // this.changes= {};
+      // this.base(hash);
+      // this.original= this.changes;
+      // this.reset();
     },
 
     __initialiseSchema: function()
@@ -168,8 +169,8 @@
     primitiveValueForKey: function(key)
     {
       var info = this.constructor.schema[key];
-      key= (info && info.key) || key;
-      
+      key = (info && info.key) || key;
+
       if (key in this.changes)
         return this.changes[key];
       else if (key in this.original)
@@ -189,7 +190,7 @@
       if (info && !info.isValidType(value))
         throw new Error("Invalid type for " + key);
 
-      key= (info && info.key) || key;
+      key = (info && info.key) || key;
 
       if (this.original[key] === value)
       {
@@ -243,7 +244,7 @@
         info = schema[p];
         if (info.composite || !(info.type && info.type.prototype instanceof coherent.ModelObject))
           continue;
-        key= info.key||p;
+        key = info.key || p;
         value = json[key];
         if (!value)
           continue;
