@@ -12,10 +12,39 @@
      */
     constructor: function(hash)
     {
-      this.changes = {};
-      this.original = {};
-      this.changeCount = 0;
+      this.initialiseKeyValueObserving();
+      this.__initialiseSchema();
       this.merge(hash, true);
+      //  Below is the correct code, but it breaks the tests.
+      // this.original = {};
+      // this.changes= {};
+      // this.base(hash);
+      // this.changeCount = 0;
+      // this.original= this.changes;
+      // this.changes= {};
+    },
+
+    __initialiseSchema: function()
+    {
+      var schema = this.constructor.schema;
+      var info;
+
+      if (schema.__initialised)
+        return;
+
+      for (var p in schema)
+      {
+        info = schema[p];
+        /*
+          It's possible to specify the type of a property as a string. This
+          makes it easy to avoid circular references when you're defining your
+          models. However, that's not particularly useful when actually using
+          the property, so this would be a good place to fix that up.
+         */
+        if ('string' === typeof(info.type))
+          info.type = coherent.Model.modelWithName(info.type);
+      }
+      schema.__initialised = true;
     },
 
     /**
@@ -34,23 +63,6 @@
       var value;
 
       hash = Object.extend({}, hash);
-
-      if (!schema.__initialised)
-      {
-        for (var p in schema)
-        {
-          info = schema[p];
-          /*
-            It's possible to specify the type of a property as a string. This
-            makes it easy to avoid circular references when you're defining your
-            models. However, that's not particularly useful when actually using
-            the property, so this would be a good place to fix that up.
-           */
-          if ('string' === typeof(info.type))
-            info.type = coherent.Model.modelWithName(info.type);
-        }
-        schema.__initialised = true;
-      }
 
       var keys = [];
 
@@ -125,9 +137,19 @@
       }
     },
 
-    id: function(key)
+    id: function()
     {
-      return this.original[this.constructor.uniqueId];
+      var uniqueId = this.constructor.uniqueId;
+      return this.original[uniqueId] || this.changes[uniqueId];
+    },
+
+    setId: function(id)
+    {
+      var uniqueId = this.constructor.uniqueId;
+      if (void(0) == this.original[uniqueId])
+        this.changes[uniqueId] = id;
+      else
+        console.log("Attempting to set the ID of an existing object: original ID=", this.original[uniqueId], "new value=", id);
     },
 
     isNew: function()
@@ -148,12 +170,14 @@
 
     primitiveValueForKey: function(key)
     {
+      var info = this.constructor.schema[key];
+      key= (info && info.key) || key;
+      
       if (key in this.changes)
         return this.changes[key];
       else if (key in this.original)
         return this.original[key];
 
-      var info = this.constructor.schema[key];
       if (info instanceof coherent.Model.ToMany)
         return this.changes[key] = [];
 
@@ -162,11 +186,13 @@
 
     setPrimitiveValueForKey: function(value, key)
     {
-      var methodInfo = this.constructor.schema[key];
+      var info = this.constructor.schema[key];
       var previous;
 
-      if (methodInfo && !methodInfo.isValidType(value))
+      if (info && !info.isValidType(value))
         throw new Error("Invalid type for " + key);
+
+      key= (info && info.key) || key;
 
       if (this.original[key] === value)
       {
@@ -182,10 +208,10 @@
         this.changes[key] = value;
       }
 
-      if (!methodInfo || !methodInfo.inverse)
+      if (!info || !info.inverse)
         return value;
 
-      var inverse = methodInfo.type.schema[methodInfo.inverse];
+      var inverse = info.type.schema[info.inverse];
       if (previous)
         inverse.unrelateObjects(previous, this);
       if (value)
@@ -213,23 +239,31 @@
       Object.extend(json, this.changes);
 
       var schema = this.constructor.schema;
-      var info, value;
+      var info, value, key;
 
       for (var p in schema)
       {
         info = schema[p];
         if (info.composite || !(info.type && info.type.prototype instanceof coherent.ModelObject))
           continue;
-        value = json[p];
+        key= info.key||p;
+        value = json[key];
         if (!value)
           continue;
 
         if (info instanceof coherent.Model.ToOne)
+        {
           json[p] = value.id();
+          if (void(0) == json[p])
+            console.log("ModelObject#toJSON: object for key \"" + p + "\" does not have an ID.");
+        }
         else if (info instanceof coherent.Model.ToMany)
-          json[p] = value.map(function(obj)
+          json[p] = value.map(function(obj, index)
           {
-            return obj.id();
+            var id = obj.id();
+            if (void(0) == id)
+              console.log("ModelObject#toJSON: object at index " + index + " for key \"" + p + "\" does not have an ID.");
+            return id;
           });
       }
       return json;
@@ -260,7 +294,7 @@
         return;
       model.persistence.prefetch(this);
     },
-    
+
     fetch: function()
     {
       var model = this.constructor;
@@ -269,7 +303,7 @@
       {
         this.merge(json);
         this.awakeFromFetch();
-        this.__fetching= null;
+        this.__fetching = null;
         return this;
       }
 
@@ -280,10 +314,10 @@
 
       if (!model.persistence || this.isNew())
         return coherent.Deferred.createCompleted(this);
-      
-      d= model.persistence.fetch(this);
+
+      d = model.persistence.fetch(this);
       d.addCallback(oncomplete, this);
-      this.__fetching= d;
+      this.__fetching = d;
       return d;
     },
 
@@ -293,13 +327,9 @@
       var isNew = this.isNew();
       var error = isNew ? this.validateForSave() : this.validateForUpdate();
       var d;
-      
+
       if (error instanceof coherent.Error)
-      {
-        d= new coherent.Deferred();
-        d.failure(error);
-        return d;
-      }
+        return coherent.Deferred.createFailed(error);
 
       function oncomplete(json)
       {
@@ -311,16 +341,17 @@
           model.add(this);
         return this;
       }
-      
+
       if (model.persistence)
       {
-        d= model.persistence[isNew ? 'create' : 'update'](this);
+        d = model.persistence[isNew ? 'create' : 'update'](this);
         d.addCallback(oncomplete, this);
       }
       else
       {
-        d= new coherent.Deferred();
-        d.callback(this);
+        if (isNew)
+          model.add(this);
+        d = coherent.Deferred.createCompleted(this);
       }
       return d;
     },

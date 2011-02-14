@@ -9,7 +9,6 @@ describe("ModelObject", function() {
 
     it("should initialise values", function() {
       var object= new this.Model({ abc: 123 });
-      expect(object).not.toHaveProperty('abc');
       expect(object.valueForKey('abc')).toBe(123);
     });
   
@@ -103,7 +102,8 @@ describe("ModelObject", function() {
       {
         passed= error;
       }
-      object.save(callback);
+      var d= object.save();
+      d.addErrorHandler(callback);
       expect(object.validateForSave).toHaveBeenCalled();
       expect(passed).toBeInstanceOf(coherent.Error);
     });

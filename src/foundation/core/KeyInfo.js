@@ -43,15 +43,8 @@ coherent.KeyInfo= Class._create({
     this.validator= info.methods.validate;
     // this.methods= info.methods;
     this.properties= info.properties;
+    this.mutable= info.mutable;
     
-    //  Obviously, a key is mutable if there's a setter defined, but
-    //  if the key has neither getter or setter methods, then I
-    //  access it via direct property access and the key is mutable
-    this.mutable= ((this.setter||!this.getter)?true:false);
-
-    if (!this.getter && !this.setter)
-      this.mutable= true;
-
     //  changeCount is the number of times willChangeValueForKey has been
     //  called. This is decremented for each call to didChangeValueForKey.
     //  When this value returns to 0, a change notification is issued. The
@@ -329,6 +322,7 @@ coherent.KeyInfo.getInfoForKeyOnObject= function(key, object)
   return classInfo.methods[key]= {
     value: value,
     methods: methods,
+    mutable: !!methods.set || !methods.get,
     properties: properties
   };
 }

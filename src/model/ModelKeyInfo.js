@@ -32,18 +32,16 @@ coherent.ModelKeyInfo= Class._create({
    */
   constructor: function(key, obj)
   {
-    var classInfo= coherent.KVO.getClassInfoForObject(obj);
-    var classKeyInfo= (classInfo && classInfo.methods[key])||{};
+    var classKeyInfo= coherent.KeyInfo.getInfoForKeyOnObject(key, obj);
+
+    this.__uid= [key, coherent.generateUid()].join('_');
 
     this.key= key;
     this.changeCount=0;
-    this.getter= classKeyInfo.getter;
-    this.setter= classKeyInfo.setter;
-    
-    if ('mutable' in classKeyInfo)
-      this.mutable= classKeyInfo.mutable;
-    else
-      this.mutable= ('function'!==typeof(obj[key]) || !!obj['set'+key.titleCase()]);
+    this.getter= classKeyInfo.methods.get;
+    this.setter= classKeyInfo.methods.set;
+    this.validator= classKeyInfo.methods.validate;
+    this.mutable= classKeyInfo.mutable;
   },
   
   /** Retrieve the value of this key for a given object. If the value can have

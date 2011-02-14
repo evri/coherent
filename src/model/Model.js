@@ -86,10 +86,12 @@
         }
 
         classInfo.methods[key] = {
-          getter: value.get,
-          setter: value.set,
-          mutable: !value.get || !! value.set,
-          validator: value.validate
+          methods: {
+            get: value.get,
+            set: value.set,
+            validate: value.validate
+          },
+          mutable: !value.get || !! value.set
         };
 
         schema[key] = value;
@@ -128,10 +130,12 @@
             primitive: primitive
           });
         classInfo.methods[key] = {
-          getter: getter,
-          setter: setter,
-          mutable: true,
-          validator: decl[validateKey]
+          methods: {
+            get: getter,
+            set: setter,
+            validate: decl[validateKey]
+          },
+          mutable: true
         };
         continue;
       }
@@ -152,10 +156,12 @@
         });
 
       classInfo.methods[key] = {
-        setter: setter,
-        getter: value,
-        mutable: true,
-        validator: decl[validateKey]
+        methods: {
+          get: value,
+          set: setter,
+          validate: decl[validateKey]
+        },
+        mutable: true
       };
 
     }

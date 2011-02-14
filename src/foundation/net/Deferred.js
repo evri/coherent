@@ -25,7 +25,7 @@ var InvalidStateError= coherent.defineError('InvalidStateError');
     {
       while (this._callbacks.length)
       {
-        this._status= (result instanceof Error)?FAILURE:SUCCESS;
+        this._status= (result instanceof Error || result instanceof coherent.Error)?FAILURE:SUCCESS;
         this._result= result;
         
         var methods= this._callbacks.shift();

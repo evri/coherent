@@ -26,7 +26,7 @@ coherent.Model.Property = Class._create({
 
     fromValue: function(value)
     {
-      if (!this.type)
+      if (!this.type || this.isValidType(value))
         return value;
 
       if (null === value)
@@ -47,5 +47,6 @@ coherent.Model.Property = Class._create({
   });
 
 coherent.Model.Property.DEFAULTS = {
-  composite: true
+  composite: true,
+  persistent: true
 };
