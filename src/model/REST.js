@@ -40,32 +40,26 @@ define("coherent", function(coherent)
       responseContentType: 'text/plain'
     },
 
-      constructor: function(model, params)
-      {
-        this.model = model;
-        this.__prefetches = {};
-        Object.extend(this, params);
-      },
-
-      /**
-        coherent.REST#extractObject(json) -> Object
-      
-        - json (Object): The data retrieve from the server.
-      
-        Sometimes the server doesn't return the resource directly, but wraps it in
-        an envelope or you need to perform some other processing before it's ready
-        for passing to the Model's constructor. Override this method (usually in
-        the parameters when you're defining the REST resource) and you can massage
-        the data.
-       */
-      extractObject: function(json)
-      {
-        return json;
-      },
-
-    cachePrefetch: function(id, data)
+    constructor: function(model, params)
     {
-      return data;
+      this.model = model;
+      Object.extend(this, params);
+    },
+
+    /**
+      coherent.REST#extractObject(json) -> Object
+    
+      - json (Object): The data retrieve from the server.
+    
+      Sometimes the server doesn't return the resource directly, but wraps it in
+      an envelope or you need to perform some other processing before it's ready
+      for passing to the Model's constructor. Override this method (usually in
+      the parameters when you're defining the REST resource) and you can massage
+      the data.
+     */
+    extractObject: function(json)
+    {
+      return json;
     },
 
     prefetch: function(object)
@@ -77,7 +71,6 @@ define("coherent", function(coherent)
 
     fetch: function(object)
     {
-      //  Try to use the earlier prefetch deferred value if it's still around
       var id = object.valueForKey ? object.valueForKey('id') : Object.get('id');
       var url = pathFromStringByReplacingParameters(this.resource, object);
       var d = XHR.get(url, null, this.XHR_OPTIONS);
