@@ -1,7 +1,8 @@
 /*jsl:import View.js*/
 
 
-/** A View for images. In addition to the bindings exposed by Views,
+/**
+  A View for images. In addition to the bindings exposed by Views,
   coherent.Images have a src binding that represents the URL of the
   image to display. Images also have a width and height binding to
   reflect those properties as well.
