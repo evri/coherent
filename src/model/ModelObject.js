@@ -29,9 +29,16 @@
       if (schema.__initialised)
         return;
 
+      schema.__keyTranslation= {};
+      
       for (var p in schema)
       {
         info = schema[p];
+        
+        //  Enable looking up the internal key name based on the external key
+        if (info.key !== p)
+          schema.__keyTranslation[info.key]= p;
+          
         /*
           It's possible to specify the type of a property as a string. This
           makes it easy to avoid circular references when you're defining your
@@ -55,17 +62,17 @@
      */
     merge: function(hash, suppressNotifications)
     {
-      var schema = this.constructor.schema;
-      var info;
-      var value;
-
+      var schema = this.constructor.schema,
+          keyTranslation=  schema.__keyTranslation,
+          keys= [],
+          info,
+          value;
+      
       hash = Object.extend({}, hash);
-
-      var keys = [];
 
       for (var key in hash)
       {
-        info = schema[key];
+        info = schema[keyTranslation[key] || key];
         if (!info)
         {
           coherent.KVO.adaptTree(hash[key]);
