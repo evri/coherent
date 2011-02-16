@@ -88,6 +88,14 @@ coherent.Image= Class.create(coherent.View, {
       newSrc= 'about:blank';
 
     var node= this.node;
+
+    if (node.nodeName !== "IMG") {
+      node.style.backgroundImage = "url(" + newSrc + ")";
+      return;
+      // Can't observe load events on background images, so none of the below
+      // logic should matter.
+    }
+
     var originalSrc= node.src;
     
     /*  Because Safari 3 & 4 don't fire the onload event if the new src is
