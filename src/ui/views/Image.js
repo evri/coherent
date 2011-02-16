@@ -75,6 +75,7 @@ coherent.Image = Class.create(coherent.View, {
   src: function()
   {
     var src;
+    var node= this.node;
     
     if ("IMG" !== node.tagName)
     {
@@ -87,7 +88,8 @@ coherent.Image = Class.create(coherent.View, {
         src= src.slice(1, -1);
       return src;
     }
-    src = this.node.src;
+    
+    src = node.src;
     return ('about:blank' === src) ? null : src;
   },
 
