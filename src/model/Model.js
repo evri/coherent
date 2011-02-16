@@ -54,6 +54,12 @@
 
     for (var key in decl)
     {
+      if ('id'===key)
+      {
+        console.log("Declaration of model '"+name+"' includes 'id' which is reserved");
+        continue;
+      }
+
       setKey = 'set' + key.titleCase();
       validateKey = 'validate' + key.titleCase();
 
