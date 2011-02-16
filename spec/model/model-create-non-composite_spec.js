@@ -30,7 +30,7 @@ describe("Model create", function()
 
   it("should create a new instance with nested models", function()
   {
-    var m2 = this.M2.create({
+    var m2 = this.M2.fromJSON({
         id: "m2",
         name: "Zebra",
         m1: {
@@ -49,7 +49,7 @@ describe("Model create", function()
 
   it("should nested models should be findable by ID", function()
   {
-    var m2 = this.M2.create({
+    var m2 = this.M2.fromJSON({
         id: "m2",
         name: "Zebra",
         m1: {
@@ -68,7 +68,7 @@ describe("Model create", function()
 
   it("should update nested models with the same ID", function()
   {
-    var m1 = this.M1.create({
+    var m1 = this.M1.fromJSON({
         id: "m1",
         name: "Original M1"
       });
@@ -76,7 +76,7 @@ describe("Model create", function()
     expect(m1).not.toBeNull();
     expect(m1.name()).toBe("Original M1");
 
-    var m2 = this.M2.create({
+    var m2 = this.M2.fromJSON({
         id: "m2",
         name: "Zebra",
         m1: {
@@ -93,7 +93,7 @@ describe("Model create", function()
 
   it("should find nested models when given only the id", function()
   {
-    var m1 = this.M1.create({
+    var m1 = this.M1.fromJSON({
         id: "m1",
         name: "Original M1"
       });
@@ -101,7 +101,7 @@ describe("Model create", function()
     expect(m1).not.toBeNull();
     expect(m1.name()).toBe("Original M1");
 
-    var m2 = this.M2.create({
+    var m2 = this.M2.fromJSON({
         id: "m2",
         name: "Zebra",
         m1: "m1"
@@ -113,7 +113,7 @@ describe("Model create", function()
 
   it("should create new instances for to many relations", function()
   {
-    var m3 = this.M3.create({
+    var m3 = this.M3.fromJSON({
         name: "M3 instance",
         m1s: [{
               id: "m1-1",
@@ -143,16 +143,16 @@ describe("Model create", function()
 
   it("should link to-many related objects using just an id", function()
   {
-    var m1_1 = this.M1.create({
+    var m1_1 = this.M1.fromJSON({
         id: "m1-1",
         name: "m1-1 original"
       });
-    var m1_2 = this.M1.create({
+    var m1_2 = this.M1.fromJSON({
         id: "m1-2",
         name: "m1-2 original"
       });
 
-    var m3 = this.M3.create({
+    var m3 = this.M3.fromJSON({
         name: "M3 instance",
         m1s: ["m1-1", "m1-2"]
       });
@@ -166,16 +166,16 @@ describe("Model create", function()
 
   it("should update existing to-many related objects", function()
   {
-    var m1_1 = this.M1.create({
+    var m1_1 = this.M1.fromJSON({
         id: "m1-1",
         name: "m1-1 original"
       });
-    var m1_2 = this.M1.create({
+    var m1_2 = this.M1.fromJSON({
         id: "m1-2",
         name: "m1-2 original"
       });
 
-    var m3 = this.M3.create({
+    var m3 = this.M3.fromJSON({
         name: "M3 instance",
         m1s: [{
               id: "m1-1",

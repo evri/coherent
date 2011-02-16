@@ -54,8 +54,8 @@ coherent.Model.ToMany = Class._create(coherent.Model.Property, {
         value = new Date(Date.parse(value));
       else if (!this.primitive && value instanceof this.type)
         continue;
-      else if (!this.composite)
-        value = this.type.create(value);
+      else if (!this.composite || this.type.modelName)
+        value = this.type.fromJSON(value);
       else
         value = new this.type(value);
 

@@ -14,12 +14,11 @@
     {
       this.initialiseKeyValueObserving();
       this.__initialiseSchema();
-      this.merge(hash, true);
-      // this.original = {};
-      // this.changes= {};
-      // this.base(hash);
-      // this.original= this.changes;
-      // this.reset();
+      this.original = {};
+      this.changes= {};
+      this.base(hash);
+      this.original= this.changes;
+      this.reset();
     },
 
     __initialiseSchema: function()

@@ -7,4 +7,6 @@
 /*jsl:import model/Property.js*/
 /*jsl:import model/ToOne.js*/
 /*jsl:import model/ToMany.js*/
+/*jsl:import model/Context.js*/
+
 

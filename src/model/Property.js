@@ -33,8 +33,8 @@ coherent.Model.Property = Class._create({
         value = new (this.type)();
       else if (Date === this.type)
         value = new Date(Date.parse(value));
-      else if (!this.composite)
-        value = this.type.create(value);
+      else if (!this.composite || this.type.modelName)
+        value = this.type.fromJSON(value);
       else
         value = new (this.type)(value);
 

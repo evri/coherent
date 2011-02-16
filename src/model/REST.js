@@ -36,8 +36,8 @@ define("coherent", function(coherent)
       responseContentType: 'application/json'
     },
     PREFETCH_OPTIONS: {
-      allowCache: false,
-      responseContentType: 'application/json'
+      allowCache: true,
+      responseContentType: 'text/plain'
     },
 
     constructor: function(model, params)

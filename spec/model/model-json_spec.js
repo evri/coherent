@@ -130,7 +130,7 @@ describe("Model support for JSON", function()
           })
         });
 
-    var stuff = Stuff.create({
+    var stuff = Stuff.fromJSON({
           waggle: "number 1",
           feegle: 20
         });

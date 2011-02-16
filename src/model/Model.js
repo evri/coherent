@@ -188,6 +188,8 @@
 
   coherent.Model.USE_PROPERTIES = false;
 
+  coherent.Model.models = models;
+  
   coherent.Model.__resetModels = function()
   {
     models = {};

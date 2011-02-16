@@ -94,7 +94,7 @@ coherent.Model.ClassMethods = {
     return this.collection.slice().sort(sortFunction);
   },
 
-  create: function(hash)
+  fromJSON: function(hash)
   {
     var id;
 
@@ -118,7 +118,7 @@ coherent.Model.ClassMethods = {
       
     obj.merge(hash);
 
-    if (missing)
+    if (missing && void(0)!=obj.id())
       this.add(obj);
     return obj;
   },
@@ -136,7 +136,7 @@ coherent.Model.ClassMethods = {
     if (!this.persistence)
       throw new Error("No persistence layer defined");
 
-    var obj = this.create(id);
+    var obj = this.fromJSON(id);
     var d = obj.fetch();
 
     if (callback)
