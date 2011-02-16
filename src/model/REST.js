@@ -40,28 +40,28 @@ define("coherent", function(coherent)
       responseContentType: 'text/plain'
     },
 
-    constructor: function(model, params)
-    {
-      this.model = model;
-      this.__prefetches = {};
-      Object.extend(this, params);
-    },
+      constructor: function(model, params)
+      {
+        this.model = model;
+        this.__prefetches = {};
+        Object.extend(this, params);
+      },
 
-    /**
-      coherent.REST#extractObject(json) -> Object
-    
-      - json (Object): The data retrieve from the server.
-    
-      Sometimes the server doesn't return the resource directly, but wraps it in
-      an envelope or you need to perform some other processing before it's ready
-      for passing to the Model's constructor. Override this method (usually in
-      the parameters when you're defining the REST resource) and you can massage
-      the data.
-     */
-    extractObject: function(json)
-    {
-      return json;
-    },
+      /**
+        coherent.REST#extractObject(json) -> Object
+      
+        - json (Object): The data retrieve from the server.
+      
+        Sometimes the server doesn't return the resource directly, but wraps it in
+        an envelope or you need to perform some other processing before it's ready
+        for passing to the Model's constructor. Override this method (usually in
+        the parameters when you're defining the REST resource) and you can massage
+        the data.
+       */
+      extractObject: function(json)
+      {
+        return json;
+      },
 
     cachePrefetch: function(id, data)
     {
