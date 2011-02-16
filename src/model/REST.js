@@ -74,19 +74,19 @@ define("coherent", function(coherent)
         var url = pathFromStringByReplacingParameters(this.resource, object);
         var d = XHR.get(url, null, this.PREFETCH_XHR_OPTIONS || this.XHR_OPTIONS);
 
-        function oncomplete(json)
-        {
-          delete this.__prefetches[id];
-          return this.cachePrefetch(id, json);
-        }
-        function onfailed(error)
-        {
-          delete this.__prefetches[id];
-          return error;
-        }
-        d.addCallback(oncomplete, this);
-        d.addErrorHandler(onfailed, this);
-        this.__prefetches[object.id] = d;
+        // function oncomplete(json)
+        // {
+        //   delete this.__prefetches[id];
+        //   return this.cachePrefetch(id, json);
+        // }
+        // function onfailed(error)
+        // {
+        //   delete this.__prefetches[id];
+        //   return error;
+        // }
+        // d.addCallback(oncomplete, this);
+        // d.addErrorHandler(onfailed, this);
+        // this.__prefetches[object.id] = d;
         return d;
       },
 
