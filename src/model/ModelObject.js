@@ -19,6 +19,7 @@
       this.base(hash);
       this.original= this.changes;
       this.reset();
+      this.__fault= true;
     },
 
     __initialiseSchema: function()
@@ -251,8 +252,14 @@
         if (info.composite || !(info.type && info.type.prototype instanceof coherent.ModelObject))
           continue;
         key = info.key || p;
+        if (!info.persistent)
+        {
+          delete json[key];
+          continue;
+        }
+        
         value = json[key];
-        if (!value)
+        if (void(0)==value)
           continue;
 
         if (info instanceof coherent.Model.ToOne)
@@ -303,11 +310,15 @@
     {
       var model = this.constructor;
 
+      if (!this.__fault)
+        return coherent.Deferred.createCompleted(this);
+        
       function oncomplete(json)
       {
         this.merge(json);
         this.awakeFromFetch();
         this.__fetching = null;
+        this.__fault= false;
         return this;
       }
 
