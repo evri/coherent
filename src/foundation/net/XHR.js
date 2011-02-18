@@ -406,3 +406,5 @@
 
   coherent.__export('XHR');
 })();
+
+Object.markMethods(XHR);

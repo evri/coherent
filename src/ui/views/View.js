@@ -1045,9 +1045,16 @@ coherent.View = Class.create(coherent.Responder, {
       return;
     }
 
-    var target = this.nextResponder();
-    if (target)
-      target.ontouchstart(event);
+    if (!this.action || !this.sendActionOn.containsObject('touchstart'))
+    {
+      var target = this.nextResponder();
+      if (target)
+        target.ontouchstart(event);
+      return;
+    }
+
+    this.sendAction();
+    Event.stop(event);
   },
 
   ontouchmove: function(event)

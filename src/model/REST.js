@@ -43,6 +43,7 @@ define("coherent", function(coherent)
     constructor: function(model, params)
     {
       this.model = model;
+      this.__fetching= {};
       Object.extend(this, params);
     },
 
@@ -73,7 +74,19 @@ define("coherent", function(coherent)
     {
       var id = object.valueForKey ? object.valueForKey('id') : Object.get('id');
       var url = pathFromStringByReplacingParameters(this.resource, object);
-      var d = XHR.get(url, null, this.XHR_OPTIONS);
+      
+      var d= this.__fetching[id];
+      if (d)
+        return d;
+        
+      this.__fetching[id]= d = XHR.get(url, null, this.XHR_OPTIONS);
+      
+      function removeFetching(stuff)
+      {
+        delete this.__fetching[id];
+        return stuff;
+      }
+      d.addMethods(removeFetching, removeFetching, this);
       d.addCallback(this.extractObject, this);
       return d;
     },
