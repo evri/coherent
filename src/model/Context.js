@@ -12,11 +12,15 @@ coherent.Context = Class.create({
   constructor: function(parentContext)
   {
     this.parentContext = parentContext;
+    
+    var models= coherent.Model.models;
+    
     //  create properties for each model
-    for (var p in coherent.Model.models)
+    for (var p in models)
     {
       var m = {
             context: this,
+            type: modes[p],
             name: p
           };
       this[p] = Object.extend(m, coherent.Model.ClassMethods);

@@ -20,6 +20,7 @@
       this.original= this.changes;
       this.reset();
       this.__fault= true;
+      this.__context= null;
     },
 
     __initialiseSchema: function()

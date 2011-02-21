@@ -94,6 +94,37 @@ coherent.Model.ClassMethods = {
     return this.collection.slice().sort(sortFunction);
   },
 
+  create: function(hash)
+  {
+    var id;
+
+    if ('object' !== typeof(hash))
+    {
+      id = hash;
+      (hash = {})[this.uniqueId] = id;
+    }
+    else
+      id = hash[this.uniqueId];
+
+    var obj;
+
+    if (void(0) != id)
+      obj = this.find(id);
+
+    var missing= !obj;
+    
+    if (missing)
+    {
+      obj= new (this.type)();
+      obj.__context= this.context;
+    }
+    obj.setValuesFromDictionary(hash);
+
+    if (missing && void(0)!=obj.id())
+      this.add(obj);
+    return obj;
+  },
+    
   fromJSON: function(hash)
   {
     var id;
