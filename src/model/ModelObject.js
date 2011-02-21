@@ -208,13 +208,19 @@
       }
       else
       {
-        if (!(key in this.changes))
+        if (key in this.changes)
+        {
+          previous = this.changes[key];
+        }
+        else
+        {
+          previous = this.original[key];
           this.changeCount++;
-        previous = key in this.changes ? this.changes[key] : this.original[key];
-        this.changes[key] = value;
+        }
+        this.changes[key]= value;
       }
 
-      if (!info || !info.inverse)
+      if (!info || !info.inverse || previous===value)
         return value;
 
       var inverse = info.type.schema[info.inverse];

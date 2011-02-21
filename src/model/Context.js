@@ -20,7 +20,7 @@ coherent.Context = Class.create({
     {
       var m = {
             context: this,
-            type: modes[p],
+            type: models[p],
             name: p
           };
       this[p] = Object.extend(m, coherent.Model.ClassMethods);
