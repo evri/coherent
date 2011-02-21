@@ -7,7 +7,7 @@ describe("coherent.Model support for properties", function()
     this.USE_PROPERTIES = coherent.Model.USE_PROPERTIES;
 
     coherent.Model.USE_PROPERTIES = true;
-    this.Model = Model("Model", {
+    this.Model = Model.create("Model", {
       name: String,
       age: Number,
 

@@ -8,7 +8,7 @@ describe("Model support for JSON", function()
 
   it("should serialise to JSON", function()
   {
-    var M = Model("Foo", {
+    var M = Model.create("Foo", {
           name: String,
           age: Number
         });
@@ -25,12 +25,12 @@ describe("Model support for JSON", function()
 
   it("should add composite subobjects", function()
   {
-    var Car = Model("Car", {
+    var Car = Model.create("Car", {
           make: String,
           model: String,
           year: Number
         }),
-        Person = Model("Person", {
+        Person = Model.create("Person", {
           name: String,
           car: Model.ToOne({
             type: "Car",
@@ -58,12 +58,12 @@ describe("Model support for JSON", function()
 
   it("should add id of non-composite subobjects", function()
   {
-    var Car = Model("Car", {
+    var Car = Model.create("Car", {
           make: String,
           model: String,
           year: Number
         }),
-        Person = Model("Person", {
+        Person = Model.create("Person", {
           name: String,
           car: Model.ToOne({
             type: "Car",
@@ -91,7 +91,7 @@ describe("Model support for JSON", function()
 
   it("should map to external key names", function()
   {
-    var Stuff = Model("Stuff", {
+    var Stuff = Model.create("Stuff", {
           wiggle: Model.Property({
             type: String,
             key: "waggle"
@@ -119,7 +119,7 @@ describe("Model support for JSON", function()
 
   it("should create from external key names", function()
   {
-    var Stuff = Model("Stuff", {
+    var Stuff = Model.create("Stuff", {
           wiggle: Model.Property({
             type: String,
             key: "waggle"

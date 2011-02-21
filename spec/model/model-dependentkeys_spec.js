@@ -8,7 +8,7 @@ describe("Model dependent keys", function()
 
   it("should create model with keyDependencies", function()
   {
-    var M = Model("Foo", {
+    var M = Model.create("Foo", {
           firstName: Model.Property({
             type: String
           }),

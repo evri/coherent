@@ -5,7 +5,7 @@ describe("Model ToMany relations", function()
   {
     coherent.Model.__resetModels();
 
-    this.Person = Model("Person", {
+    this.Person = Model.create("Person", {
       cars: Model.ToMany(
       {
         type: "Car",
@@ -13,7 +13,7 @@ describe("Model ToMany relations", function()
       })
     });
 
-    this.Car = Model("Car", {
+    this.Car = Model.create("Car", {
       owner: Model.ToOne(
       {
         type: "Person",

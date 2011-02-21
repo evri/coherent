@@ -7,7 +7,7 @@ describe("ModelObject change count", function()
 
   it("should update changeCount when setting a property", function()
   {
-    var M = Model("Foo", {
+    var M = Model.create("Foo", {
           name: String
         });
 

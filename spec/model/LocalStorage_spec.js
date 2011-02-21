@@ -3,7 +3,7 @@ describe("LocalStorage", function() {
   beforeEach(function(){
     coherent.Model.__resetModels();
     
-    this.Model= Model("foo", {
+    this.Model= Model.create("foo", {
       persistence: LocalStorage
     });
     

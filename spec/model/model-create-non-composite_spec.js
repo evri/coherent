@@ -5,12 +5,12 @@ describe("Model create", function()
   {
     coherent.Model.__resetModels();
 
-    this.M1 = Model("Model1", {
+    this.M1 = Model.create("Model1", {
       name: String,
       age: Number
     });
 
-    this.M2 = Model("Model2", {
+    this.M2 = Model.create("Model2", {
       name: String,
       m1: Model.ToOne({
           type: "Model1",
@@ -18,7 +18,7 @@ describe("Model create", function()
         })
     });
 
-    this.M3 = Model("Model3", {
+    this.M3 = Model.create("Model3", {
       name: String,
       m1s: Model.ToMany({
           type: "Model1",

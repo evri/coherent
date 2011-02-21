@@ -2,7 +2,7 @@ describe("ModelObject", function() {
 
   beforeEach(function(){
     coherent.Model.__resetModels();
-    this.Model= Model("foo", {});
+    this.Model= Model.create("foo", {});
   });
 
   describe("instances", function() {
@@ -25,7 +25,7 @@ describe("ModelObject", function() {
     });
 
     it("should not set values for immutable properties", function() {
-      var model= Model("immutable", {
+      var model= Model.create("immutable", {
         zebra: function()
         {
           return 123;
@@ -47,7 +47,7 @@ describe("ModelObject", function() {
     });
 
     it("should fire change notifications for custom setter methods", function() {
-      var M= Model("CustomSetter", {
+      var M= Model.create("CustomSetter", {
         foo: function()
         {
           return this.primitiveValueForKey('foo');

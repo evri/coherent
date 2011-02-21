@@ -5,7 +5,7 @@ describe("Model create", function()
   {
     coherent.Model.__resetModels();
 
-    this.M = Model("Model1", {
+    this.M = Model.create("Model1", {
       name: String,
       age: Number
     });

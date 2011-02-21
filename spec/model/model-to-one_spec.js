@@ -3,14 +3,14 @@ describe("Model ToOne relations", function() {
   beforeEach(function(){
     coherent.Model.__resetModels();
     
-    this.M1= Model("Model1", {
+    this.M1= Model.create("Model1", {
       m2: Model.ToOne({
             type: "Model2",
             inverse: "m1"
           })
     });
     
-    this.M2= Model("Model2", {
+    this.M2= Model.create("Model2", {
       m1: Model.ToOne({
             type: "Model1",
             inverse: "m2"

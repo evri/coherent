@@ -4,7 +4,7 @@ describe("coherent.Model", function()
   beforeEach(function()
   {
     coherent.Model.__resetModels();
-    this.Model = Model("foo", {});
+    this.Model = Model.create("foo", {});
   });
 
   it("should exist", function()
@@ -41,7 +41,7 @@ describe("coherent.Model", function()
   {
     it("should create getter & setter", function()
     {
-      var model = Model("typed", {
+      var model = Model.create("typed", {
             zebra: String
           });
 
@@ -53,7 +53,7 @@ describe("coherent.Model", function()
 
     it("should check type when setting typed property", function()
     {
-      var model = Model("typed", {
+      var model = Model.create("typed", {
             zebra: String
           });
 
@@ -80,7 +80,7 @@ describe("coherent.Model", function()
     it("should allow declaring properties", function()
     {
 
-      var M = Model("HasProperty", {
+      var M = Model.create("HasProperty", {
             foo: Model.Property({
               type: String,
               set: function(value)
@@ -103,7 +103,7 @@ describe("coherent.Model", function()
 
     it("should fire change notifications when setting properties", function()
     {
-      var M = Model("HasProperty", {
+      var M = Model.create("HasProperty", {
             foo: Model.Property({
               type: String
             })
@@ -118,7 +118,7 @@ describe("coherent.Model", function()
 
     it("should fire change notifications when calling custom setter method", function()
     {
-      var M = Model("HasProperty", {
+      var M = Model.create("HasProperty", {
 
             foo: Model.Property({
               type: String,
