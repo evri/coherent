@@ -242,8 +242,7 @@ coherent.Model = (function()
 
       Class.extend(Klass, decl);
       Object.applyDefaults(Klass, coherent.Model.ClassMethods);
-
-      Klass.collection = [];
+      Klass.__init();
 
       return Klass;
     },

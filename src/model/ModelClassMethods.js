@@ -16,6 +16,13 @@ coherent.Model.ClassMethods = {
    */
   uniqueId: 'id',
 
+  __init: function()
+  {
+    this.objects= {};
+    this.newObjects= {};
+    this.collection= [];
+  },
+  
   /**
     coherent.Model.add(model)
     - model (ModelObject): the instance of a Model that should be tracked.
@@ -25,8 +32,19 @@ coherent.Model.ClassMethods = {
    */
   add: function(model)
   {
-    if (-1 !== this.collection.indexOf(model))
-      return;
+    var id= model.id();
+    if (void(0)==id)
+    {
+      if (model.__uid in this.newObjects)
+        return;
+      this.newObjects[model.__uid]= model;
+    }
+    else
+    {
+      if (id in this.objects)
+        return;
+      this.objects[id]= model;
+    }
     this.collection.push(model);
   },
 
@@ -49,6 +67,8 @@ coherent.Model.ClassMethods = {
   clear: function()
   {
     this.collection = [];
+    this.objects= {};
+    this.newObjects= {};
   },
 
   count: function()
@@ -58,20 +78,14 @@ coherent.Model.ClassMethods = {
 
   find: function(id)
   {
-    var all = this.collection;
-
     if ('function' === typeof(id))
     {
-      var index = all.find(id);
+      var all= this.collection,
+          index = all.find(id);
       return -1 === index ? null : all[index];
     }
 
-    var len = all.length;
-    for (var i = 0; i < len; ++i)
-      if (all[i].id() == id)
-        return all[i];
-
-      return null;
+    return this.objects[id];
   },
 
   forEach: function(iterator)
@@ -86,6 +100,11 @@ coherent.Model.ClassMethods = {
 
   remove: function(model)
   {
+    var id= model.id();
+    if (void(0) == id)
+      delete this.newObjects[model.__uid];
+    else
+      delete this.objects[id];
     this.collection.removeObject(model);
   },
 

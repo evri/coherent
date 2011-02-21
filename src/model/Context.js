@@ -24,6 +24,7 @@ coherent.Context = Class.create({
             name: p
           };
       this[p] = Object.extend(m, coherent.Model.ClassMethods);
+      this[p].__init();
     }
   },
 

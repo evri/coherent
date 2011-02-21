@@ -24,17 +24,23 @@ coherent.Model.Property = Class._create({
         return value instanceof this.type;
     },
 
-    fromPrimitiveValue: function(value)
+    fromPrimitiveValue: function(value, context)
     {
       if (!this.type || this.isValidType(value))
         return value;
 
+      var modelName= this.type.modelName;
+      if (modelName)
+      {
+        if (void(0) == value)
+          return null;
+        return context[modelName].fromJSON(value);
+      }
+      
       if (null === value)
         value = new (this.type)();
       else if (Date === this.type)
         value = new Date(Date.parse(value));
-      else if (!this.composite || this.type.modelName)
-        value = this.type.fromJSON(value);
       else
         value = new (this.type)(value);
 

@@ -34,7 +34,7 @@ coherent.Model.ToMany = Class._create(coherent.Model.Property, {
     return valid;
   },
 
-  fromPrimitiveValue: function(array)
+  fromPrimitiveValue: function(array, context)
   {
     if (!this.type)
       return array;
@@ -44,18 +44,22 @@ coherent.Model.ToMany = Class._create(coherent.Model.Property, {
 
     var len = array.length;
     var value;
-
+    var modelName= this.type.modelName;
+    
     while (len--)
     {
       value = array[len];
+      if (modelName)
+      {
+        if (void(0) != value)
+          array[len]= context[modelName].fromJSON(value);
+        continue;
+      }
+      
       if (void(0) == value)
         value = new this.type();
       else if (Date === this.type)
         value = new Date(Date.parse(value));
-      else if (!this.primitive && value instanceof this.type)
-        continue;
-      else if (!this.composite || this.type.modelName)
-        value = this.type.fromJSON(value);
       else
         value = new this.type(value);
 

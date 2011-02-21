@@ -20,7 +20,8 @@
       this.original= this.changes;
       this.reset();
       this.__fault= true;
-      this.__context= null;
+      //  TODO: This shouldn't really point here...
+      this.__context= coherent.Model.models;
     },
 
     __initialiseSchema: function()
@@ -66,6 +67,7 @@
     {
       var schema = this.constructor.schema,
           keyTranslation=  schema.__keyTranslation,
+          context= this.__context,
           keys= [],
           info,
           value;
@@ -80,7 +82,7 @@
           coherent.KVO.adaptTree(hash[key]);
           continue;
         }
-        hash[key] = info.fromPrimitiveValue(hash[key]);
+        hash[key] = info.fromPrimitiveValue(hash[key], context);
         if (!suppressNotifications)
           this.willChangeValueForKey(key);
         keys.push(key);
