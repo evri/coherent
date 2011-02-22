@@ -772,7 +772,22 @@ coherent.View = Class.create(coherent.Responder, {
 
   visible: function()
   {
-    return 0 !== this.node.offsetWidth || 0 !== this.node.offsetHeight;
+    var node= this.node;
+    if (0 !== node.offsetWidth || 0 !== node.offsetHeight)
+      return false;
+      
+    var parent= node.offsetParent;
+    if (!parent)
+      return false;
+      
+    var rect= Element.getRect(node, true);
+    var parentRect= Element.getRect(parent, true);
+    
+    if (rect.left > parentRect.right || rect.top > parentRect.bottom ||
+        rect.right < parentRect.left || rect.bottom < parentRect.top)
+      return false;
+
+    return true;
   },
 
   setVisible: function(visible)

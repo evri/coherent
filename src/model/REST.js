@@ -66,6 +66,9 @@ define("coherent", function(coherent)
     prefetch: function(object)
     {
       var id = object.valueForKey ? object.valueForKey('id') : Object.get('id');
+      if (this.__fetching[id])
+        return this.__fetching[id];
+        
       var url = pathFromStringByReplacingParameters(this.resource, object);
       return XHR.get(url, null, this.PREFETCH_XHR_OPTIONS || this.XHR_OPTIONS);
     },

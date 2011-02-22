@@ -125,14 +125,7 @@ coherent.findTransformerWithName= function(transformerName)
   //  evaluate the string to see if it resolves to an instance, constructor, or
   //  finally a factory function.    
   if (!valueTransformer)
-  {
-    try
-    {
-      valueTransformer= coherent.globalEval(transformerName);
-    }
-    catch(e)
-    {}
-  }
+    valueTransformer= Object.get(transformerName);
   
   if (!valueTransformer)
     throw new InvalidArgumentError("The transformerName argument does not specify a valid ValueTransformer: " +

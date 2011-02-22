@@ -342,6 +342,13 @@ coherent.CollectionView= Class.create(coherent.View, {
       _this.removeChild(node);
     }
     
+    if (!this.visible())
+    {
+      Function.nextTick(this, this.setContentStatic, [newContent]);
+      // Function.nextTick(this, f, [newContent]);
+      return;
+    }
+    
     if (!insertionAnimationOptions.duration && !deletionAnimationOptions.duration)
     {
       this.setContentStatic(newContent);

@@ -310,7 +310,7 @@
     prefetch: function()
     {
       var model = this.constructor;
-      if (!model.persistence || this.isNew())
+      if (!this.__fault || !model.persistence || this.isNew())
         return;
       model.persistence.prefetch(this);
     },

@@ -214,7 +214,7 @@
             try
             {
               if ("" !== result)
-                result = coherent.globalEval('(' + result + ')');
+                result = JSON.parse(result);
               else
                 result = null;
             }

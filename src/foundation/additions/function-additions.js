@@ -77,6 +77,40 @@ if (!Function.delay)
     return delayedFnWrapper;
   }
 
+if (!Function.nextTick)
+  Function.nextTick= (function(){
+  
+    var tickTimer;
+    var tickerList= [];
+    
+    function tickHandler()
+    {
+      var tickers= tickerList,
+          len= tickers.length;
+          
+      tickerList= [];
+      tickTimer= null;
+
+      for (var i=0; i<len; ++i)
+      {
+        var tick= tickers[i];
+        tick.fn.apply(tick.scope, tick.args);
+      }
+    }
+    
+    return function(scope, fn, args)
+    {
+      if (!tickTimer)
+        tickTimer= window.setTimeout(tickHandler, 0);
+      tickerList.push({
+        scope: scope,
+        fn: fn,
+        args: args
+      });
+    };
+    
+  })();
+  
 if (!Function.repeating)
   Function.repeat= function(fn, delay, scope, args)
   {
@@ -139,29 +173,6 @@ if (!Function.repeating)
     return repeatingFnWrapper;
   }
   
-if (!Function.ONCE_PER_EVENT)
-  Function.ONCE_PER_EVENT= function(fn)
-  {
-    if (fn.length>0)
-      console.log("ONCE_PER_EVENT wrapper shouldn't be used with methods that take arguments");
-
-    
-    function proxyFunction()
-    {
-      if (proxyFunction.primed)
-        return;
-      proxyFunction.primed= true;
-      wrappedFunction.self= this;
-      window.setTimeout(wrappedFunction, 0);
-    }
-    
-    function wrappedFunction()
-    {
-      proxyFunction.primed= false;
-      fn.call(wrappedFunction.self);
-    }
-  }
-
 if (!Function.prototype.delay)
   Function.prototype.delay= function(delay)
   {

@@ -855,8 +855,6 @@ coherent.Page = Class.create(coherent.Responder, {
       default:
         break;
     }
-    
-    console.log('document.documentElement.className='+document.documentElement.className);
   },
   
   _onorientationchange: function(event)

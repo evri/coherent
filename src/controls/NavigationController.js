@@ -5,38 +5,52 @@
 
   var REVERSE = 'reverse',
       WILL_SHOW_VIEW_CONTROLLER = 'navigationControllerWillShowViewController',
-      DID_SHOW_VIEW_CONTROLLER = 'navigationControllerDidShowViewController';
+      DID_SHOW_VIEW_CONTROLLER = 'navigationControllerDidShowViewController',
+      VIEW_CONTROLLER_AT_INDEX = 'navigationControllerViewControllerAtIndex',
+      POP_HISTORY = 'navigationControllerPopHistory',
+      PUSH_HISTORY = 'navigationControllerPushHistoryForViewController';
 
 
   coherent.NavigationController = Class.create(coherent.ViewController, {
 
     constructor: function(params)
     {
-      this.__viewControllers = [];
-      this.__topIndex = -1;
-      this.manageHistory = true;
+      this.__currentViewController= null;
+      this.__previousViewController= null;
       this.base(params);
       coherent.Application.shared.setNavigationController(this);
     },
 
     rootViewController: function()
     {
-      return this.__viewControllers[0];
+      return this.__rootViewController;
     },
 
     setRootViewController: function(viewController)
     {
-      if (this.__viewControllers.length)
-        throw new Error("Can't set root view controller after initialisation");
       if (!viewController)
         return;
 
-      this.__viewControllers = [viewController];
-      this.__topIndex = 0;
-      viewController.view().addClassName(coherent.Style.NavigationSubview);
-      viewController.view().addClassName(coherent.Style.kActiveClass);
+      var view= this.view();
+      
+      if (this.__currentViewController)
+        view.removeSubview(this.__currentViewController);
+      if (this.__previousViewController)
+        view.removeSubview(this.__previousViewController);
+      
+      this.__previousViewController= this.callDelegate(VIEW_CONTROLLER_AT_INDEX, this, 0);
+      this.__addPreviousViewController(this.__previousViewController);
+      this.__currentViewController= viewController;
+      
+      var rootView= viewController.view();
+      
+      rootView.addClassName(coherent.Style.NavigationSubview);
+      rootView.addClassName(coherent.Style.kActiveClass);
+      
+      this.callDelegate(PUSH_HISTORY, this, viewController);
+      
       this.callDelegate(WILL_SHOW_VIEW_CONTROLLER, this, viewController);
-      this.view().addSubview(viewController.view());
+      this.view().addSubview(rootView);
       this.__updateBars();
       this.callDelegate(DID_SHOW_VIEW_CONTROLLER, this, viewController);
     },
@@ -51,8 +65,8 @@
 
     __updateNavigationBar: function()
     {
-      var previousViewController = this.__viewControllers[this.__topIndex - 1];
-      var viewController= this.topViewController();
+      var previousViewController = this.__previousViewController;
+      var viewController= this.__currentViewController;
       
       var currentNavigationItem = viewController.navigationItem();
       var previousNavigationItem = previousViewController && previousViewController.navigationItem();
@@ -104,43 +118,11 @@
 
       toolbar.setNextResponder(viewController);
       toolbar.setItems(toolbarItems);
-      if (!this.__topIndex)
-        toolbar.addClassName(coherent.Style.NavigationAtRoot);
-      else
-        toolbar.removeClassName(coherent.Style.NavigationAtRoot);
     },
 
     topViewController: function()
     {
-      return this.__viewControllers && this.__viewControllers[this.__topIndex];
-    },
-
-    /**
-      coherent.NavigationController#setTopViewController(viewController, state)
-
-      - viewController (coherent.ViewController): A view controller to make visible
-          at the top of the heirarchy.
-      - state (Any): An application specific data structure that may be useful for
-          creating view controllers.
-
-      If the `viewController` parameter has already been displayed, this method will
-      pop all view controllers above it in the stack. However, if it hasn't been
-      displayed, it will be pushed onto the stack.
-     */
-    setTopViewController: function(viewController)
-    {
-      var index = this.__viewControllers.indexOfObject(viewController);
-      if (-1 === index)
-        this.pushViewController(viewController);
-      else
-      {
-        var oldController = this.__viewControllers[this.__topIndex];
-        var direction = (index < this.__topIndex) ? REVERSE : null;
-
-        this.__topIndex = index;
-        this.__animateTransition(oldController, viewController, direction);
-        this.__updateBars();
-      }
+      return this.__currentViewController;
     },
 
     visibleViewController: function()
@@ -152,29 +134,7 @@
       return viewController && (viewController.modalViewController || viewController);
     },
 
-    viewControllers: function()
-    {
-      return this.__viewControllers;
-    },
-
-    //  TODO: Implement animations
-    setViewControllers: function(viewControllers, animated)
-    {
-      var len = this.__viewControllers ? this.__viewControllers.length : 0;
-      var i;
-      var view = this.view();
-
-      while (len--)
-        view.removeSubview(this.__viewControllers[len].view());
-
-      for (i = 0, len = viewControllers.length; i < len; ++i)
-        view.addSubview(viewControllers[i].view());
-
-      this.__topIndex = this.__viewControllers.length - 1;
-      this.__updateBars();
-    },
-
-    __animateTransition: function(oldController, newController, direction)
+    __animateTransition: function(oldController, newController, direction, callback)
     {
       var oldNode = oldController.view().node;
       var newNode = newController.view().node;
@@ -185,6 +145,8 @@
           return;
         Event.stopObserving(oldNode, 'webkitAnimationEnd', oldHandler);
         Element.setStyle(oldNode, 'display', 'none');
+        if (callback)
+          callback();
       }
 
       function ontransitionendNew(event)
@@ -243,30 +205,29 @@
       if (this.__dismissModalViewController(pushAgain))
         return;
 
-      //  Handle state
-      coherent.Application.shared.pushState(viewController);
-
+      this.callDelegate(PUSH_HISTORY, this, viewController);
+      
       view.addSubview(viewController.view());
       view.removeClassName(coherent.Style.NavigationAtRoot);
       viewController.view().addClassName(coherent.Style.NavigationSubview);
 
+      if (!outgoingController)
+        console.log("NavigationController#pushViewController: No outgoing controller");
       this.__animateTransition(outgoingController, viewController, null);
 
-      var len = this.__viewControllers.length;
-      while (this.__topIndex < --len)
-        view.removeSubview(this.__viewControllers[len].view());
-
       this.callDelegate(WILL_SHOW_VIEW_CONTROLLER, this, viewController);
-      this.__viewControllers.length = ++this.__topIndex;
-      this.__viewControllers.addObject(viewController);
+      if (this.__previousViewController)
+        view.removeSubview(this.__previousViewController.view());
+      this.__previousViewController= this.__currentViewController;
+      this.__currentViewController= viewController;
       this.__updateBars();
       this.callDelegate(DID_SHOW_VIEW_CONTROLLER, this, viewController);
     },
 
     popViewController: function(animated)
     {
-      var newController = this.__viewControllers[this.__topIndex - 1];
-      var oldController = this.__viewControllers[this.__topIndex];
+      var newController = this.__previousViewController;
+      var oldController = this.__currentViewController;
       if (!newController)
         return;
 
@@ -280,23 +241,45 @@
       if (this.__dismissModalViewController(popAgain))
         return;
 
+      var view= this.view();
+
+      var prev= this.__currentViewController.view();
+      
+      function cleanup()
+      {
+        view.removeSubview(prev);
+      }
+      
+      this.callDelegate(POP_HISTORY, this);
       this.callDelegate(WILL_SHOW_VIEW_CONTROLLER, this, newController);
-      this.__topIndex--;
-      this.__animateTransition(oldController, newController, REVERSE);
+
+      this.__currentViewController= this.__previousViewController;
+      this.__previousViewController= this.callDelegate(VIEW_CONTROLLER_AT_INDEX, this, -1);
+      this.__animateTransition(oldController, newController, REVERSE, cleanup);
       this.__updateBars();
       this.callDelegate(DID_SHOW_VIEW_CONTROLLER, this, newController);
+
+      this.__addPreviousViewController(this.__previousViewController);
     },
-
-    popToViewController: function(viewController, animated)
-    {},
-
-    popToRootViewController: function(animated)
-    {},
 
     back: function(sender)
     {
-      coherent.Application.shared.popState();
       this.popViewController(true);
+    },
+    
+    __addPreviousViewController: function(viewController)
+    {
+      if (!viewController)
+        return;
+        
+      var view= this.view();
+      var previousView= viewController.view();
+      var previousNode= previousView.node;
+
+      Element.updateClass(previousNode, [coherent.Style.NavigationSubview, 'ui-slide', 'out'], ['in', 'reverse', coherent.Style.kActiveClass]);
+      previousNode.style.display='none';
+      
+      view.addSubview(previousView);
     }
 
   });

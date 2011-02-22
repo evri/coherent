@@ -114,7 +114,7 @@ coherent.Asset= Class._create({
       case '.json':
         var originalFilename= window.__filename__;
         window.__filename__= this.href;
-        this.__content= coherent.globalEval('('+newContent+')');
+        this.__content= JSON.parse(newContent);
         window.__filename__= originalFilename;
         break;
         
