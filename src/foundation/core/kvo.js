@@ -609,7 +609,7 @@ coherent.KVO= Class.create({
     
     var newValue= keyInfo.get(this);
     var previousValue= keyInfo.previousValue;
-    keyInfo.previousValue= null;
+    delete keyInfo.previousValue;
   
     if (newValue!==previousValue)
     {

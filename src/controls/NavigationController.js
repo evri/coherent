@@ -211,8 +211,6 @@
       view.removeClassName(coherent.Style.NavigationAtRoot);
       viewController.view().addClassName(coherent.Style.NavigationSubview);
 
-      if (!outgoingController)
-        console.log("NavigationController#pushViewController: No outgoing controller");
       this.__animateTransition(outgoingController, viewController, null);
 
       this.callDelegate(WILL_SHOW_VIEW_CONTROLLER, this, viewController);
