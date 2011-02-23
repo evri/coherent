@@ -18,7 +18,7 @@
       this.changes= {};
       this.base(hash);
       this.original= this.changes;
-      this.reset();
+      this.commit();
       this.__fault= true;
       //  TODO: This shouldn't really point here...
       this.__context= coherent.Model.models;
@@ -82,15 +82,15 @@
           coherent.KVO.adaptTree(hash[key]);
           continue;
         }
+        if (!(key in this.changes))
+          this.changeCount++;
         hash[key] = info.fromPrimitiveValue(hash[key], context);
         if (!suppressNotifications)
           this.willChangeValueForKey(key);
         keys.push(key);
       }
 
-      this.original = Object.extend(this.original, hash);
-      this.changes = {};
-      this.changeCount = 0;
+      this.changes= Object.extend(this.changes, hash);
 
       if (!suppressNotifications)
       {
@@ -100,6 +100,19 @@
       }
     },
 
+    /**
+      coherent.ModelObject#commit
+      
+      Commit all changes into the original values. This will reset the changeCount
+      and modified flags.
+     */
+    commit: function()
+    {
+      Object.extend(this.original, this.changes);
+      this.changes= {};
+      this.changeCount= 0;
+    },
+    
     observeChildObjectChangeForKeyPath: function(change, keypath, context)
     {
       //  Faster than calling base.
@@ -325,6 +338,7 @@
       function oncomplete(json)
       {
         this.merge(json);
+        this.commit();
         this.awakeFromFetch();
         this.__fetching = null;
         this.__fault= false;
@@ -357,10 +371,9 @@
 
       function oncomplete(json)
       {
-        this.merge(this.changes);
         if (json)
           this.merge(json);
-        this.reset();
+        this.commit();
         if (isNew)
           model.add(this);
         return this;
