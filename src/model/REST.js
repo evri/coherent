@@ -35,6 +35,10 @@ define("coherent", function(coherent)
       allowCache: true,
       responseContentType: 'application/json'
     },
+    REFRESH_XHR_OPTIONS: {
+      allowCache: true,
+      responseContentType: 'application/json'
+    },
     PREFETCH_OPTIONS: {
       allowCache: true,
       responseContentType: 'text/plain'
@@ -73,7 +77,7 @@ define("coherent", function(coherent)
       return XHR.get(url, null, this.PREFETCH_XHR_OPTIONS || this.XHR_OPTIONS);
     },
 
-    fetch: function(object)
+    fetch: function(object, refresh)
     {
       var id = object.valueForKey ? object.valueForKey('id') : Object.get('id');
       var url = pathFromStringByReplacingParameters(this.resource, object);
@@ -81,8 +85,9 @@ define("coherent", function(coherent)
       var d= this.__fetching[id];
       if (d)
         return d;
-        
-      this.__fetching[id]= d = XHR.get(url, null, this.XHR_OPTIONS);
+      
+      var options= refresh ? this.REFRESH_XHR_OPTIONS : this.XHR_OPTIONS;  
+      this.__fetching[id]= d = XHR.get(url, null, options);
       
       function removeFetching(stuff)
       {

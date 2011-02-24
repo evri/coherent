@@ -255,6 +255,7 @@
     var queryString;
     var body = options.body || "";
     var async = !options.sync;
+    var headers = options.headers || {};
     var deferred = new coherent.Deferred(cancel);
     var xhrSent = false;
 
@@ -287,8 +288,13 @@
 
     if (GET_METHOD === method && !options.allowCache)
     {
-      var cache_bust = "__cache_buster=" + (new Date()).getTime();
-      queryString = queryString ? (queryString + "&" + cache_bust) : cache_bust;
+      if (XHR.USE_CACHE_CONTROL || options.useCacheControl)
+        headers["cache-control"]= "max-age=0";
+      else
+      {
+        var cache_bust = "__cache_buster=" + (new Date()).getTime();
+        queryString = queryString ? (queryString + "&" + cache_bust) : cache_bust;
+      }
     }
 
     if (queryString)
@@ -320,7 +326,6 @@
       xhr.open(method, url, async);
 
     //  Set headers for the request
-    var headers = options.headers || {};
     for (var h in headers)
       xhr.setRequestHeader(h, headers[h]);
 
@@ -367,7 +372,14 @@
   {
 
     numberOfActiveRequests: 0,
-
+    
+    /**
+      XHR.USE_CACHE_CONTROL
+      
+      Should the cache-control header be used to prevent caching? Default is false.
+     */
+    USE_CACHE_CONTROL: false,
+    
     get: function(url, parameters, options)
     {
       return XHR.request(GET_METHOD, url, parameters, options);

@@ -173,6 +173,23 @@
         console.log("Attempting to set the ID of an existing object: original ID=", this.original[uniqueId], "new value=", id);
     },
 
+    isFault: function()
+    {
+      return this.__fault;
+    },
+    
+    setFault: function(fault)
+    {
+      if (fault)
+      {
+        this.willBecomeFault();
+        this.__fault= true;
+        this.didBecomeFault();
+      }
+      else
+        this.__fault= false;
+    },
+
     isNew: function()
     {
       return void(0) == this.id();
@@ -320,6 +337,14 @@
       return true;
     },
 
+    willBecomeFault: function()
+    {
+    },
+    
+    didBecomeFault: function()
+    {
+    },
+    
     prefetch: function()
     {
       var model = this.constructor;
@@ -328,11 +353,11 @@
       model.persistence.prefetch(this);
     },
 
-    fetch: function()
+    fetch: function(refresh)
     {
       var model = this.constructor;
 
-      if (!this.__fault)
+      if (!refresh && !this.__fault)
         return coherent.Deferred.createCompleted(this);
         
       function oncomplete(json)
@@ -353,12 +378,12 @@
       if (!model.persistence || this.isNew())
         return coherent.Deferred.createCompleted(this);
 
-      d = model.persistence.fetch(this);
+      d = model.persistence.fetch(this, refresh);
       d.addCallback(oncomplete, this);
       this.__fetching = d;
       return d;
     },
-
+    
     save: function()
     {
       var model = this.constructor;
