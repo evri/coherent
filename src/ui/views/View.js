@@ -609,14 +609,14 @@ coherent.View = Class.create(coherent.Responder, {
 
   /** Send the action message to the target.
    */
-  sendAction: function()
+  sendAction: function(action)
   {
-    this.sendActionWithArgument(this.argument || null);
+    this.sendActionWithArgument(action||this.action, this.argument || null);
   },
 
-  sendActionWithArgument: function(argument)
+  sendActionWithArgument: function(action, argument)
   {
-    if (!this.action)
+    if (!action)
       return;
 
     var to = this.target || this;
@@ -629,7 +629,7 @@ coherent.View = Class.create(coherent.Responder, {
         throw new Error("Can't send action " + this.action + "; no object named " + this.target);
     }
 
-    coherent.Application.shared.sendAction(this.action, to, this, argument);
+    coherent.Application.shared.sendAction(action, to, this, argument);
   },
 
 

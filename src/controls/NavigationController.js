@@ -196,7 +196,8 @@
       var view = this.view();
 
       var _this = this;
-
+      var oldViewController = this.__previousViewController;
+      
       function pushAgain()
       {
         _this.pushViewController(viewController, animated);
@@ -205,8 +206,6 @@
       if (this.__dismissModalViewController(pushAgain))
         return;
 
-      this.callDelegate(PUSH_HISTORY, this, viewController);
-      
       view.addSubview(viewController.view());
       view.removeClassName(coherent.Style.NavigationAtRoot);
       viewController.view().addClassName(coherent.Style.NavigationSubview);
@@ -214,12 +213,18 @@
       this.__animateTransition(outgoingController, viewController, null);
 
       this.callDelegate(WILL_SHOW_VIEW_CONTROLLER, this, viewController);
-      if (this.__previousViewController)
-        view.removeSubview(this.__previousViewController.view());
       this.__previousViewController= this.__currentViewController;
       this.__currentViewController= viewController;
-      this.__updateBars();
       this.callDelegate(DID_SHOW_VIEW_CONTROLLER, this, viewController);
+
+      Function.nextTick(this, function()
+      {
+        if (oldViewController)
+          view.removeSubview(oldViewController.view());
+        this.callDelegate(PUSH_HISTORY, this, viewController);
+        this.__updateBars();
+      });
+      
     },
 
     popViewController: function(animated)
@@ -242,27 +247,28 @@
       var view= this.view();
 
       var prev= this.__currentViewController.view();
+      var self= this;
       
       function cleanup()
       {
         view.removeSubview(prev);
+        self.callDelegate(POP_HISTORY, self);
+        self.__previousViewController= self.callDelegate(VIEW_CONTROLLER_AT_INDEX, self, -1);
+        self.__addPreviousViewController(self.__previousViewController);
+        self.__updateBars();
       }
       
-      this.callDelegate(POP_HISTORY, this);
       this.callDelegate(WILL_SHOW_VIEW_CONTROLLER, this, newController);
-
       this.__currentViewController= this.__previousViewController;
-      this.__previousViewController= this.callDelegate(VIEW_CONTROLLER_AT_INDEX, this, -1);
       this.__animateTransition(oldController, newController, REVERSE, cleanup);
-      this.__updateBars();
       this.callDelegate(DID_SHOW_VIEW_CONTROLLER, this, newController);
-
-      this.__addPreviousViewController(this.__previousViewController);
     },
 
     back: function(sender)
     {
+      var start = Date.now();
       this.popViewController(true);
+      console.log("back: duration=" + (Date.now()-start));
     },
     
     __addPreviousViewController: function(viewController)
