@@ -288,14 +288,16 @@
       for (var p in schema)
       {
         info = schema[p];
-        if (info.composite || !(info.type && info.type.prototype instanceof coherent.ModelObject))
-          continue;
         key = info.key || p;
+
         if (!info.persistent)
         {
           delete json[key];
           continue;
         }
+
+        if (info.composite || !(info.type && info.type.prototype instanceof coherent.ModelObject))
+          continue;
         
         value = json[key];
         if (void(0)==value)
