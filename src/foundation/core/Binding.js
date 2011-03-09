@@ -90,7 +90,7 @@ coherent.Binding= Class._create({
   bind: function()
   {
     this.object.addObserverForKeyPath(this, this.observeChangeForKeyPath,
-                      this.keypath);
+                                      this.keypath);
   },
   
   /** Stop tracking changes to the value for this Binding.

@@ -457,20 +457,34 @@ coherent.View = Class.create(coherent.Responder, {
    */
   addSubview: function(subview)
   {
+    if (!subview)
+      return;
+    subview.willMoveToSuperview(this);
     var container = this.container();
     container.appendChild(subview.node);
+    subview.didMoveToSuperview(this);
   },
 
   removeSubview: function(subview)
   {
+    if (!subview)
+      return;
     var node = this.node;
     var subviewNode = subview.node;
 
     if (!node.contains(subviewNode))
       return;
+    subview.willMoveToSuperview(null);
     subviewNode.parentNode.removeChild(subviewNode);
+    subview.didMoveToSuperview(null);
   },
 
+  willMoveToSuperview: function(superview)
+  {},
+  
+  didMoveToSuperview: function(superview)
+  {},
+  
   /** Find the first view that matches the given CSS selector. If no views
     match the selector, this method returns `null`.
     @param {String} selector - A CSS selector rooted at the node for this
@@ -774,7 +788,7 @@ coherent.View = Class.create(coherent.Responder, {
   {
     var node= this.node;
     if (0 !== node.offsetWidth || 0 !== node.offsetHeight)
-      return false;
+      return true;
       
     var parent= node.offsetParent;
     if (!parent)
@@ -977,8 +991,6 @@ coherent.View = Class.create(coherent.Responder, {
     if (!node)
       return null;
     coherent.View.teardownViewsForNodeTree(node);
-    if (this.beforeRemoveElement)
-      this.beforeRemoveElement(node);
     return node.parentNode.removeChild(node);
   },
 

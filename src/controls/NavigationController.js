@@ -6,6 +6,8 @@
   var REVERSE = 'reverse',
       WILL_SHOW_VIEW_CONTROLLER = 'navigationControllerWillShowViewController',
       DID_SHOW_VIEW_CONTROLLER = 'navigationControllerDidShowViewController',
+      WILL_REMOVE_VIEW_CONTROLLER = 'navigationControllerWillRemoveViewController',
+      DID_REMOVE_VIEW_CONTROLLER = 'navigationControllerDidRemoveViewController',
       VIEW_CONTROLLER_AT_INDEX = 'navigationControllerViewControllerAtIndex',
       POP_HISTORY = 'navigationControllerPopHistory',
       PUSH_HISTORY = 'navigationControllerPushHistoryForViewController';
@@ -220,7 +222,11 @@
       Function.nextTick(this, function()
       {
         if (oldViewController)
+        {
+          this.callDelegate(WILL_REMOVE_VIEW_CONTROLLER, this, oldViewController);
           view.removeSubview(oldViewController.view());
+          this.callDelegate(DID_REMOVE_VIEW_CONTROLLER, this, oldViewController);
+        }
         this.callDelegate(PUSH_HISTORY, this, viewController);
         this.__updateBars();
       });
@@ -247,15 +253,19 @@
       var view= this.view();
 
       var prev= this.__currentViewController.view();
-      var self= this;
       
       function cleanup()
       {
-        view.removeSubview(prev);
-        self.callDelegate(POP_HISTORY, self);
-        self.__previousViewController= self.callDelegate(VIEW_CONTROLLER_AT_INDEX, self, -1);
-        self.__addPreviousViewController(self.__previousViewController);
-        self.__updateBars();
+        if (oldController)
+        {
+          _this.callDelegate(WILL_REMOVE_VIEW_CONTROLLER, this, oldController);
+          view.removeSubview(prev);
+          _this.callDelegate(DID_REMOVE_VIEW_CONTROLLER, this, oldController);
+        }
+        _this.callDelegate(POP_HISTORY, _this);
+        _this.__previousViewController= _this.callDelegate(VIEW_CONTROLLER_AT_INDEX, _this, -1);
+        _this.__addPreviousViewController(_this.__previousViewController);
+        _this.__updateBars();
       }
       
       this.callDelegate(WILL_SHOW_VIEW_CONTROLLER, this, newController);
