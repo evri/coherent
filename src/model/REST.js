@@ -84,7 +84,6 @@ define("coherent", function(coherent)
     {
       var id = object.valueForKey ? object.valueForKey('id') : Object.get('id');
       var url = pathFromStringByReplacingParameters(this.resource, object);
-      console.log('fetching: url=', url, 'id=', id, 'resource=', this.resource);
       
       var d= this.__fetching[id];
       if (d)
