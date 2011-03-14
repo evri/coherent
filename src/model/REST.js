@@ -22,6 +22,9 @@ define("coherent", function(coherent)
       else
         value = key ? object[keyname] : Object.get(object, keyname);
 
+      if (void(0)==value)
+        return ':' + keyname;
+        
       if (slash && '/' !== value.charAt(0))
         return '/' + value;
       else
@@ -81,6 +84,7 @@ define("coherent", function(coherent)
     {
       var id = object.valueForKey ? object.valueForKey('id') : Object.get('id');
       var url = pathFromStringByReplacingParameters(this.resource, object);
+      console.log('fetching: url=', url, 'id=', id, 'resource=', this.resource);
       
       var d= this.__fetching[id];
       if (d)
