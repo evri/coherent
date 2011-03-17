@@ -39,6 +39,19 @@
 
 })();
 
+function CompletionSignal()
+{
+  function me()
+  {
+    return me.complete;
+  }
+  me.set= function(value)
+  {
+    me.complete= value;
+  }
+  return me;
+}
+
 var TestObserver= Class.create({
 
     constructor: function()
