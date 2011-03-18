@@ -410,7 +410,7 @@ if (!coherent.Support.ChangeBubbles)
     {
       var node= this.node;
       Event.stopObserving(node, 'change', this.__onchangeHandler);
-      this.__onchangeHandler= Event.observe(node, 'change', this.onchange.bind(this));
+      this.__onchangeHandler= Event.observe(node, 'change', Event.handler(this, this.onchange));
     },
   
     onblur: function(event)

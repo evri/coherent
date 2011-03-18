@@ -56,13 +56,13 @@ coherent.ScrollView= Class.create(coherent.View, {
     this.refresh();
 
     var eventName= coherent.Support.OrientationChangeEvent ? 'orientationchange' : 'resize';
-    this._refreshHandler= Event.observe(window, eventName, this.refresh.bind(this));
+    this._refreshHandler= Event.observe(window, eventName, Event.handler(this, 'refresh'));
     
     if (this.updateOnDOMChanges)
       this._updateHandler= Event.observe(this.node, 'DOMSubtreeModified',
-                                         this.onDOMModified.bind(this));
+                                         Event.handler(this, 'onDOMModified'));
   },
-        
+
   onDOMModified: function(e)
   {
     if (e.target.parentNode != this.node)
@@ -490,7 +490,8 @@ coherent.ScrollView= Class.create(coherent.View, {
     else
       //  At the end of the transition check if we are still inside of the boundaries
       //  TODO: This should probably get attached to the node not the document
-      this._transitionHandler= Event.observe(document, TRANSITION_END_EVENT, this.ontransitionend.bind(this));
+      this._transitionHandler= Event.observe(document, TRANSITION_END_EVENT,
+                                             Event.handler(this, 'ontransitionend'));
   },
         
   scrollToPage: function(pageX, pageY, runtime)

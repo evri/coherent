@@ -12,7 +12,7 @@ coherent.Application= Class.create(coherent.Responder, {
       return coherent.Application.shared;
       
     if (coherent.Support.HistoryPushState)
-      Event.observe(window, 'popstate', this.onpopstate.bind(this));
+      Event.observe(window, 'popstate', Event.handler(this, this.onpopstate));
       
     return void(0);
   },

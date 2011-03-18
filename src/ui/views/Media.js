@@ -27,9 +27,9 @@ coherent.Media= Class.create(coherent.View, {
     
     var node= this.node;
 
-    this.__onendedHandler= Event.observe(node, 'ended', this.mediaDidEnd.bind(this));
-    this.__onplayHandler= Event.observe(node, 'play', this.mediaPlayingStateChanged.bind(this));
-    this.__onpauseHandler= Event.observe(node, 'pause', this.mediaPlayingStateChanged.bind(this));
+    this.__onendedHandler= Event.observe(node, 'ended', Event.handler(this, this.mediaDidEnd));
+    this.__onplayHandler= Event.observe(node, 'play', Event.handler(this, this.mediaPlayingStateChanged));
+    this.__onpauseHandler= Event.observe(node, 'pause', Event.handler(this, this.mediaPlayingStateChanged));
   },
   
   teardown: function()

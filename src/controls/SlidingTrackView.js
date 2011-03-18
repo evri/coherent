@@ -34,9 +34,9 @@ coherent.SlidingTrackView = Class.create(coherent.View, {
     this.updateItemPosition();
   
     this._item.addObserverForKeyPath(this, this.itemFrameChanged, 'frame');
-    Event.observe(window, 'resize', this.viewportResized.bind(this));
-    Event.observe(window, 'scroll', this.viewportScrolled.bind(this));
-    Event.observe(window, 'load', this.viewportResized.bind(this));
+    Event.observe(window, 'resize', Event.handler(this, this.viewportResized));
+    Event.observe(window, 'scroll', Event.handler(this, this.viewportScrolled));
+    Event.observe(window, 'load', Event.handler(this, this.viewportResized));
   },
 
   viewportResized: function(e)

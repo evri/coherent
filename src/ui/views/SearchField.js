@@ -21,7 +21,7 @@ coherent.SearchField= Class.create(coherent.TextField, {
   {
     var view= this.node;
     Event.stopObserving(view, 'search', this.__searchHandler);
-    this.__searchHandler= Event.observe(view, 'search', this.onchange.bind(this));
+    this.__searchHandler= Event.observe(view, 'search', Event.handler(this, this.onchange));
   },
   
   onblur: function(event)

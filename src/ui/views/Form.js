@@ -63,8 +63,8 @@ if (!coherent.Support.SubmitBubbles)
       var node= this.node;
       Event.stopObserving(node, 'submit', this.__submitHandler);
       Event.stopObserving(node, 'reset', this.__resetHandler);
-      this.__submitHandler= Event.observe(node, 'submit', this.onsubmit.bind(this));
-      this.__resetHandler= Event.observe(node, 'reset', this.onreset.bind(this));
+      this.__submitHandler= Event.observe(node, 'submit', Event.handler(this, this.onsubmit));
+      this.__resetHandler= Event.observe(node, 'reset', Event.handler(this, this.onreset));
     },
   
     onblur: function(event)

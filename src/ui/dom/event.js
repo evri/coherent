@@ -102,7 +102,7 @@ Object.extend(Event, {
   
   /** Trigger the event handlers for DOM ready.
    */
-  _domHasFinishedLoading: function()
+  _domHasFinishedLoading: function(event)
   {
     if (arguments.callee.done)
       return;
@@ -114,9 +114,11 @@ Object.extend(Event, {
     var len= callbacks.length;
     var i;
   
+    coherent.EventLoop.start(event||window.event);
     for (i=0; i<len; ++i)
       callbacks[i]();
-
+    coherent.EventLoop.end();
+    
     Event._readyCallbacks = null;
   },
 
@@ -127,7 +129,7 @@ Object.extend(Event, {
       may be helpful.
     
         this.__handlerMethod= Event.observe(this.extraNode, "click", 
-                        this.onclickExtraNode.bind(this));
+                                            Event.handler(this, this.onclickExtraNode));
 
       @param {Element} node - The DOM node on which to observe the event
       @param {String} eventName - The name of the event to observe. This may
@@ -215,22 +217,34 @@ Object.extend(Event, {
     if (!Event._readyCallbacks)
     {
       document.addEventListener("DOMContentLoaded",
-                    Event._domHasFinishedLoading,
-                    false);
+                                Event._domHasFinishedLoading,
+                                false);
       
-      function checkReadyState()
-      {
-        if ((/loaded|complete/).test(document.readyState))
-          Event._domHasFinishedLoading();
-      }
-    
       Event.observe(window, 'load', Event._domHasFinishedLoading);
       Event._readyCallbacks= [];
     }
   
     Event._readyCallbacks.push(f);
+  },
+  
+  handler: function(scope, fn)
+  {
+    if ('function'===typeof(scope) && void(0)==fn)
+    {
+      fn= scope;
+      scope= null;
+    }
+    
+    if ('string'===typeof(fn))
+      fn= scope[fn];
+      
+    return function(event)
+    {
+      coherent.EventLoop.begin(event||window.event);
+      fn.apply(scope, arguments);
+      coherent.EventLoop.end();
+    };
   }
-
 
 });
 

@@ -184,7 +184,7 @@ coherent.ViewController = Class.create(coherent.Responder, {
       if (callback)
         callback(this);
     }
-    var transitionHandler = Event.observe(modalNode, "webkitAnimationEnd", ontransitionend.bind(this));
+    var transitionHandler = Event.observe(modalNode, "webkitAnimationEnd", Event.handler(this, ontransitionend));
 
     Element.addClassName(modalNode, [transitionStyle, 'in'].join(" "));
     Element.addClassName(node, presentationStyle);
@@ -249,7 +249,7 @@ coherent.ViewController = Class.create(coherent.Responder, {
     }
 
     var modalNode = this.__modalNode;
-    var transitionHandler = Event.observe(modalNode, "webkitAnimationEnd", ontransitionend.bind(this));
+    var transitionHandler = Event.observe(modalNode, "webkitAnimationEnd", Event.handler(this, ontransitionend));
     var firstResponder = coherent.Page.shared.firstResponder;
     if (firstResponder && firstResponder.isDescendantOf(this.view()))
       coherent.Page.shared.makeFirstResponder(null);

@@ -28,14 +28,14 @@
     return decodeURIComponent(hash.substring(index+1));
   }
 
-  function _dispatchEvent()
+  var _dispatchEvent= Event.handler(function()
   {
     var hashValue= _getHash();
     var change= new coherent.ChangeNotification(coherent.hash,
                           coherent.ChangeType.setting,
                           hashValue);
     coherent.hash.notifyObserversOfChangeForKeyPath(change, 'value');
-  }
+  });
 
   function _pollLocation()
   {

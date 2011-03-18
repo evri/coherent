@@ -65,6 +65,5 @@ if (!coherent.Support.StandardEventModel)
       Event._readyCallbacks.push(f);
     }
     
-    
   });
 }

@@ -128,8 +128,8 @@ coherent.Image = Class.create(coherent.View, {
 
     Event.stopObserving(node, 'load', this.__onloadHandler);
     Event.stopObserving(node, 'error', this.__onerrorHandler);
-    this.__onloadHandler = Event.observe(node, 'load', this.onload.bind(this));
-    this.__onerrorHandler = Event.observe(node, 'error', this.onerror.bind(this));
+    this.__onloadHandler = Event.observe(node, 'load', Event.handler(this, this.onload));
+    this.__onerrorHandler = Event.observe(node, 'error', Event.handler(this, this.onerror));
 
     node.src = newSrc;
   },
