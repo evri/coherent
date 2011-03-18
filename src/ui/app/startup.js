@@ -5,10 +5,14 @@
 distil.onready(function(){
 
   var app= coherent.Application.shared;
-  app.loaded= true;
-  app.__loadMainNib();
-  app.callDelegate('applicationDidFinishLaunching', app);
 
+  coherent.run(app, function()
+  {
+    app.loaded= true;
+    app.__loadMainNib();
+    app.callDelegate('applicationDidFinishLaunching', app);
+  });
+  
   //  Remove a startup notice
   var startup= Element.query('.ui-startup');
   if (startup)
@@ -30,9 +34,7 @@ distil.onready(function(){
     {
       return function()
       {
-        coherent.EventLoop.begin(window.event);
-        page[fn](window.event);
-        coherent.EventLoop.end();
+        coherent.EventLoop.push(page, page[fn], window.event);
       };
     };
 
@@ -69,9 +71,7 @@ distil.onready(function(){
     {
       return function(event)
       {
-        coherent.EventLoop.begin(event);
-        page[fn](event);
-        coherent.EventLoop.end();
+        coherent.EventLoop.push(page, page[fn], event);
       };
     };
 

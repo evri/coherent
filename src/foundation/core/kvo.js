@@ -564,8 +564,28 @@ coherent.KVO= Class.create({
     //  willChangeValueForKey is called.
     if (1!==++keyInfo.changeCount)
       return;
-
-    keyInfo.previousValue= keyInfo.get(this);
+      
+    var hash= this.__uid + "#" + key;
+    var queue= coherent.ChangeNotification.getNotificationQueue();
+    if (hash in queue.willChange)
+      return;
+    
+    queue.willChange[hash]= {
+      obj: this,
+      key: key,
+      value: keyInfo.get(this),
+      keyInfo: keyInfo
+    };
+    
+    //  Fire change notification for dependent keys
+    var dependentKeys= this.__kvo.dependentKeys[key];
+    var len= dependentKeys && dependentKeys.length;
+    
+    while (len--)
+    {
+      keyInfo= this.infoForKey(dependentKeys[len]);
+      this.willChangeValueForKey(keyInfo.key, keyInfo);
+    }
   },
 
   forceChangeNotificationForKey: function(key, keyInfo)
@@ -578,9 +598,11 @@ coherent.KVO= Class.create({
     if (!keyInfo)
       return;
     
-    if (0!==keyInfo.changeCount)
-      return;
-    keyInfo.changeCount=1;
+    var hash= this.__uid + "#" + key;
+    var queue= coherent.ChangeNotification.getNotificationQueue();
+
+    this.willChangeValueForKey(key, keyInfo);
+    queue.willChange[hash].force= true;
     this.didChangeValueForKey(key, keyInfo);
   },
 
@@ -607,25 +629,17 @@ coherent.KVO= Class.create({
     if (0!==--keyInfo.changeCount)
       return;
     
-    var newValue= keyInfo.get(this);
-    var previousValue= keyInfo.previousValue;
-    delete keyInfo.previousValue;
-  
-    if (newValue!==previousValue)
-    {
-      var change= new coherent.ChangeNotification(this,
-                            coherent.ChangeType.setting,
-                            newValue, previousValue);
-      this.notifyObserversOfChangeForKeyPath(change, key);
-  
-      //  stop observing changes to old value
-      if (previousValue && previousValue.addObserverForKeyPath)
-        coherent.KVO.unlinkChildFromParent(previousValue, this, keyInfo);
-
-      //  observe changes to the new value
-      if (newValue && newValue.addObserverForKeyPath)
-        coherent.KVO.linkChildToParent(newValue, this, keyInfo);
-    }
+    var hash= this.__uid + "#" + key;
+    var queue= coherent.ChangeNotification.getNotificationQueue();
+    
+    if (hash in queue.didChange)
+      queue.didChange[hash].value= keyInfo.get(this);
+    else
+      queue.didChange[hash]= {
+        obj: this,
+        key: key,
+        value: keyInfo.get(this)
+      };
 
     //  Fire change notification for dependent keys
     var dependentKeys= this.__kvo.dependentKeys[key];
@@ -634,9 +648,6 @@ coherent.KVO= Class.create({
     while (len--)
     {
       keyInfo= this.infoForKey(dependentKeys[len]);
-      if (0!==keyInfo.changeCount)
-        continue;
-      keyInfo.changeCount=1;
       this.didChangeValueForKey(keyInfo.key, keyInfo);
     }
   },

@@ -243,10 +243,10 @@
       }
 
       if (succeeded)
-        deferred.callback(result);
+        coherent.EventLoop.push(deferred, deferred.callback, result);
       else
-        deferred.failure(err);
-
+        coherent.EventLoop.push(deferred, deferred.failure, err);
+      
       xhr.onreadystatechange = noop;
       xhr = null;
       XHR.numberOfActiveRequests--;

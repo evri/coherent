@@ -22,10 +22,11 @@
     /** @ignore */
     function timeoutWrapper()
     {
-      coherent.EventLoop.begin();
-      var value= handler.apply(this, args);
-      coherent.EventLoop.end();
-      return value;
+      coherent.EventLoop.push(this, handler, args[0]);
+      // coherent.EventLoop.begin();
+      // var value= handler.apply(this, args);
+      // coherent.EventLoop.end();
+      // return value;
     }
     return window._setTimeout(timeoutWrapper, delay);
   }
@@ -50,10 +51,11 @@
     /** @ignore */
     function intervalWrapper()
     {
-      coherent.EventLoop.begin();
-      var value= handler.apply(this, args);
-      coherent.EventLoop.end();
-      return value;
+      coherent.EventLoop.push(this, handler, args[0]);
+      // coherent.EventLoop.begin();
+      // var value= handler.apply(this, args);
+      // coherent.EventLoop.end();
+      // return value;
     }
     return window._setInterval(intervalWrapper, delay);
   }

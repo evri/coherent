@@ -240,22 +240,7 @@ Object.extend(Event, {
       
     return function(event)
     {
-      coherent.EventLoop.begin(event||window.event);
-      if (COHERENT_CONFIG.trapUncaughtExceptions)
-      {
-        try
-        {
-          fn.apply(scope, arguments);
-        }
-        catch (e)
-        {
-          var name= fn.displayName || fn.name || "anonymous";
-          console.log("Uncaught exception in " + name + ": " + e.message, e);
-        }
-      }
-      else
-        fn.apply(scope, arguments);
-      coherent.EventLoop.end();
+      coherent.EventLoop.push(scope, fn, event||window.event);
     };
   }
 

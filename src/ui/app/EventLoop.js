@@ -3,9 +3,10 @@
 /** The Event Loop for the page...
  */
 
-coherent.EventLoop = {
+coherent.EventLoop = Class._create({
 
-  currentEvent: null,
+  constructor: function()
+  {},
   
   getStart: function()
   {
@@ -14,16 +15,70 @@ coherent.EventLoop = {
     return this._start;
   },
   
-  begin: function(event)
+  begin: function()
   {
     this._start= new Date().getTime();
-    this.currentEvent= event;
+    this._inprogress= true;
   },
   
   end: function()
   {
-    this.currentEvent= null;
+    //  process pending change notifications
+    coherent.ChangeNotification.scheduleNotifications();
+    
     this._start= null;
+    this._inprogress= false;
   }
   
-};
+});
+
+coherent.EventLoop.currentEventLoop = new coherent.EventLoop();
+
+coherent.EventLoop.push = function(target, action, arg)
+{
+  var previous= coherent.EventLoop.currentEventLoop;
+  coherent.EventLoop.currentEventLoop= new coherent.EventLoop();
+  coherent.run(target, action, arg);
+  coherent.EventLoop.currentEventLoop= previous;
+}
+
+coherent.run= function(target, action, arg)
+{
+  if (void(0)==action && 'function'===typeof(target))
+  {
+    action= target;
+    target= null;
+  }
+  
+  var eventLoop= coherent.EventLoop.currentEventLoop,
+      inprogress= eventLoop._inprogress;
+  
+  if (coherent.ExceptionHandler && coherent.ExceptionHandler.enabled)
+  {
+    try
+    {
+      if (!inprogress)
+        eventLoop.begin();
+      action.call(target, arg);
+      if (!inprogress)
+        eventLoop.end();
+    }
+    catch (e)
+    {
+      coherent.ExceptionHandler.handleException(e);
+      
+      //  IE barfs if we rethrow an error and MobileSafari has no facility for
+      //  debugging.
+      if (!coherent.Browser.IE && !coherent.Browser.MobileSafari)
+        throw e;
+    }
+  }
+  else
+  {
+    if (!inprogress)
+      eventLoop.begin();
+    action.call(target, arg);
+    if (!inprogress)
+      eventLoop.end();
+  }
+}
