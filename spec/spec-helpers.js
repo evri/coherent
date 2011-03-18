@@ -54,11 +54,13 @@ function CompletionSignal()
 
 var TestObserver= Class.create({
 
-    constructor: function()
+    constructor: function(minCountToComplete)
     {
-        this.value= undefined;
+        this.value= void(0);
         this.called= false;
         this.count= 0;
+        this.minCountToComplete = (void(0)==minCountToComplete) ? 1 : minCountToComplete;
+        this.complete = this.complete.bind(this);
     },
     
     observeChange: function(change, keyPath, context)
@@ -79,5 +81,10 @@ var TestObserver= Class.create({
         this.keyPath= null;
         this.context= null;
         this.count= 0;
+    },
+    
+    complete: function()
+    {
+      return this.count >= this.minCountToComplete;
     }
 });
