@@ -18,7 +18,17 @@ coherent.generateUid= function()
   return ++(coherent.__nextUid);
 }
 
+/**
+  COHERENT_CONFIG
+  
+  Global configuration options. Available configuration options:
+  
+  - trapUncaughtExceptions (Boolean): Should uncaught exceptions in event handlers
+    be trapped? Default is false.
 
+ */
+window.COHERENT_CONFIG = window.COHERENT_CONFIG || {};
+/*jsl:declare COHERENT_CONFIG*/
 
 
 
