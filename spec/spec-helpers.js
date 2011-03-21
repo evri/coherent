@@ -88,3 +88,11 @@ var TestObserver= Class.create({
       return this.count >= this.minCountToComplete;
     }
 });
+
+window.runsInEventLoop= function(fn)
+{
+  runs(function()
+  {
+    coherent.EventLoop.run(fn);
+  });
+}
