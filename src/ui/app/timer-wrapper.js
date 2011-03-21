@@ -10,23 +10,14 @@
       return null;
       
     if ('string'===typeof(handler))
-    {
-      handler= 'coherent.EventLoop.begin();do {' +
-           handler + '} while (false); ' +
-           'coherent.EventLoop.end();';
-      return window._setTimeout(handler, delay);
-    }
+      handler= new Function(handler);
     
     var args= Array.from(arguments, 2);
     
     /** @ignore */
     function timeoutWrapper()
     {
-      coherent.EventLoop.push(this, handler, args[0]);
-      // coherent.EventLoop.begin();
-      // var value= handler.apply(this, args);
-      // coherent.EventLoop.end();
-      // return value;
+      return coherent.EventLoop.run(this, handler, args[0]);
     }
     return window._setTimeout(timeoutWrapper, delay);
   }
@@ -39,23 +30,14 @@
       return null;
 
     if ('string'===typeof(handler))
-    {
-      handler= 'coherent.EventLoop.begin();do {' +
-           handler + '} while (false); ' +
-           'coherent.EventLoop.end();';
-      return window._setInterval(handler, delay);
-    }
+      handler= new Function(handler);
     
     var args= Array.from(arguments, 2);
     
     /** @ignore */
     function intervalWrapper()
     {
-      coherent.EventLoop.push(this, handler, args[0]);
-      // coherent.EventLoop.begin();
-      // var value= handler.apply(this, args);
-      // coherent.EventLoop.end();
-      // return value;
+      return coherent.EventLoop.run(this, handler, args[0]);
     }
     return window._setInterval(intervalWrapper, delay);
   }

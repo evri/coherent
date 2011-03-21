@@ -34,7 +34,7 @@ distil.onready(function(){
     {
       return function()
       {
-        coherent.EventLoop.push(page, page[fn], window.event);
+        coherent.EventLoop.run(page, page[fn], window.event);
       };
     };
 
@@ -71,7 +71,7 @@ distil.onready(function(){
     {
       return function(event)
       {
-        coherent.EventLoop.push(page, page[fn], event);
+        coherent.EventLoop.run(page, page[fn], event);
       };
     };
 

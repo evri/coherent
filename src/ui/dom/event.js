@@ -240,7 +240,7 @@ Object.extend(Event, {
       
     return function(event)
     {
-      coherent.EventLoop.push(scope, fn, event||window.event);
+      coherent.EventLoop.run(scope, fn, event||window.event);
     };
   }
 

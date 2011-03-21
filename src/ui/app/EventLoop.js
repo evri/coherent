@@ -42,8 +42,10 @@ coherent.EventLoop.push = function(target, action, arg)
   coherent.EventLoop.currentEventLoop= previous;
 }
 
-coherent.run= function(target, action, arg)
+coherent.EventLoop.run= function(target, action, arg)
 {
+  var result;
+  
   if (void(0)==action && 'function'===typeof(target))
   {
     action= target;
@@ -59,7 +61,7 @@ coherent.run= function(target, action, arg)
     {
       if (!inprogress)
         eventLoop.begin();
-      action.call(target, arg);
+      result= action.call(target, arg);
       if (!inprogress)
         eventLoop.end();
     }
@@ -77,8 +79,12 @@ coherent.run= function(target, action, arg)
   {
     if (!inprogress)
       eventLoop.begin();
-    action.call(target, arg);
+    result= action.call(target, arg);
     if (!inprogress)
       eventLoop.end();
   }
+  
+  return result;
 }
+
+coherent.run= coherent.EventLoop.run;

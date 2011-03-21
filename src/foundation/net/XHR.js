@@ -243,9 +243,9 @@
       }
 
       if (succeeded)
-        coherent.EventLoop.push(deferred, deferred.callback, result);
+        coherent.EventLoop.run(deferred, deferred.callback, result);
       else
-        coherent.EventLoop.push(deferred, deferred.failure, err);
+        coherent.EventLoop.run(deferred, deferred.failure, err);
       
       xhr.onreadystatechange = noop;
       xhr = null;
