@@ -65,11 +65,8 @@ coherent.ScrollView= Class.create(coherent.View, {
 
   onDOMModified: function(e)
   {
-    if (e.target.parentNode != this.node)
+    if (e.target.parentNode != this.node || this.__refreshTimer)
       return;
-    
-    if (this.__refreshTimer)
-      this.__refreshTimer.cancel();
       
     this.__refreshTimer= Function.delay(this.refresh, 100, this);
 
