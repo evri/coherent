@@ -41,9 +41,16 @@ describe("ModelObject", function() {
       var object= new this.Model();
       var observer= new TestObserver();
       
-      object.addObserverForKeyPath(observer, 'observeChange', 'abc');
-      object.setValueForKey(123, 'abc');
-      expect(observer.called).toBe(true);
+      runsInEventLoop(function()
+      {
+        object.addObserverForKeyPath(observer, 'observeChange', 'abc');
+        object.setValueForKey(123, 'abc');
+      });
+      
+      runs(function()
+      {
+        expect(observer.called).toBe(true);
+      });
     });
 
     it("should fire change notifications for custom setter methods", function() {
@@ -61,9 +68,16 @@ describe("ModelObject", function() {
       
       var object= new M();
       var observer= new TestObserver();
-      object.addObserverForKeyPath(observer, 'observeChange', 'foo');
-      object.setFoo('bar');
-      expect(observer.called).toBe(true);
+      runsInEventLoop(function()
+      {
+        object.addObserverForKeyPath(observer, 'observeChange', 'foo');
+        object.setFoo('bar');
+      });
+      
+      runs(function()
+      {
+        expect(observer.called).toBe(true);
+      });
     });
 
     it("should be added to the Model's collection when saved", function() {

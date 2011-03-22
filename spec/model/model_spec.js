@@ -111,9 +111,18 @@ describe("coherent.Model", function()
 
       var obj = new M();
       var observer = new TestObserver();
-      obj.addObserverForKeyPath(observer, 'observeChange', 'foo');
-      obj.setFoo('zebra');
-      expect(observer.called).toBe(true);
+
+      runsInEventLoop(function()
+      {
+        obj.addObserverForKeyPath(observer, 'observeChange', 'foo');
+        obj.setFoo('zebra');
+      });
+      
+      runs(function()
+      {
+        expect(observer.called).toBe(true);
+      });
+      
     });
 
     it("should fire change notifications when calling custom setter method", function()
@@ -135,9 +144,15 @@ describe("coherent.Model", function()
 
       var obj = new M();
       var observer = new TestObserver();
-      obj.addObserverForKeyPath(observer, 'observeChange', 'foo');
-      obj.setFoo('zebra');
-      expect(observer.called).toBe(true);
+      runsInEventLoop(function()
+      {
+        obj.addObserverForKeyPath(observer, 'observeChange', 'foo');
+        obj.setFoo('zebra');
+      });
+      runs(function()
+      {
+        expect(observer.called).toBe(true);
+      });
     });
   });
 

@@ -61,13 +61,25 @@ describe("View", function()
       var view = new coherent.View('view', {
             textBinding: 'context.text'
           });
-      view.setupBindings();
-      view.init();
-      view.updateBindings();
-
-      expect(view.node).toHaveText(this.context.text);
-      this.context.setValueForKey(updatedText, "text");
-      expect(view.node).toHaveText(updatedText);
+        
+      runsInEventLoop(function()
+      {
+        view.setupBindings();
+        view.init();
+        view.updateBindings();
+      });
+      
+      runsInEventLoop(function()
+      {
+        expect(view.node).toHaveText(this.context.text);
+        this.context.setValueForKey(updatedText, "text");
+      });
+      
+      runs(function()
+      {
+        expect(view.node).toHaveText(updatedText);
+      });
+      
     });
 
     it("should create binding for data attribute", function()
@@ -75,10 +87,18 @@ describe("View", function()
       var view = new coherent.View('view', {
             dataSourceValueBinding: 'context.data'
           });
-      view.setupBindings();
-      view.init();
-      view.updateBindings();
-      expect(view.bindings).toHaveProperty('dataSourceValue');
+          
+      runsInEventLoop(function()
+      {
+        view.setupBindings();
+        view.init();
+        view.updateBindings();
+      });
+      
+      runs(function()
+      {
+        expect(view.bindings).toHaveProperty('dataSourceValue');
+      });
     });
 
     it("should not create binding for data attribute with an invalid name", function()
@@ -100,13 +120,25 @@ describe("View", function()
       var view = new coherent.View('view', {
             dataSourceValueBinding: 'context.data'
           });
-      view.setupBindings();
-      view.init();
-      view.updateBindings();
-
-      expect(view.node).toHaveAttr('data-source-value', 'Foo');
-      this.context.setValueForKey(updatedData, "data");
-      expect(view.node).toHaveAttr('data-source-value', updatedData);
+      
+      runsInEventLoop(function()
+      {
+        view.setupBindings();
+        view.init();
+        view.updateBindings();
+      });
+      
+      runsInEventLoop(function()
+      {
+        expect(view.node).toHaveAttr('data-source-value', 'Foo');
+        this.context.setValueForKey(updatedData, "data");
+      });
+      
+      runs(function()
+      {
+        expect(view.node).toHaveAttr('data-source-value', updatedData);
+      });
+      
     });
   });
 });

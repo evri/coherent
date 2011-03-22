@@ -93,6 +93,6 @@ window.runsInEventLoop= function(fn)
 {
   runs(function()
   {
-    coherent.EventLoop.run(this, fn);
+    coherent.EventLoop.push(this, fn);
   });
 }
