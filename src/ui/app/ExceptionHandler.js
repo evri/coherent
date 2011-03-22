@@ -1,3 +1,5 @@
+/*jsl:import ../../ui.js*/
+
 coherent.ExceptionHandler= {
 
   handleException: function(e)
