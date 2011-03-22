@@ -38,10 +38,18 @@ describe("Model dependent keys", function()
           lastName: 'Clown'
         });
     var observer = new TestObserver();
-    spyOn(observer, 'observeChange');
 
-    object.addObserverForKeyPath(observer, 'observeChange', 'fullName');
-    object.setValueForKey('The Clown', 'lastName');
-    expect(observer.observeChange).toHaveBeenCalled();
+    runsInEventLoop(function()
+    {
+      object.addObserverForKeyPath(observer, 'observeChange', 'fullName');
+      object.setValueForKey('The Clown', 'lastName');
+    });
+    
+    runs(function()
+    {
+      expect(observer.called).toBe(true);
+      expect(observer.value).toBe("Bozo The Clown");
+    });
+    
   });
 });

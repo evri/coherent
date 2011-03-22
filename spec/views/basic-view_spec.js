@@ -31,16 +31,28 @@ describe("View", function()
     it("should set & update html", function()
     {
       var updatedHTML = "Some new <i>HTML</i>.";
-      var view = new coherent.View('view', {
+      var view;
+      
+      runsInEventLoop(function()
+      {
+        view= new coherent.View('view', {
             htmlBinding: 'context.html'
           });
-      view.setupBindings();
-      view.init();
-      view.updateBindings();
-
-      expect(view.node).toHaveHtml(this.context.html);
-      this.context.setValueForKey(updatedHTML, "html");
-      expect(view.node).toHaveHtml(updatedHTML);
+        view.setupBindings();
+        view.init();
+        view.updateBindings();
+      });
+      
+      runsInEventLoop(function()
+      {
+        expect(view.node).toHaveHtml(this.context.html);
+        this.context.setValueForKey(updatedHTML, "html");
+      });
+      
+      runs(function()
+      {
+        expect(view.node).toHaveHtml(updatedHTML);
+      });
     });
 
     it("should set & update text", function()
