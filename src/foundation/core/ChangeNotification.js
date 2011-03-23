@@ -123,4 +123,11 @@ coherent.ChangeNotification.scheduleNotifications = function()
     if (newValue && newValue.addObserverForKeyPath)
       coherent.KVO.linkChildToParent(newValue, this, will.keyInfo);
   }
+  
+  //  If any of the change notifications resulted in further change notifications
+  //  schedule a timer event to drain those notifications. The actual function
+  //  doesn't have to do anything, because the timer event handler will call
+  //  coherent.EventLoop#end() which will drain the pending notifications.
+  if (eventLoop.notificationQueue)
+    Function.nextTick(function(){});
 }
