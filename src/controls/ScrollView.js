@@ -477,6 +477,9 @@ coherent.ScrollView= Class.create(coherent.View, {
       this.resetPosition();
       return;
     }
+    
+    // TODO: This should probably use pixel values, not page values...
+    this.callDelegate('scrollViewWillScrollTo', this, this.pageX, this.pageY);
 
     this.moved = true;
     this.setTransitionTime(runtime || 350);
@@ -489,6 +492,9 @@ coherent.ScrollView= Class.create(coherent.View, {
       //  TODO: This should probably get attached to the node not the document
       this._transitionHandler= Event.observe(document, TRANSITION_END_EVENT,
                                              Event.handler(this, 'ontransitionend'));
+
+    // TODO: This should probably use pixel values, not page values...
+    this.callDelegate('scrollViewDidScrollTo', this, this.pageX, this.pageY);
   },
         
   scrollToPage: function(pageX, pageY, runtime)
