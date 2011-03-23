@@ -120,7 +120,7 @@
       window[jsonpFnName] = function(data)
       {
         if (deferred)
-          deferred.callback(data);
+          coherent.EventLoop.run(deferred, deferred.callback, data);
 
         window[jsonpFnName] = undefined;
 
