@@ -100,6 +100,13 @@ if (!Function.nextTick)
     
     return function(scope, fn, args)
     {
+      if ('function'===typeof(scope))
+      {
+        args= fn;
+        fn= scope;
+        scope= null;
+      }
+      
       if (!tickTimer)
         tickTimer= window.setTimeout(tickHandler, 0);
       tickerList.push({

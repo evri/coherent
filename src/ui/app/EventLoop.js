@@ -19,6 +19,7 @@ coherent.EventLoop = Class._create({
   {
     this._start= new Date().getTime();
     this._inprogress= true;
+    // console.log("*** Starting EventLoop");
   },
   
   end: function()
@@ -28,6 +29,7 @@ coherent.EventLoop = Class._create({
     
     this._start= null;
     this._inprogress= false;
+    // console.log("*** Finished EventLoop");
   }
   
 });
