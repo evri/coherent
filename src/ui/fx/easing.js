@@ -41,21 +41,21 @@ coherent.easing= (function(){
 
     inBack: function(t, s)
     {
-      if (s == undefined) s = 1.70158;
+      if (s == void(0)) s = 1.70158;
       return t*t*((s+1)*t - s);
     },
 
     // back easing out - moving towards target, overshooting it slightly, then reversing and coming back to target
     outBack: function(t, s)
     {
-      if (s == undefined) s = 1.70158;
+      if (s == void(0)) s = 1.70158;
       t= t-1;
       return (t*t*((s+1)*t + s) + 1);
     },
 
     outBackStrong: function(t, s)
     {
-      if (s == undefined) s = 1.70158*1.5;
+      if (s == void(0)) s = 1.70158*1.5;
       t= t-1;
       return (t*t*((s+1)*t + s) + 1);
     }

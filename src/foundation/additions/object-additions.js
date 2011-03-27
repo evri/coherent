@@ -299,7 +299,7 @@ Object.merge = function(obj1, obj2)
      */
     function addValue(value)
     {
-      if (null!==value && 'undefined'!==typeof(value))
+      if (void(0)!=value)
         value= encodeURIComponent(value);
       else
         value= '';

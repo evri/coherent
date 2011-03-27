@@ -81,7 +81,7 @@ coherent.Binding= Class._create({
     var value= this.cachedModelValue;
     //  If the value is null, undefined or an empty array then initialise from
     //  the view's DOM element.
-    return (null===value || 'undefined'===typeof(value) || (value.splice && !value.length));
+    return (void(0)==value || (value.splice && !value.length));
   },
   
   /** Begin tracking changes to the value for this Binding. This method adds
@@ -150,7 +150,7 @@ coherent.Binding= Class._create({
     if (!this.transformer)
       return value;
     if (!this.transformer.reverseTransformedValue)
-      return undefined;
+      return void(0);
     if ('array'!==coherent.typeOf(value) || this.transformer.transformsArrayValues)
       return this.transformer.reverseTransformedValue(value);
     
@@ -272,7 +272,7 @@ coherent.Binding= Class._create({
    */
   markerTypeFromValue: function(value)
   {
-    if (null===value || 'undefined'===typeof(value) || ""===value)
+    if (void(0)==value || ""===value)
       return coherent.NullValueMarkerType;
     if (coherent.Markers.MultipleValues===value)
       return coherent.MultipleValuesMarkerType;

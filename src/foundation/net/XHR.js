@@ -5,11 +5,13 @@
 /*jsl:declare ActiveXObject*/
 
 /** @name XHR
-    @namespace
+  @namespace
  */
-(function(){
+(function()
+{
 
-  function noop(){}
+  function noop()
+  {}
 
   var FORM_CONTENT_TYPE = "application/x-www-form-urlencoded",
       JSON_CONTENT_TYPE = "application/json",
@@ -19,17 +21,17 @@
       JSON_OPTIONS = {
         contentType: JSON_CONTENT_TYPE
       };
-  
+
   /**
     getTransport() -> XMLHttpRequest
-    
+  
     Retrieve an XMLHttpRequest object for each browser.
    */
 
   var getTransport = function()
-  {
-    throw new Error('XMLHttpRequest not available.');
-  };
+      {
+        throw new Error('XMLHttpRequest not available.');
+      };
 
   //  Everything but IE gets the native XMLHttpRequest
   if ('undefined' !== typeof(window.XMLHttpRequest))
@@ -69,12 +71,80 @@
 
   var jsonpIndex = 0;
 
+  function sendViaJsonP(url, options)
+  {
+    var head = document.getElementsByTagName("head")[0] || document.documentElement;
+    var script = document.createElement("script");
+    var done = false;
+
+    var jsonpParam = 'string' === typeof(options.jsonp) ? options.jsonp : 'callback';
+    var jsonpFnName = 'jsonp' + (++jsonpIndex);
+
+    if (-1 === url.indexOf('?'))
+      url += '?';
+    else if ('&' !== url.slice(-1))
+      url += '&';
+    url += jsonpParam + '=' + jsonpFnName;
+
+    script.src = url;
+
+    function cancelJsonP()
+    {
+      //  clear out the deferred reference to prevent the callback from being
+      //  invoked when the script finally loads.
+      deferred = null;
+    }
+
+    window[jsonpFnName] = function(data)
+    {
+      if (deferred)
+        coherent.EventLoop.run(deferred, deferred.callback, data);
+
+      window[jsonpFnName] = void(0);
+
+      try
+      {
+        delete window[jsonpFnName];
+      }
+      catch (err)
+      {
+        //  Technically, I should be able to delete the property, but not all
+        //  browsers behave correctly. Just ignore the error.
+      }
+
+      if (head && script)
+        head.removeChild(script);
+    }
+
+    // Attach handlers for all browsers
+    script.onload = script.onreadystatechange = function()
+    {
+      if (done || (this.readyState && this.readyState !== 'loaded' && this.readyState !== 'complete'))
+        return;
+
+      done = true;
+
+      //  Clear circular reference to the event handlers which contain references
+      //  to the script, which would cause a memory leak on IE.
+      script.onload = script.onreadystatechange = null;
+      if (head && script.parentNode)
+        head.removeChild(script);
+    };
+
+    // Use insertBefore instead of appendChild  to circumvent an IE6 bug.
+    // This arises when a base node is used (#2709 and #4378).
+    head.insertBefore(script, head.firstChild);
+
+    var deferred = new coherent.Deferred(cancelJsonP);
+    return deferred;
+  }
+
   /** Send a XHR request.
-        @inner
-        @param {String} url - The URL of the endpoint
-        @param {String} method - The HTTP method to use
-        @param {Object} options - Options...
-        @type coherent.Deferred
+    @inner
+    @param {String} url - The URL of the endpoint
+    @param {String} method - The HTTP method to use
+    @param {Object} options - Options...
+    @type coherent.Deferred
    */
 
   function send(url, method, options)
@@ -99,62 +169,6 @@
       XHR.numberOfActiveRequests--;
     }
 
-    function sendViaJsonP(url)
-    {
-      var head = document.getElementsByTagName("head")[0] || document.documentElement;
-      var script = document.createElement("script");
-      var done = false;
-
-      var jsonpParam = 'string' === typeof(options.jsonp) ? options.jsonp : 'callback';
-      var jsonpFnName = 'jsonp' + (++jsonpIndex);
-      var undefined;
-
-      if (-1 === url.indexOf('?'))
-        url += '?';
-      else if ('&' !== url.slice(-1))
-        url += '&';
-      url += jsonpParam + '=' + jsonpFnName;
-
-      script.src = url;
-
-      window[jsonpFnName] = function(data)
-      {
-        if (deferred)
-          coherent.EventLoop.run(deferred, deferred.callback, data);
-
-        window[jsonpFnName] = undefined;
-
-        try
-        {
-          delete window[jsonpFnName];
-        }
-        catch (err)
-        {}
-
-        if (head && script)
-          head.removeChild(script);
-      }
-
-      // Attach handlers for all browsers
-      script.onload = script.onreadystatechange = function()
-      {
-        if (done || (this.readyState && this.readyState !== 'loaded' && this.readyState !== 'complete'))
-          return;
-
-        done = true;
-
-        // Handle memory leak in IE
-        script.onload = script.onreadystatechange = null;
-        if (head && script.parentNode)
-          head.removeChild(script);
-      };
-
-      // Use insertBefore instead of appendChild  to circumvent an IE6 bug.
-      // This arises when a base node is used (#2709 and #4378).
-      head.insertBefore(script, head.firstChild);
-
-      return deferred;
-    }
 
     function readyStateChanged()
     {
@@ -246,7 +260,7 @@
         coherent.EventLoop.run(deferred, deferred.callback, result);
       else
         coherent.EventLoop.run(deferred, deferred.failure, err);
-      
+
       xhr.onreadystatechange = noop;
       xhr = null;
       XHR.numberOfActiveRequests--;
@@ -256,30 +270,29 @@
     var body = options.body || "";
     var async = !options.sync;
     var headers = options.headers || {};
-    var deferred = new coherent.Deferred(cancel);
     var xhrSent = false;
 
     //  default values
     method = (method || GET_METHOD).toUpperCase();
 
-    if (GET_METHOD===method && JSON_CONTENT_TYPE===options.contentType)
+    if (GET_METHOD === method && JSON_CONTENT_TYPE === options.contentType)
     {
       console.log("content-type of JSON doesn't make sense with GET method, using form encoding");
-      options.contentType= FORM_CONTENT_TYPE;
+      options.contentType = FORM_CONTENT_TYPE;
     }
-    
+
     switch (options.contentType)
     {
       case JSON_CONTENT_TYPE:
-        queryString= JSON.stringify(options.parameters || {});
+        queryString = JSON.stringify(options.parameters || {});
         break;
-      
+
       case FORM_CONTENT_TYPE:
       default:
-        queryString= Object.toQueryString(options.parameters || {});
+        queryString = Object.toQueryString(options.parameters || {});
         break;
     }
-    
+
     if (!body && (POST_METHOD === method || PUT_METHOD === method))
     {
       body = queryString;
@@ -289,7 +302,7 @@
     if (GET_METHOD === method && !options.allowCache)
     {
       if (XHR.USE_CACHE_CONTROL || options.useCacheControl)
-        headers["cache-control"]= "max-age=0";
+        headers["cache-control"] = "max-age=0";
       else
       {
         var cache_bust = "__cache_buster=" + (new Date()).getTime();
@@ -310,9 +323,10 @@
     }
 
     if (options.jsonp)
-      return sendViaJsonP(url);
+      return sendViaJsonP(url, options);
 
     var xhr = getTransport();
+    var deferred = new coherent.Deferred(cancel);
 
     if (options.responseContentType && xhr.overrideMimeType)
       xhr.overrideMimeType(options.responseContentType);
@@ -346,9 +360,9 @@
         window.clearTimeout(timeout);
       xhr.onreadystatechange = noop;
 
-      var err= new Error("Failed to send XHR");
-      err.error= e;
-      
+      var err = new Error("Failed to send XHR");
+      err.error = e;
+
       xhr.onreadystatechange = noop;
       xhr = null;
       XHR.numberOfActiveRequests--;
@@ -356,12 +370,12 @@
       deferred.failure(err);
       return deferred;
     }
-    
+
     if (!async)
       readyStateChanged();
 
     //  Stash the actual request object so callbacks may use it if necessary.
-    deferred.request= xhr;
+    deferred.request = xhr;
 
     XHR.numberOfActiveRequests++;
     return deferred;
@@ -372,14 +386,14 @@
   {
 
     numberOfActiveRequests: 0,
-    
+
     /**
       XHR.USE_CACHE_CONTROL
-      
+    
       Should the cache-control header be used to prevent caching? Default is false.
      */
     USE_CACHE_CONTROL: false,
-    
+
     get: function(url, parameters, options)
     {
       return XHR.request(GET_METHOD, url, parameters, options);
@@ -394,7 +408,7 @@
     {
       return XHR.request(POST_METHOD, url, parameters, Object.extend(options, JSON_OPTIONS));
     },
-    
+
     put: function(url, parameters, options)
     {
       return XHR.request(PUT_METHOD, url, parameters, options);

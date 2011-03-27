@@ -75,7 +75,7 @@ var TestObserver= Class.create({
     
     reset: function()
     {
-        this.value= undefined;
+        this.value= void(0);
         this.called= false;
         this.change= null;
         this.keyPath= null;
