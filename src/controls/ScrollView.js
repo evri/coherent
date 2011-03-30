@@ -415,7 +415,7 @@ coherent.ScrollView= Class.create(coherent.View, {
       if (this.moved)
       {
         // TODO: This should probably use pixel values, not page values...
-        this.callDelegate('scrollViewDidScrollTo', self, self.pageX, this.pageY);
+        this.callDelegate('scrollViewDidScrollTo', this, this.pageX, this.pageY);
         this.moved = false;
       }
 
