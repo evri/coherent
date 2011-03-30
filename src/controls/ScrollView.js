@@ -468,7 +468,11 @@ coherent.ScrollView= Class.create(coherent.View, {
     time = Math.round(Math.max(Math.abs(this.x - x) / this.viewportWidth * 500,
                                Math.abs(this.y - y) / this.viewportHeight * 500));
 
-    return { x: x, y: y, time: time };
+    return {
+      x: isNaN(x) ? 0 : x,
+      y: isNaN(y) ? 0 : y,
+      time: time
+    };
   },
 
   scrollTo: function(destX, destY, runtime)
