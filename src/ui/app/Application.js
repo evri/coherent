@@ -43,14 +43,14 @@ coherent.Application= Class.create(coherent.Responder, {
   
   onpopstate: function(event)
   {
-    if (this.__poppingState || !this.__navigationController || !this.applicationRootUrl)
-      return;
-      
-    var path= document.location.pathname;
-    
-    var viewController= this.viewControllerForPath(path);
-    if (viewController)
-      this.__navigationController.setTopViewController(viewController, event.state);
+    // if (this.__poppingState || !this.__navigationController || !this.applicationRootUrl)
+    //   return;
+    //   
+    // var path= document.location.pathname;
+    // 
+    // var viewController= this.viewControllerForPath(path);
+    // if (viewController)
+    //   this.__navigationController.setTopViewController(viewController, event.state);
   },
   
   pushState: function(viewController)
