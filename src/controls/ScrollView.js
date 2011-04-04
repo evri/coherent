@@ -33,6 +33,7 @@ coherent.ScrollView= Class.create(coherent.View, {
   shrinkScrollbar: MOBILE_SAFARI || !HAS_TOUCH,
   desktopCompatibility: false,
   indicatorStyle: null,
+  maxTouches: 1,
   
   constructor: function(node, parameters)
   {
@@ -210,14 +211,24 @@ coherent.ScrollView= Class.create(coherent.View, {
   ontouchstart: function(e)
   {
     var matrix;
-    
+
     if (!this.enabled())
       return;
 
     e.preventDefault();
     e.stopPropagation();
+
+    var touchCount= HAS_TOUCH ? e.touches.length : 1;
+    if (touchCount > this.maxTouches)
+    {
+      this.invalidTouch= true;
+      this.dragging= false;
+      this.resetPosition();
+      return;
+    }
     
     this.dragging = true;
+    this.invalidTouch= false;
 
     this.moved = false;
     this.distX = 0;
@@ -252,10 +263,13 @@ coherent.ScrollView= Class.create(coherent.View, {
 
   ontouchmove: function(e)
   {
-    e.preventDefault();
-
     if (!this.dragging)
+    {
+      this.base(e);
       return;
+    }
+    
+    e.preventDefault();
 
     var pageX = HAS_TOUCH ? e.changedTouches[0].pageX : e.pageX,
         pageY = HAS_TOUCH ? e.changedTouches[0].pageY : e.pageY,
@@ -317,6 +331,12 @@ coherent.ScrollView= Class.create(coherent.View, {
         newPositionX = this.x, newPositionY = this.y,
         snap;
 
+    if (this.invalidTouch)
+    {
+      this.invalidTouch= HAS_TOUCH ? e.touches.length>0 : false;
+      return;
+    }
+    
     if (!this.moved || !this.dragging)
     {
       this.resetPosition();

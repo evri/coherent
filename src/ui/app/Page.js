@@ -438,21 +438,20 @@ coherent.Page = Class.create(coherent.Responder, {
 
   _ontouchstart: function(event)
   {
-    if (this._touchstartView)
-      return;
-
     if (this.__mouseEventListeners.length)
       this.__mouseEventListeners.forEach(function(l)
       {
         l.ontouchstart && l.ontouchstart(event);
       });
 
-    var view = this.targetViewForEvent(event);
-    if (!view)
-      return;
-
-    this._touchstartView = view;
-    view.ontouchstart(event);
+    if (!this._touchstartView)
+    {
+      var view = this.targetViewForEvent(event);
+      if (!view)
+        return;
+      this._touchstartView = view;
+    }
+    this._touchstartView.ontouchstart(event);
   },
 
   ontouchmove: function(event)
@@ -483,8 +482,8 @@ coherent.Page = Class.create(coherent.Responder, {
       return;
 
     this._touchstartView.ontouchend(event);
-
-    this._touchstartView = null;
+    if (!event.touches.length)
+      this._touchstartView = null;
   },
 
   _ontouchcancel: function(event)
