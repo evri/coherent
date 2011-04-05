@@ -246,6 +246,8 @@ coherent.ViewController = Class.create(coherent.Responder, {
       Element.updateClass(modalNode, [], [transitionStyle, "reverse", "in"]);
       if (callback)
         callback(this);
+      //  Clean up the DOM
+      modalNode.parentNode.removeChild(modalNode);
     }
 
     var modalNode = this.__modalNode;
