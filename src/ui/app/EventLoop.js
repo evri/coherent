@@ -90,3 +90,5 @@ coherent.EventLoop.run= function(target, action, arg)
 }
 
 coherent.run= coherent.EventLoop.run;
+
+Object.markMethods(coherent.EventLoop);
