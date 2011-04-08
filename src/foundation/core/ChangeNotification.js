@@ -117,11 +117,11 @@ coherent.ChangeNotification.scheduleNotifications = function()
 
     //  stop observing changes to old value
     if (previousValue && previousValue.addObserverForKeyPath)
-      coherent.KVO.unlinkChildFromParent(previousValue, this, will.keyInfo);
+      coherent.KVO.unlinkChildFromParent(previousValue, will.obj, will.keyInfo);
 
     //  observe changes to the new value
     if (newValue && newValue.addObserverForKeyPath)
-      coherent.KVO.linkChildToParent(newValue, this, will.keyInfo);
+      coherent.KVO.linkChildToParent(newValue, will.obj, will.keyInfo);
   }
   
   //  If any of the change notifications resulted in further change notifications
