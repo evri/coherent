@@ -15,7 +15,8 @@ coherent.Model.ClassMethods = {
     the Model. By default, the uniqueId is 'id'.
    */
   uniqueId: 'id',
-
+  indexInstances: coherent.Model.INDEX_INSTANCES,
+  
   __init: function()
   {
     this.objects= {};
@@ -32,6 +33,9 @@ coherent.Model.ClassMethods = {
    */
   add: function(model)
   {
+    if (!this.indexInstances)
+      return;
+      
     var id= model.id();
     if (void(0)==id)
     {

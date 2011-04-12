@@ -67,7 +67,8 @@ coherent.Model = (function()
     PRIMITIVE_TYPES: PRIMITIVE_TYPES,
 
     USE_PROPERTIES: false,
-
+    INDEX_INSTANCES: true,
+    
     create: function(name, decl)
     {
       if (name in models)
