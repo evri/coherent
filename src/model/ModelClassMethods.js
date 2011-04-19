@@ -205,10 +205,8 @@ coherent.Model.ClassMethods = {
     function oncomplete(json)
     {
       delete this.__fetching[id];
-      console.profile('fetch');
       var obj= this.fromJSON(json);
       obj.awakeFromFetch();
-      console.profileEnd('fetch');
       return obj;
     }
     
