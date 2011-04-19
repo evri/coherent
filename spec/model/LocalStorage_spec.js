@@ -55,19 +55,34 @@ describe("LocalStorage", function() {
   });
   
   it("should return the data saved when loaded", function() {
-    var original= new this.Model({ zebra: "foo" });
-    original.save();
-    //  Remove the original from the model's collection
-    this.Model.clear();
-    var M= this.Model;
     
-    this.Model.fetch(original.id(), function(obj, error) {
-      expect(obj).not.toBeNull();
-      expect(error).toBeFalsy();
-      expect(obj).toBeInstanceOf(M);
-      expect(obj.valueForKey('zebra')).toBe("foo");
-      expect(obj.__uid).not.toBe(original.__uid);
+    var complete= new CompletionSignal(),
+        original= new this.Model({ zebra: "foo" });
+    
+    runs(function()
+    {
+      original.save();
+      //  Remove the original from the model's collection
+      this.Model.clear();
     });
+    
+    runs(function()
+    {
+      var M= this.Model;
+      var d= this.Model.fetch(original.id());
+
+      d.addCallback(function(obj) {
+        expect(obj).not.toBeNull();
+        expect(obj).toBeInstanceOf(M);
+        expect(obj.valueForKey('zebra')).toBe("foo");
+        expect(obj.__uid).not.toBe(original.__uid);
+        complete.set(true);
+      });
+      
+    });
+    
+    waitsFor(complete);
+    
   });
   
 });

@@ -22,9 +22,9 @@ define("coherent", function(coherent)
       else
         value = key ? object[keyname] : Object.get(object, keyname);
 
-      if (void(0)==value)
+      if (void(0) == value)
         return ':' + keyname;
-        
+
       if (slash && '/' !== value.charAt(0))
         return '/' + value;
       else
@@ -42,15 +42,11 @@ define("coherent", function(coherent)
       allowCache: true,
       responseContentType: 'application/json'
     },
-    PREFETCH_OPTIONS: {
-      allowCache: true,
-      responseContentType: 'text/plain'
-    },
 
     constructor: function(model, params)
     {
       this.model = model;
-      this.__fetching= {};
+      this.__fetching = {};
       Object.extend(this, params);
     },
 
@@ -70,28 +66,20 @@ define("coherent", function(coherent)
       return json;
     },
 
-    prefetch: function(object)
+    fetch: function(id, refresh)
     {
-      var id = object.valueForKey ? object.valueForKey('id') : Object.get('id');
-      if (this.__fetching[id])
-        return this.__fetching[id];
-        
-      var url = pathFromStringByReplacingParameters(this.resource, object);
-      return XHR.get(url, null, this.PREFETCH_XHR_OPTIONS || this.XHR_OPTIONS);
-    },
+      var obj = {
+            id: id
+          };
+      var url = pathFromStringByReplacingParameters(this.resource, obj);
 
-    fetch: function(object, refresh)
-    {
-      var id = object.valueForKey ? object.valueForKey('id') : Object.get('id');
-      var url = pathFromStringByReplacingParameters(this.resource, object);
-      
-      var d= this.__fetching[id];
+      var d = this.__fetching[id];
       if (d)
         return d;
-      
-      var options= refresh ? this.REFRESH_XHR_OPTIONS : this.XHR_OPTIONS;  
-      this.__fetching[id]= d = XHR.get(url, null, options);
-      
+
+      var options = refresh ? this.REFRESH_XHR_OPTIONS : this.XHR_OPTIONS;
+      this.__fetching[id] = d = XHR.get(url, null, options);
+
       function removeFetching(stuff)
       {
         delete this.__fetching[id];

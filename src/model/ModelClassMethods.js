@@ -15,13 +15,14 @@ coherent.Model.ClassMethods = {
     the Model. By default, the uniqueId is 'id'.
    */
   uniqueId: 'id',
-  indexInstances: coherent.Model.INDEX_INSTANCES,
   
   __init: function()
   {
     this.objects= {};
     this.newObjects= {};
     this.collection= [];
+    this.__fetching= {};
+    this.indexInstances= coherent.Model.INDEX_INSTANCES;
   },
   
   /**
@@ -169,8 +170,11 @@ coherent.Model.ClassMethods = {
     
     if (missing)
       obj= new this();
-      
-    obj.merge(hash);
+    
+    // console.log("!!! " + this.modelName + ".fromJSON: id=" + id + " missing=" + missing);
+    
+    //  No need to generate change notifications if the object was created
+    obj.merge(hash, missing);
 
     if (missing && void(0)!=obj.id())
       this.add(obj);
@@ -178,54 +182,47 @@ coherent.Model.ClassMethods = {
   },
 
   /**
-    coherent.Model.fetch(id, callback)
+    coherent.Model.fetch(id) -> coherent.Deferred
   
     - id: The ID of the model object that should be loaded.
   
     This method asks the persistence layer associated with this Model to load an
     object based on its ID.
    */
-  fetch: function(id, callback)
+  fetch: function(id)
   {
     if (!this.persistence)
       throw new Error("No persistence layer defined");
 
-    var obj = this.fromJSON(id);
-    var d = obj.fetch();
-
-    if (callback)
+    var obj= this.find(id);
+    if (obj)
+      return coherent.Deferred.createCompleted(obj);
+    
+    var d= this.__fetching[id];
+    if (d)
+      return d;
+      
+    function oncomplete(json)
     {
-      d.addCallback(function(obj)
-      {
-        callback(obj, null);
-      });
-      d.addErrorHandler(function(error)
-      {
-        callback(null, error);
-      });
+      delete this.__fetching[id];
+      console.profile('fetch');
+      var obj= this.fromJSON(json);
+      obj.awakeFromFetch();
+      console.profileEnd('fetch');
+      return obj;
     }
-    return obj;
-  },
-
-  /**
-    coherent.Model.prefetch(id)
-  
-    - id: The ID of the model object that should be loaded into the cache
-  
-    This method asks the persistence layer associated with this Model to warm up
-    its cache to include this object. This speeds up applications without incurring
-    the memory overhead of creating all the objects associated with the model.
-   */
-  prefetch: function(id)
-  {
-    if (!this.persistence)
-      throw new Error("No persistence layer defined");
-
-    var obj = {
-          id: id
-        };
-    obj[this.uniqueId] = id;
-    this.persistence.prefetch(obj);
+    
+    function onfailed(error)
+    {
+      delete this.__fetching[id];
+      return error;
+    }
+    
+    d = this.__fetching[id]= this.persistence.fetch(id);
+    d.addMethods(oncomplete, onfailed, this);
+    return d;
   }
-
+  
 };
+
+Object.markMethods(coherent.Model.ClassMethods);

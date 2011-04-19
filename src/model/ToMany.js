@@ -42,9 +42,11 @@ coherent.Model.ToMany = Class._create(coherent.Model.Property, {
     if (null === array)
       return [];
 
-    var len = array.length;
-    var value;
-    var modelName= this.type.modelName;
+    var len = array.length,
+        modelName= this.type.modelName,
+        klass= context[modelName],
+        result= [],
+        value;
     
     while (len--)
     {
@@ -52,7 +54,7 @@ coherent.Model.ToMany = Class._create(coherent.Model.Property, {
       if (modelName)
       {
         if (void(0) != value)
-          array[len]= context[modelName].fromJSON(value);
+          result[len]= klass.fromJSON(value);
         continue;
       }
       
@@ -66,10 +68,10 @@ coherent.Model.ToMany = Class._create(coherent.Model.Property, {
       if (this.primitive && Date != this.type)
         value = value.valueOf();
 
-      array[len] = value;
+      result[len] = value;
     }
 
-    return array;
+    return result;
   },
 
   relateObjects: function(object, relatedObject)

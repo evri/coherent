@@ -5,7 +5,8 @@
 distil.onready(function(){
 
   var app= coherent.Application.shared;
-
+  Object.markMethods(coherent);
+  
   coherent.run(app, function()
   {
     app.loaded= true;

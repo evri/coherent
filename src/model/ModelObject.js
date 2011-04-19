@@ -19,7 +19,6 @@
       this.base(hash);
       this.original= this.changes;
       this.commit();
-      this.__fault= true;
       //  TODO: This shouldn't really point here...
       this.__context= coherent.Model.models;
     },
@@ -79,7 +78,11 @@
         info = schema[keyTranslation[key] || key];
         if (!info)
         {
-          coherent.KVO.adaptTree(hash[key]);
+          value= hash[key];
+          if (!value || value.valueForKey)
+            continue;
+          console.log('Calling adaptTree for ' + this.constructor.modelName + '#' + key);
+          coherent.KVO.adaptTree(value);
           continue;
         }
         if (!(key in this.changes))
@@ -94,6 +97,7 @@
 
       if (!suppressNotifications)
       {
+        console.log('merge ' + this.constructor.modelName + ':' + this.id() + ' sending notifications');
         var len = keys.length;
         for (var i = 0; i < len; ++i)
           this.didChangeValueForKey(keys[i]);
@@ -171,23 +175,6 @@
         this.changes[uniqueId] = id;
       else
         console.log("Attempting to set the ID of an existing object: original ID=", this.original[uniqueId], "new value=", id);
-    },
-
-    isFault: function()
-    {
-      return this.__fault;
-    },
-    
-    setFault: function(fault)
-    {
-      if (fault)
-      {
-        this.willBecomeFault();
-        this.__fault= true;
-        this.didBecomeFault();
-      }
-      else
-        this.__fault= false;
     },
 
     isNew: function()
@@ -339,50 +326,40 @@
       return true;
     },
 
-    willBecomeFault: function()
+    reload: function()
     {
-    },
-    
-    didBecomeFault: function()
-    {
-    },
-    
-    prefetch: function()
-    {
-      var model = this.constructor;
-      if (!this.__fault || !model.persistence || this.isNew())
-        return;
-      model.persistence.prefetch(this);
-    },
+      var model= this.constructor;
+      var id= this.id();
+      
+      if (!model.persistence)
+        throw new Error("No persistence layer defined");
 
-    fetch: function(refresh)
-    {
-      var model = this.constructor;
-
-      if (!refresh && !this.__fault)
+      var d= this.__fetching;
+      if (d)
+        return d;
+      
+      if (void(0)==id)
         return coherent.Deferred.createCompleted(this);
         
+      console.log('reloading ' + model.modelName + ':' + id);
+      
       function oncomplete(json)
       {
+        delete this.__fetching;
         this.merge(json);
-        this.commit();
         this.awakeFromFetch();
-        this.__fetching = null;
-        this.__fault= false;
+        console.log('complete ' + model.modelName + ':' + id);
         return this;
       }
-
-      if (this.__fetching)
-        return this.__fetching;
-
-      var d;
-
-      if (!model.persistence || this.isNew())
-        return coherent.Deferred.createCompleted(this);
-
-      d = model.persistence.fetch(this, refresh);
-      d.addCallback(oncomplete, this);
-      this.__fetching = d;
+    
+      function onfailed(error)
+      {
+        delete this.__fetching;
+        return error;
+      }
+    
+      d = this.__fetching= model.persistence.fetch(id);
+      d.addMethods(oncomplete, onfailed, this);
       return d;
     },
     

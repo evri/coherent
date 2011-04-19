@@ -51,14 +51,8 @@ coherent.LocalStorage= Class.create({
     this.writeIndex(index);
   },
   
-  prefetch: function(object)
+  fetch: function(id)
   {
-    return this.fetch(object);
-  },
-  
-  fetch: function(object)
-  {
-    var id= object.id();
     var data= localStorage.getItem(id);
     if (data)
       data= JSON.parse(data);
@@ -91,13 +85,12 @@ coherent.LocalStorage= Class.create({
     return d;
   },
   
-  destroy: function(object)
+  destroy: function(id)
   {
-    var id= object.id();
     localStorage.removeItem(id);
     this.removeFromIndex(id);
     var d= new coherent.Deferred();
-    d.callback(object);
+    d.callback(id);
     return d;
   },
   
