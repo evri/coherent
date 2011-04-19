@@ -44,17 +44,23 @@ window.COHERENT_CONFIG = window.COHERENT_CONFIG || {};
     @param o the object for which the type is requested
     @returns {String} a string with the type of the object.
  */
-coherent.typeOf=function(o)
+coherent.typeOf=(function()
 {
-  if (null===o)
-    return "null";
-
-  var t= typeof(o);
-  if ("object"!==t && "function"!==t)
-    return t;
+  var table= {},
+      objectToString= {}.toString;
     
-  return {}.toString.call(o).slice(8,-1).toLowerCase();
-}
+  function typeOf(o)
+  {
+    if (null===o)
+      return "null";
+    
+    var t= objectToString.call(o);
+    
+    return table[t] || (table[t]= t.slice(8,-1).toLowerCase());
+  }
+
+  return typeOf;
+})();
 
 /** Compare two values. This handles pretty much every type possible. When the
     types don't match, the values are first converted to strings and then
