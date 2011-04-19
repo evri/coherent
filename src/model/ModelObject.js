@@ -81,7 +81,6 @@
           value= hash[key];
           if (!value || value.valueForKey)
             continue;
-          console.log('Calling adaptTree for ' + this.constructor.modelName + '#' + key);
           coherent.KVO.adaptTree(value);
           continue;
         }
@@ -97,7 +96,6 @@
 
       if (!suppressNotifications)
       {
-        console.log('merge ' + this.constructor.modelName + ':' + this.id() + ' sending notifications');
         var len = keys.length;
         for (var i = 0; i < len; ++i)
           this.didChangeValueForKey(keys[i]);
@@ -341,14 +339,11 @@
       if (void(0)==id)
         return coherent.Deferred.createCompleted(this);
         
-      console.log('reloading ' + model.modelName + ':' + id);
-      
       function oncomplete(json)
       {
         delete this.__fetching;
         this.merge(json);
         this.awakeFromFetch();
-        console.log('complete ' + model.modelName + ':' + id);
         return this;
       }
     
