@@ -260,7 +260,6 @@ Class.extend(Array, {
                         [object], [oldValue], [index]);
     this.notifyObserversOfChangeForKeyPath(change,
                          coherent.KVO.kAllPropertiesKey);
-    
   },
 
   /** Replace an array of objects with new objects. Fires a single change

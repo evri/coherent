@@ -28,12 +28,10 @@ coherent.ObserverEntry=Class._create({
   observeChangeForKeyPath: function(change, keyPath)
   {
     //  check to see whether this observer has already been notified
-    if (!this.callback || !this.observer ||
-      this.observer.__uid in change.notifiedObserverUids)
+    if (!this.callback || !this.observer || this.observer.__uid in change.notifiedObserverUids)
       return;
 
-    this.callback.call(this.observer, change, keyPath,
-               this.context);
+    this.callback.call(this.observer, change, keyPath, this.context);
   }
   
 });

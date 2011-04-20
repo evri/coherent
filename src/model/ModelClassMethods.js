@@ -171,8 +171,6 @@ coherent.Model.ClassMethods = {
     if (missing)
       obj= new this();
     
-    // console.log("!!! " + this.modelName + ".fromJSON: id=" + id + " missing=" + missing);
-    
     //  No need to generate change notifications if the object was created
     obj.merge(hash, missing);
 

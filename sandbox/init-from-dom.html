@@ -83,7 +83,7 @@
   
     window.dump= function(obj)
     {
-      return JSON.parse(JSON.stringify(obj, coherent.KVO.jsonReplacer));
+      return JSON.parse(JSON.stringify(obj));
     }
     
     NIB('init-from-dom', {
@@ -179,7 +179,7 @@
     var controller= new coherent.ViewController({ nibName: 'init-from-dom' });
     controller.view();
     var results= document.getElementById('results');
-    results.innerText= JSON.stringify(controller.model, coherent.KVO.jsonReplacer, 2);
+    results.innerText= JSON.stringify(controller.model, null, 2);
     // results.textContent= dump(controller.model);
     console.log('model=', dump(controller.model), controller.options);
   });

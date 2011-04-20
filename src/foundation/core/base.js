@@ -8,31 +8,11 @@ if ('undefined'===typeof(coherent))
 coherent.version= "3.0.0";
 coherent.__nextUid= 0;
 coherent.global= window;
-coherent.globalEval= function(script)
-{
-  return window['eval'](script);
-}
 
 coherent.generateUid= function()
 {
   return ++(coherent.__nextUid);
 }
-
-/**
-  COHERENT_CONFIG
-  
-  Global configuration options. Available configuration options:
-  
-  - trapUncaughtExceptions (Boolean): Should uncaught exceptions in event handlers
-    be trapped? Default is false.
-
- */
-window.COHERENT_CONFIG = window.COHERENT_CONFIG || {};
-/*jsl:declare COHERENT_CONFIG*/
-
-
-
-
 
 
 
@@ -81,6 +61,7 @@ coherent.compareValues= function(v1, v2)
     var s_v2= String(v2);
     return s_v1.localeCompare(s_v2);
   }
+  
   switch (v1_type)
   {
     case "null":
