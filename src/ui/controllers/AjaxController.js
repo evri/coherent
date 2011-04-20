@@ -134,7 +134,7 @@ coherent.AjaxController= Class.create(coherent.ObjectController, {
     this.setValueForKey(true, "queryInProgress");
     if (this.__queryTimer)
       window.clearTimeout(this.__queryTimer);
-    this.__queryTimer= this.performQuery.bindAndDelay(this, this.queryDelay);
+    this.__queryTimer= Function.delay(this.queryDelay, this, this.performQuery);
   },
 
   /** Method to create the Ajax query and send it to the server. This is where

@@ -182,7 +182,7 @@
         else
         {
           // s4 (waiting for iframe to catch up to main window)
-          this.pollLocation.bindAndDelay(this, 0);
+          Function.delay(0, this, this.pollLocation);
           return;
         }
       }
@@ -212,7 +212,7 @@
           ifrOffline = false;
           
           //  Yielded transition to s4 while iframe reloads.
-          this.pollLocation.bindAndDelay(this, 0);
+          Function.delay(0, this, this.pollLocation);
           return;
         }
         else if (!ifrOffline)
@@ -224,12 +224,12 @@
           _dispatchEvent();
         }
       }
-      this.pollLocation.bindAndDelay(this, _pollFrequency);
+      Function.delay(_pollFrequency, this, this.pollLocation);
     }
     
     // initialize state (transition to s1)
     resetState();
-    this.pollLocation.bindAndDelay(this, _pollFrequency);
+    Function.delay(_pollFrequency, this, this.pollLocation);
   }
   
   function setup()
