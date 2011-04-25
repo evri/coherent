@@ -207,7 +207,8 @@ coherent.Model.ClassMethods = {
     {
       delete this.__fetching[id];
       var obj= this.fromJSON(json);
-      obj.awakeFromFetch();
+      if (obj)
+        obj.awakeFromFetch();
       return obj;
     }
     
