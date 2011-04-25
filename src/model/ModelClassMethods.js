@@ -153,6 +153,9 @@ coherent.Model.ClassMethods = {
   {
     var id;
 
+    if (void(0)==hash)
+      return hash;
+      
     if ('object' !== typeof(hash))
     {
       id = hash;
