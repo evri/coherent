@@ -192,7 +192,7 @@ coherent.ScrollView= Class.create(coherent.View, {
                 
   onmousedown: function(e)
   {
-    if (2 === event.button || event.ctrlKey || event.metaKey || event.shiftKey)
+    if (2 === e.button || e.ctrlKey || e.metaKey || e.shiftKey)
       return;
     if (this.desktopCompatibility && !HAS_TOUCH)
       this.ontouchstart(e);
@@ -200,7 +200,7 @@ coherent.ScrollView= Class.create(coherent.View, {
   
   onmousedrag: function(e)
   {
-    if (2 === event.button || event.ctrlKey || event.metaKey || event.shiftKey)
+    if (2 === e.button || e.ctrlKey || e.metaKey || e.shiftKey)
       return;
     if (this.desktopCompatibility && !HAS_TOUCH)
       this.ontouchmove(e);
@@ -208,7 +208,7 @@ coherent.ScrollView= Class.create(coherent.View, {
   
   onmouseup: function(e)
   {
-    if (2 === event.button || event.ctrlKey || event.metaKey || event.shiftKey)
+    if (2 === e.button || e.ctrlKey || e.metaKey || e.shiftKey)
       return;
     if (this.desktopCompatibility && !HAS_TOUCH)
       this.ontouchend(e);
