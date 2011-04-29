@@ -822,7 +822,7 @@ coherent.KVO.typesOfKeyValuesToIgnore= coherent.Set("string", "number",
 coherent.KVO.adapt= function(obj)
 {
   //  either there's no object or the object already has the methods
-  if (!obj)
+  if (!obj || obj.valueForKey)
     return obj;
 
   var type= coherent.typeOf(obj);
@@ -875,7 +875,9 @@ coherent.KVO.adaptTree= function(obj)
     
     value= obj[p];
   
-    if (!value)
+    //  If the value is null or it already has a valueForKey method, there's
+    //  no need to adapt it.
+    if (!value || value.valueForKey)
       continue;
     
     if (coherent.typeOf(value) in coherent.KVO.typesOfKeyValuesToIgnore)
