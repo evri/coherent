@@ -57,6 +57,11 @@ coherent.Style= {
   ToolbarButtonItem: 'ui-bar-button',
   ToolbarIconItem: 'ui-bar-icon',
   ToolbarFixedSpace: 'ui-bar-fixed-space',
-  ToolbarFlexSpace: 'ui-bar-flex-space'
+  ToolbarFlexSpace: 'ui-bar-flex-space',
+  
+  SlideTransition: 'ui-slide',
+  CrossFadeTransition: 'ui-fade',
+  
+  NavigationDefautTransition: 'ui-slide'
   
 };

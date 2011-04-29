@@ -192,18 +192,24 @@ coherent.ScrollView= Class.create(coherent.View, {
                 
   onmousedown: function(e)
   {
+    if (2 === event.button || event.ctrlKey || event.metaKey || event.shiftKey)
+      return;
     if (this.desktopCompatibility && !HAS_TOUCH)
       this.ontouchstart(e);
   },
   
   onmousedrag: function(e)
   {
+    if (2 === event.button || event.ctrlKey || event.metaKey || event.shiftKey)
+      return;
     if (this.desktopCompatibility && !HAS_TOUCH)
       this.ontouchmove(e);
   },
   
   onmouseup: function(e)
   {
+    if (2 === event.button || event.ctrlKey || event.metaKey || event.shiftKey)
+      return;
     if (this.desktopCompatibility && !HAS_TOUCH)
       this.ontouchend(e);
   },

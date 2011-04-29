@@ -136,11 +136,11 @@
       return viewController && (viewController.modalViewController || viewController);
     },
 
-    __animateTransition: function(oldController, newController, direction, callback)
+    __animateTransition: function(oldController, newController, direction, transition, callback)
     {
       var oldNode = oldController.view().node;
       var newNode = newController.view().node;
-
+      
       function ontransitionendOld(event)
       {
         if (event.target != oldNode)
@@ -162,15 +162,17 @@
       var newHandler = Event.observe(newNode, 'webkitAnimationEnd', Event.handler(this, ontransitionendNew));
       Element.setStyle(newNode, 'display', '');
 
+      console.log('__animateTransition: transition=' + transition);
+      
       if (direction === REVERSE)
       {
-        Element.updateClass(oldNode, ['ui-slide', 'out', 'reverse'], ['in', coherent.Style.kActiveClass]);
-        Element.updateClass(newNode, ['ui-slide', 'in', 'reverse', coherent.Style.kActiveClass], ['out']);
+        Element.updateClass(oldNode, [transition, 'out', 'reverse'], ['in', coherent.Style.kActiveClass]);
+        Element.updateClass(newNode, [transition, 'in', 'reverse', coherent.Style.kActiveClass], ['out']);
       }
       else
       {
-        Element.updateClass(oldNode, ['ui-slide', 'out'], ['in', 'reverse', coherent.Style.kActiveClass]);
-        Element.updateClass(newNode, ['ui-slide', 'in', coherent.Style.kActiveClass], ['out', 'reverse']);
+        Element.updateClass(oldNode, [transition, 'out'], ['in', 'reverse', coherent.Style.kActiveClass]);
+        Element.updateClass(newNode, [transition, 'in', coherent.Style.kActiveClass], ['out', 'reverse']);
       }
     },
 
@@ -212,7 +214,10 @@
       view.removeClassName(coherent.Style.NavigationAtRoot);
       viewController.view().addClassName(coherent.Style.NavigationSubview);
 
-      this.__animateTransition(outgoingController, viewController, null);
+      if ('string'!==typeof(animated))
+        animated= coherent.Style.NavigationDefautTransition;
+        
+      this.__animateTransition(outgoingController, viewController, null, animated);
 
       this.callDelegate(WILL_SHOW_VIEW_CONTROLLER, this, viewController);
       this.__previousViewController= this.__currentViewController;
@@ -267,10 +272,13 @@
         _this.__addPreviousViewController(_this.__previousViewController);
         _this.__updateBars();
       }
+
+      if ('string'!==typeof(animated))
+        animated= coherent.Style.NavigationDefautTransition;
       
       this.callDelegate(WILL_SHOW_VIEW_CONTROLLER, this, newController);
       this.__currentViewController= this.__previousViewController;
-      this.__animateTransition(oldController, newController, REVERSE, cleanup);
+      this.__animateTransition(oldController, newController, REVERSE, animated, cleanup);
       this.callDelegate(DID_SHOW_VIEW_CONTROLLER, this, newController);
     },
 
@@ -290,7 +298,7 @@
       var previousView= viewController.view();
       var previousNode= previousView.node;
 
-      Element.updateClass(previousNode, [coherent.Style.NavigationSubview, 'ui-slide', 'out'], ['in', 'reverse', coherent.Style.kActiveClass]);
+      Element.updateClass(previousNode, [coherent.Style.NavigationSubview, 'out'], ['in', 'reverse', coherent.Style.kActiveClass]);
       previousNode.style.display='none';
       
       view.addSubview(previousView);
