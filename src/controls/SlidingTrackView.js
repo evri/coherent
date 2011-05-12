@@ -1,8 +1,36 @@
 /*jsl:import coherent*/
 
-/** A view that manages a subview.
+/**
+  These are the states the item within a SlidingTrackView may be in.
+ */
+coherent.SlidingTrackViewStates= {
+  /** When pinned to the top, the item should remain at the top of the
+      track. This requires a complementary portion of CSS for the item
+      with either `position: static`, `position: absolute; top: 0` or
+      similar.
+   */
+  PinnedTop: coherent.Style.SlidingTrackPinnedTop,
+  
+  /** When floating, the item should appear to remain in the same spot
+      while the rest of the page scrolls. This may be implemented using
+      setting `position: fixed` on the item within the track.
+   */
+  Floating: coherent.Style.SlidingTrackFloating,
+  
+  /** When pinned to the bottom, the item should scroll with the page and
+      remain at the bottom of the track. The best way to implement this in
+      CSS is to set a rule `position: absolute; bottom: 0;` on the item
+      node.
+   */
+  PinnedBottom: coherent.Style.SlidingTrackPinnedBottom     
+};
 
-  @property {coherent.SlidingTrackView.States} initialState
+
+
+/**
+  A view that manages a subview.
+
+  @property {coherent.SlidingTrackViewStates} initialState
  */
 coherent.SlidingTrackView = Class.create(coherent.View, {
   
@@ -30,7 +58,7 @@ coherent.SlidingTrackView = Class.create(coherent.View, {
     this._trackFrame = Element.getRect(node, true);
     this._itemFrame = Element.getRect(itemNode, true);
   
-    this.setState(this.initialState||coherent.SlidingTrackView.States.PINNED_TOP);
+    this.setState(this.initialState||coherent.SlidingTrackViewStates.PinnedTop);
     this.updateItemPosition();
   
     this._item.addObserverForKeyPath(this, this.itemFrameChanged, 'frame');
@@ -44,15 +72,15 @@ coherent.SlidingTrackView = Class.create(coherent.View, {
     this._viewport = Element.getViewport();
   
     // Safari 3.2 and 4 have trouble redrawing this._item during a
-    // window resize while in the FLOATING state. This includes
+    // window resize while in the Floating state. This includes
     // resizing the item in updateItemPosition, in addition to
     // adjusting to a new window size. Momentarily reverting the state
-    // back to PINNED_TOP fixes this problem.
+    // back to PinnedTop fixes this problem.
     if (coherent.Browser.Safari)
-      this.setState(coherent.SlidingTrackView.States.PINNED_TOP);
+      this.setState(coherent.SlidingTrackViewStates.PinnedTop);
   
     // Check for a narrow window (one with horizontal scrolling). We
-    // will force PINNED_TOP if the window is too narrow.
+    // will force PinnedTop if the window is too narrow.
     if (coherent.Browser.IE)
       this._narrow = document.documentElement.clientWidth < document.body.scrollWidth;
     else
@@ -69,8 +97,8 @@ coherent.SlidingTrackView = Class.create(coherent.View, {
     this._itemFrame = Element.getRect(this._item.node, true);
 
     //  Safari doesn't seem to like position:fixed
-    if (this.__currentState===coherent.SlidingTrackView.States.FLOATING &&
-      coherent.Browser.Safari)
+    if (this.__currentState===coherent.SlidingTrackViewStates.Floating &&
+        coherent.Browser.Safari)
     {
       node.style.display='none';
       node.offsetTop;
@@ -114,12 +142,12 @@ coherent.SlidingTrackView = Class.create(coherent.View, {
   updateState: function()
   {
     var newState= this.__currentState;
-    var STATES=coherent.SlidingTrackView.States;
+    var STATES=coherent.SlidingTrackViewStates;
     
     switch (this.__currentState)
     {
-      case STATES.PINNED_TOP:
-        // In order to switch to either state from PINNED_TOP, the
+      case STATES.PinnedTop:
+        // In order to switch to either state from PinnedTop, the
         // track top must be out of view and we must have enough room
         // in the viewport to display the item.
         if (this._narrow || this._trackFrame.top > 0 ||
@@ -129,30 +157,30 @@ coherent.SlidingTrackView = Class.create(coherent.View, {
         // If the track bottom offers less space than we have for
         // the item, pin to bottom
         if (this._trackFrame.bottom < this._itemFrame.height)
-          newState= STATES.PINNED_BOTTOM;
+          newState= STATES.PinnedBottom;
         else
           // Otherwise, we can float now
-          newState=  STATES.FLOATING;
+          newState=  STATES.Floating;
         break;
         
-      case STATES.FLOATING:
+      case STATES.Floating:
         // If the viewport is too small for the item, or the top of the
         // track is in view, pin to top.
         if (this._narrow || this._trackFrame.top > 0 ||
           this._viewport.height < this._itemFrame.height)
-          newState= STATES.PINNED_TOP;
+          newState= STATES.PinnedTop;
         // If we've reached the bottom of the track, pin to bottom.
         else if (this._trackFrame.bottom < this._itemFrame.bottom)
-          newState= STATES.PINNED_BOTTOM;
+          newState= STATES.PinnedBottom;
         break;
         
-      case STATES.PINNED_BOTTOM:
+      case STATES.PinnedBottom:
         // If the viewport is too small for the item, pin to top
         if (this._narrow || this._viewport.height < this._itemFrame.height)
-          newState= STATES.PINNED_TOP;
+          newState= STATES.PinnedTop;
         // If the top of the item is within view, start floating
         else if (this._viewport.height<this._trackFrame.bottom && this._itemFrame.top > 0)
-          newState= STATES.FLOATING;
+          newState= STATES.Floating;
         break;
       
       default:
@@ -181,27 +209,3 @@ coherent.SlidingTrackView = Class.create(coherent.View, {
   }
 
 });
-
-/** These are the states the item within a SlidingTrackView may be in.
- */
-coherent.SlidingTrackView.States= {
-  /** When pinned to the top, the item should remain at the top of the
-    track. This requires a complementary portion of CSS for the item
-    with either `position: static`, `position: absolute; top: 0` or
-    similar.
-   */
-  PINNED_TOP:    'pinned-top',
-  
-  /** When floating, the item should appear to remain in the same spot
-    while the rest of the page scrolls. This may be implemented using
-    setting `position: fixed` on the item within the track.
-   */
-  FLOATING:    'floating',
-  
-  /** When pinned to the bottom, the item should scroll with the page and
-    remain at the bottom of the track. The best way to implement this in
-    CSS is to set a rule `position: absolute; bottom: 0;` on the item
-    node.
-   */
-  PINNED_BOTTOM: 'pinned-bottom'      
-};

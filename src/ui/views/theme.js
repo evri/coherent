@@ -62,6 +62,10 @@ coherent.Style= {
   SlideTransition: 'ui-slide',
   CrossFadeTransition: 'ui-fade',
   
-  NavigationDefautTransition: 'ui-slide'
+  NavigationDefautTransition: 'ui-slide',
+  
+  SlidingTrackPinnedTop: 'ui-pinned-top',
+  SlidingTrackPinnedBottom: 'ui-pinned-bottom',
+  SlidingTrackFloating: 'ui-floating'
   
 };

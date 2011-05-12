@@ -1,8 +1,5 @@
 /*jsl:declare coherent*/
 if ('undefined'===typeof(coherent))
-  /**
-   *  @namespace
-   */
   coherent= {};
   
 coherent.version= "3.0.0";
@@ -17,12 +14,14 @@ coherent.generateUid= function()
 
 
 
-/** The base typeof operator doesn't handle dates, regular expressions, boolean
-    values, arrays, and strings very well. This function takes care of these
-    problems.
+/** 
+  coherent.typeOf(value) -> String
   
-    @param o the object for which the type is requested
-    @returns {String} a string with the type of the object.
+  - value (Any): The value that should be inspected for its type
+  
+  The base typeof operator doesn't distinguish between objects and dates,
+  regular expressions, boolean values, arrays, and strings very well. This
+  function takes care of these problems.
  */
 coherent.typeOf=(function()
 {
@@ -42,7 +41,10 @@ coherent.typeOf=(function()
   return typeOf;
 })();
 
-/** Compare two values. This handles pretty much every type possible. When the
+/** 
+  coherent.compareValues(v1, v2) -> Number
+  
+  Compare two values. This handles pretty much every type possible. When the
     types don't match, the values are first converted to strings and then
     compared with a locale sensitive method.
   

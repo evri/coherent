@@ -9,7 +9,10 @@ var HAS_3D= coherent.Support.CssMatrix,
     TRANSLATE_CLOSE = HAS_3D ? ',0)' : ')',
     SCROLLBAR_FADE_DURATION= 300,
     TRANSITION_END_EVENT= 'webkitTransitionEnd',
-    NO_MOMENTUM= { dist: 0, time: 0 };
+    NO_MOMENTUM= { dist: 0, time: 0 },
+    WILL_BEGIN_DRAGGING = 'scrollViewWillBeginDragging',
+    DID_END_DRAGGING = 'scrollViewDidEndDragging',
+    DID_SCROLL = 'scrollViewDidScroll';
 
 var scrollbarID= 0;
 
@@ -297,7 +300,7 @@ coherent.ScrollView= Class.create(coherent.View, {
     if (this.distX + this.distY > 5)
     {
       if (!this.moved)
-        this.callDelegate('scrollViewWillBeginDragging', this);
+        this.callDelegate(WILL_BEGIN_DRAGGING, this);
 
       // Lock scroll direction
       if (this.directionalLockEnabled)
@@ -317,7 +320,7 @@ coherent.ScrollView= Class.create(coherent.View, {
       this.moved = true;
       this.directionX = leftDelta > 0 ? -1 : 1;
       this.directionY = topDelta > 0 ? -1 : 1;
-      this.callDelegate('scrollViewDidScroll', this);
+      this.callDelegate(DID_SCROLL, this);
     }
     else
     {
@@ -405,7 +408,7 @@ coherent.ScrollView= Class.create(coherent.View, {
 
     //  Call the delegate method scrollViewDidEndDragging with a flag indicating
     //  whether the scroll will decelerate
-    this.callDelegate('scrollViewDidEndDragging', this, newDuration>0);
+    this.callDelegate(DID_END_DRAGGING, this, newDuration>0);
     this.scrollTo(newPositionX, newPositionY, newDuration);
   },
 
@@ -437,8 +440,7 @@ coherent.ScrollView= Class.create(coherent.View, {
     {
       if (this.moved)
       {
-        // TODO: This should probably use pixel values, not page values...
-        this.callDelegate('scrollViewDidScrollTo', this, this.pageX, this.pageY);
+        this.callDelegate(DID_SCROLL, this);
         this.moved = false;
       }
 
@@ -509,9 +511,7 @@ coherent.ScrollView= Class.create(coherent.View, {
       return;
     }
     
-    // TODO: This should probably use pixel values, not page values...
-    this.callDelegate('scrollViewWillScrollTo', this, this.pageX, this.pageY);
-
+    this.callDelegate(DID_SCROLL, this);
     this.moved = true;
     
     var transitionTime = runtime || 350;

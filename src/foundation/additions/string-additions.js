@@ -1,19 +1,19 @@
-/** @class
-    @name String
- */
- 
 Object.applyDefaults(String.prototype, {
 
-  /** Make title case version of string.
-      @type String
+  /**
+    String#titleCase() -> String
+    
+    Make title case version of string.
    */
   titleCase: function()
   {
     return this.charAt(0).toUpperCase() + this.substr(1);
   },
 
-  /** Trim the whitespace off either end of a string.
-      @type String
+  /**
+    String#trim() -> String
+    
+    Trim the whitespace off either end of a string.
    */
   trim: function()
   {
@@ -27,10 +27,12 @@ Object.applyDefaults(String.prototype, {
     return str;
   },
 
-  /** Determine whether this string begins with the specified string.
-
-      @param {String} s - The prefix to check for.
-      @type Boolean
+  /**
+    String#beginsWith(s) -> Boolean
+    
+    - s (String): the prefix string to compare with this string
+    
+    Determine whether this string begins with the specified string.
    */
   beginsWith: function(s)
   {
@@ -38,9 +40,12 @@ Object.applyDefaults(String.prototype, {
   },
 
 
-  /** Not all browsers implement localeCompare. This probably will be slow.
-      @param {String} other - The other string to compare against.
-      @return {Number} -1,0, or 1 depending on the sort order
+  /**
+    String#localeCompare(other) -> Number
+    
+    - other (String): another string to compare against this string
+    
+    Not all browsers implement localeCompare. This probably will be slow.
    */
   localeCompare: function(other)
   {
@@ -53,16 +58,17 @@ Object.applyDefaults(String.prototype, {
   },
 
 
-  /** Expand variables within this string. This method uses the UNIX shell
-      expansion syntax: "This is ${var1}." The properties of the `obj` parameter
-      are used to determine the values to insert into the string.
-  
-      @param {Object} obj - The object from which the values for variables will be
-           taken.
-      @param {String} [defaultValue] - The default value to insert when a variable
-           is not found in `obj`.
-      @returns {String} A new string with variables expanded to have the values
-           specified in `obj`.
+  /** 
+    String#expand(obj[, defaultValue]) -> String
+    
+    - obj (Object): The object from which the values for variables in the string
+      will be taken.
+    - defaultValue (Any): When a variable is not found, it will be replaced with
+      this value.
+      
+    Expand variables within this string. This method uses the UNIX shell
+    expansion syntax: "This is ${var1}." The properties of the `obj` parameter
+    are used to determine the values to insert into the string.
   */
   expand: function(obj, defaultValue)
   {

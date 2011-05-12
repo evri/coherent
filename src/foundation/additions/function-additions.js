@@ -187,10 +187,8 @@ Function.prototype.delay = function(delay)
 
   if (arguments.length < 2)
   {
-    /*  By default, the handler for setTimeout receives the timer
-      event object. I've never seen any good use for this handler.
-     */
-
+    //  By default, the handler for setTimeout receives the timer
+    //  event object. I've never seen any good use for this handler.
     function noargs()
     {
       self();

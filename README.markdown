@@ -10,7 +10,7 @@ This will automatically install the distil gem as a dependency. First you should
     
 This will generate a fully functional miniature photo gallery. Granted, you'll have to look at photos of my daughter, but it's worth it since she's so cute.
 
-Now you can build your application by running `distil`. The first thing you'll notice is that Distil checks out the Coherent source code into the `ext/coherent` folder. You can always update that folder so you're tracking the latest and greatest version of the library.
+Now you can build your application by running `distil`. Distil checks out the source for Coherent from github.com into a private library cache folder (usually in `~/.distil`). Each time you run `distil`, you're copy of the library will be updated. So if you require a specific version, you'll want to specify that in the `Buildfile`.
 
 To see the result of all this _hard_ work, launch your default browser and view the `index.html` file in the demo application by typing:
 

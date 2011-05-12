@@ -1,7 +1,6 @@
 /*jsl:import coherent*/
 
-(function()
-{
+(function(){
 
   var REVERSE = 'reverse',
       IN = 'in',
@@ -12,7 +11,10 @@
       DID_REMOVE_VIEW_CONTROLLER = 'navigationControllerDidRemoveViewController',
       VIEW_CONTROLLER_AT_INDEX = 'navigationControllerViewControllerAtIndex',
       POP_HISTORY = 'navigationControllerPopHistory',
-      PUSH_HISTORY = 'navigationControllerPushHistoryForViewController';
+      PUSH_HISTORY = 'navigationControllerPushHistoryForViewController',
+      BACK_BUTTON_ACTION = 'back',
+      TITLE_TAPPED_ACTION = 'titleWasTapped',
+      WEBKIT_ANIMATION_END_EVENT = 'webkitAnimationEnd';
 
 
   coherent.NavigationController = Class.create(coherent.ViewController, {
@@ -107,7 +109,7 @@
           style: coherent.BarButtonStyle.Title,
           title: currentNavigationItem.title(),
           customView: currentNavigationItem.titleView(),
-          action: 'titleWasTapped',
+          action: TITLE_TAPPED_ACTION,
           target: this
         });
       var right= currentNavigationItem.rightBarButtonItem();
@@ -116,7 +118,7 @@
       {
         left= previousNavigationItem.backBarButtonItem();
         left.target= this;
-        left.action= 'back';
+        left.action= BACK_BUTTON_ACTION;
       }
       
       var navigationBar= this.navigationBar;
@@ -174,7 +176,7 @@
       {
         if (event.target != oldNode)
           return;
-        Event.stopObserving(oldNode, 'webkitAnimationEnd', oldHandler);
+        Event.stopObserving(oldNode, WEBKIT_ANIMATION_END_EVENT, oldHandler);
         Element.setStyle(oldNode, 'display', 'none');
         if (callback)
           callback();
@@ -184,11 +186,11 @@
       {
         if (event.target != newNode)
           return;
-        Event.stopObserving(newNode, 'webkitAnimationEnd', newHandler);
+        Event.stopObserving(newNode, WEBKIT_ANIMATION_END_EVENT, newHandler);
       }
 
-      var oldHandler = Event.observe(oldNode, 'webkitAnimationEnd', Event.handler(this, ontransitionendOld));
-      var newHandler = Event.observe(newNode, 'webkitAnimationEnd', Event.handler(this, ontransitionendNew));
+      var oldHandler = Event.observe(oldNode, WEBKIT_ANIMATION_END_EVENT, Event.handler(this, ontransitionendOld));
+      var newHandler = Event.observe(newNode, WEBKIT_ANIMATION_END_EVENT, Event.handler(this, ontransitionendNew));
       Element.setStyle(newNode, 'display', '');
 
       if (direction === REVERSE)
