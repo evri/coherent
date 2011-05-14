@@ -44,13 +44,14 @@ coherent.typeOf=(function()
 /** 
   coherent.compareValues(v1, v2) -> Number
   
-  Compare two values. This handles pretty much every type possible. When the
-    types don't match, the values are first converted to strings and then
-    compared with a locale sensitive method.
+  - v1: first value
+  - v2: second value
   
-    @param v1 - first value
-    @param v2 - second value
-    @returns {Number} -1 if v1 < v2, 0 if v1==v2, and 1 if v1>v2
+  Compare two values. This handles pretty much every type possible. When the
+  types don't match, the values are first converted to strings and then
+  compared with a locale sensitive method.
+
+  Returns -1 if v1 < v2, 0 if v1 == v2, and 1 if v1>v2.
  */
 coherent.compareValues= function(v1, v2)
 {
@@ -104,22 +105,32 @@ coherent.compareValues= function(v1, v2)
 
 
 
-/** Compare two numbers. Used to sort an array numerically instead of lexigraphically.
+/**
+  coherent.compareNumbers(left, right) -> Number
 
-    @param {Number} left - left value
-    @param {Number} right - right value
-    @returns {Number} -1 if left<right, 0 if left===right, and 1 if left>right
+  - left (Number): left value
+  - right (Number): right value
+  
+  Compare two numbers. Used to sort an array numerically instead of
+  lexigraphically.
+
+  Returns -1 if left<right, 0 if left===right, and 1 if left>right.
  */
 coherent.compareNumbers= function(left, right)
 {
   return left-right;
 }
 
-/** Compare two numbers. Used to sort an array numerically instead of lexigraphically.
+/**
+  coherent.reverseCompareNumbers(left, right) -> Number
+  
+  - left (Number): left value
+  - right (Number): right value
+  
+  Compare two numbers in reverse order to [coherent.compareNumbers]. Used to
+  sort an array numerically instead of lexigraphically.
 
-    @param {Number} left - left value
-    @param {Number} right - right value
-    @returns {Number} 1 if left<right, 0 if left===right, and -1 if left>right
+  Returns 1 if left<right, 0 if left===right, and -1 if left>right.
  */
 coherent.reverseCompareNumbers= function(left, right)
 {
@@ -129,20 +140,22 @@ coherent.reverseCompareNumbers= function(left, right)
 
 
 
-/** Function that will create an error constructor. This takes care of
-    differences between browsers, except of course that MSIE simply doesn't
-    support custom error types very well. This function allows you to have a
-    custom initialiser for error types simply by defining a function with the
-    same name as the error type.
+/**
+  coherent.defineError(errorName) -> Function
   
-    The return value of this function is the constructor for the new error type.
-    If there's no custom constructor, this return value should be assigned to a
-    global variable with the same name as the error type. That way new instances
-    of the error can be created.
+  - errorName (String): The name of the error subclass -- also the name
+    of the initialiser function.
   
-    @param {String} errorName - The name of the error subclass -- also the name
-      of the initialiser function.
-    @returns {Function} A function that is the constructor for the new error type.
+  Function that will create an error constructor. This takes care of
+  differences between browsers, except of course that MSIE simply doesn't
+  support custom error types very well. This function allows you to have a
+  custom initialiser for error types simply by defining a function with the
+  same name as the error type.
+
+  The return value of this function is the constructor for the new error type.
+  If there's no custom constructor, this return value should be assigned to a
+  global variable with the same name as the error type. That way new instances
+  of the error can be created.
  */
 coherent.defineError= function(errorName)
 {
@@ -157,6 +170,12 @@ coherent.defineError= function(errorName)
   return error;
 }
 
+/**
+  class InvalidArgumentError < Error
+  
+  An error that may be thrown to signal invalid arguments were passed to a
+  function or method.
+ */
 var InvalidArgumentError= coherent.defineError("InvalidArgumentError");
 
 

@@ -12,7 +12,8 @@ var HAS_3D= coherent.Support.CssMatrix,
     NO_MOMENTUM= { dist: 0, time: 0 },
     WILL_BEGIN_DRAGGING = 'scrollViewWillBeginDragging',
     DID_END_DRAGGING = 'scrollViewDidEndDragging',
-    DID_SCROLL = 'scrollViewDidScroll';
+    DID_SCROLL = 'scrollViewDidScroll',
+    WILL_SCROLL = 'scrollViewWillScroll';
 
 var scrollbarID= 0;
 
@@ -511,7 +512,7 @@ coherent.ScrollView= Class.create(coherent.View, {
       return;
     }
     
-    this.callDelegate(DID_SCROLL, this);
+    this.callDelegate(WILL_SCROLL, this);
     this.moved = true;
     
     var transitionTime = runtime || 350;

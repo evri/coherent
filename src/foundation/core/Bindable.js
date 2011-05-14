@@ -1,20 +1,26 @@
 /*jsl:import kvo.js*/
 
 
-/** Bindable is a base class that provides a simple mechanism for keeping one
-    object's properties in sync with the properties of another. Views and
-    Controllers are subclasses of Bindable.
+/**
+  class coherent.Bindable < coherent.KVO
   
-    @property {Object} bindings - A map of the bindings that have been
-      established for this object.
+  Bindable is a base class that provides a simple mechanism for keeping one
+  object's properties in sync with the properties of another. Views and
+  Controllers are subclasses of Bindable.
+  
+  @property {Object} bindings - A map of the bindings that have been
+    established for this object.
  */
 coherent.Bindable= Class.create(coherent.KVO, {
 
-  /** Construct a new Bindable instance. This initialises the bindings
-      property to an empty hash.
+  /**
+    new coherent.Bindable([parameters={}])
     
-      @param {Object} parameters - An object containing name/value pairs that
-           will be copied to this object upon initialisation.
+    - parameters (Object): An optional dictionary of name/value pairs copied to
+      this object upon initialisation.
+
+    Construct a new Bindable instance. This initialises the bindings
+    property to an empty hash.
    */
   constructor: function(parameters)
   {
@@ -36,7 +42,8 @@ coherent.Bindable= Class.create(coherent.KVO, {
    */
   maskedBindings: [],
   
-  /** Declarative structure for placeholders based on the binding.
+  /**
+    Declarative structure for placeholders based on the binding.
     For example:
     
       defaultPlaceholders: {
