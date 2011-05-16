@@ -13,7 +13,8 @@ var HAS_3D= coherent.Support.CssMatrix,
     WILL_BEGIN_DRAGGING = 'scrollViewWillBeginDragging',
     DID_END_DRAGGING = 'scrollViewDidEndDragging',
     DID_SCROLL = 'scrollViewDidScroll',
-    WILL_SCROLL = 'scrollViewWillScroll';
+    DID_SCROLL_TO_PAGE = 'scrollViewDidScrollToPage',
+    WILL_SCROLL_TO_PAGE = 'scrollViewWillScrollToPage';
 
 var scrollbarID= 0;
 
@@ -441,7 +442,8 @@ coherent.ScrollView= Class.create(coherent.View, {
     {
       if (this.moved)
       {
-        this.callDelegate(DID_SCROLL, this);
+        if (this.pagingEnabled)
+          this.callDelegate(DID_SCROLL_TO_PAGE, this);
         this.moved = false;
       }
 
@@ -512,7 +514,8 @@ coherent.ScrollView= Class.create(coherent.View, {
       return;
     }
     
-    this.callDelegate(WILL_SCROLL, this);
+    if (this.pagingEnabled)
+      this.callDelegate(WILL_SCROLL_TO_PAGE, this);
     this.moved = true;
     
     var transitionTime = runtime || 350;
