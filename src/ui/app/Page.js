@@ -836,7 +836,7 @@ coherent.Page = Class.create(coherent.Responder, {
         LANDSCAPE = 'landscape',
         CLOCKWISE = 'clockwise',
         UPSIDEDOWN = 'upside-down';
-        
+    
     switch (orientation)
     {
       case 0:

@@ -173,6 +173,8 @@ coherent.ViewController = Class.create(coherent.Responder, {
       Event.preventDefault(event);
     }
 
+    coherent.ModalBackdrop.showBehind(modalNode);
+    
     var presentationStyle = this.modalPresentationStyle || this.parentViewController().modalPresentationStyle;
     var transitionStyle = this.modalTransitionStyle || coherent.ModalTransitionStyle.CoverVertical;
 
@@ -229,6 +231,9 @@ coherent.ViewController = Class.create(coherent.Responder, {
           coherent.Page.shared.makeFirstResponder(null);
         this.modalViewController = null;
         this.view().node.style.display = 'none';
+
+        coherent.ModalBackdrop.hide();
+        
         if (callback)
           callback(this);
       }
@@ -256,6 +261,8 @@ coherent.ViewController = Class.create(coherent.Responder, {
     if (firstResponder && firstResponder.isDescendantOf(this.view()))
       coherent.Page.shared.makeFirstResponder(null);
     Element.addClassName(modalNode, "reverse");
+    
+    coherent.ModalBackdrop.hide();
   },
 
   dismissModalViewController: function(animated, callback)

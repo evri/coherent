@@ -725,7 +725,7 @@ Object.extend(Element, {
     
     function scroll()
     {
-      var now = coherent.EventLoop.getStart();
+      var now = coherent.EventLoop.currentEventLoop.getStart();
       var t;
     
       if (now >= end)

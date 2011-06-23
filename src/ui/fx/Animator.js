@@ -136,7 +136,7 @@ coherent.Animator= {
   
   function step()
   {
-    var now = coherent.EventLoop.getStart();
+    var now = coherent.EventLoop.currentEventLoop.getStart();
     
     var element;
     var t;
@@ -231,7 +231,7 @@ coherent.Animator= {
     if (options.callback)
       actor.callback = options.callback;
     
-    var groupStart= coherent.EventLoop.getStart();
+    var groupStart= coherent.EventLoop.currentEventLoop.getStart();
     var groupEnd= groupStart + options.duration;
     var startStyles= options.startStyles ||
                      getStyles(element, coherent.Set.toArray(hash));

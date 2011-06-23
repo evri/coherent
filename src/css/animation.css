@@ -168,22 +168,22 @@
   -webkit-animation-name: fadein;
 }
 
-/*.ui-fade.in.reverse {
+.ui-fade.in.reverse {
   opacity: 0;
   -webkit-animation-name: fadeout;
 }
-*/
+
 
 .ui-fade.out {
   opacity: 0;
   -webkit-animation-name: fadeout;
 }
 
-/*.ui-fade.out.reverse {
+.ui-fade.out.reverse {
   opacity: 1;
   -webkit-animation-name: fadein;
 }
-*/
+
 
 
 .ui-flip {
