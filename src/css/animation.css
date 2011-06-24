@@ -184,6 +184,19 @@
   -webkit-animation-name: fadein;
 }
 
+/* Need to ignore the reverse portion of fade animations for navigation subviews. */
+.ui-navigation-subview.ui-fade.out.reverse
+{
+  opacity: 0;
+  -webkit-animation-name: fadeout;
+}  
+
+/* Need to ignore the reverse portion of fade animations for navigation subviews. */
+.ui-navigation-subview.ui-fade.in.reverse
+{
+  opacity: 1;
+  -webkit-animation-name: fadein;
+}  
 
 
 .ui-flip {
