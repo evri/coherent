@@ -4,6 +4,7 @@ coherent.ModalBackdrop = (function(){
 
   var BACKDROP_CLASSNAME = "ui-modal-overlay-backdrop",
       HIDDEN_CLASSNAME = coherent.Style.kFadingClass,
+      TRANSITION_END_EVENT = 'webkitTransitionEnd',
       ANIMATION_DURATION = 350;
   
   var backdrop,
@@ -36,10 +37,10 @@ coherent.ModalBackdrop = (function(){
     function ontransitionend(event)
     {
       backdrop.style.display = 'none';
-      Event.stopObserving(backdrop, 'transitionend', transitionHandler);
+      Event.stopObserving(backdrop, TRANSITION_END_EVENT, transitionHandler);
     }
     
-    var transitionHandler = Event.observe(backdrop, "webkitTransitionEnd", Event.handler(this, ontransitionend));
+    var transitionHandler = Event.observe(backdrop, TRANSITION_END_EVENT, Event.handler(this, ontransitionend));
     Element.addClassName(backdrop, HIDDEN_CLASSNAME);
   }
   
