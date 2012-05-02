@@ -3,6 +3,10 @@
 /*jsl:import ../app/Responder.js*/
 /*jsl:import ../nib/NIB.js*/
 
+(function() {
+  var TRANSITION_END_EVENT = 'webkitTransitionEnd',
+      ANIMATION_END_EVENT = 'webkitAnimationEnd';
+
 coherent.ModalPresentation = {
   /**
       The presented view covers the screen.
@@ -29,7 +33,6 @@ coherent.ModalPresentation = {
    */
   CurrentContext: null
 };
-
 
 coherent.ModalTransitionStyle = {
   /**
@@ -166,6 +169,7 @@ coherent.ViewController = Class.create(coherent.Responder, {
     var node = this.view().node;
     var modalNode = this.__modalNode || (this.__modalNode = document.createElement('div'));
     modalNode.className = 'ui-modal-view-wrapper';
+    modalNode.style.display = 'none';  // hide the modal first -- we'll show it during animation
     modalNode.appendChild(node);
     document.body.appendChild(modalNode);
     modalNode.ontouchmove = function(event)
@@ -182,15 +186,15 @@ coherent.ViewController = Class.create(coherent.Responder, {
     {
       if (event.target !== modalNode)
         return;
-      Event.stopObserving(modalNode, "webkitAnimationEnd", transitionHandler);
+      Event.stopObserving(modalNode, ANIMATION_END_EVENT, transitionHandler);
       if (callback)
         callback(this);
     }
-    var transitionHandler = Event.observe(modalNode, "webkitAnimationEnd", Event.handler(this, ontransitionend));
+    var transitionHandler = Event.observe(modalNode, ANIMATION_END_EVENT, Event.handler(this, ontransitionend));
 
-    Element.addClassName(modalNode, [transitionStyle, 'in'].join(" "));
     Element.addClassName(node, presentationStyle);
-    modalNode.style.display = '';
+    Element.addClassName(modalNode, [transitionStyle, 'in'].join(" "));
+    modalNode.style.display = '';  // show (animate) the modal
   },
 
   presentModalViewController: function(viewController)
@@ -245,18 +249,23 @@ coherent.ViewController = Class.create(coherent.Responder, {
     {
       if (event && event.target != modalNode)
         return;
-      Event.stopObserving(modalNode, "webkitAnimationEnd", transitionHandler);
-      modalNode.style.display = 'none';
+      Event.stopObserving(modalNode, ANIMATION_END_EVENT, transitionHandler);
       var transitionStyle = this.modalTransitionStyle || coherent.ModalTransitionStyle.CoverVertical;
       Element.updateClass(modalNode, [], [transitionStyle, "reverse", "in"]);
-      if (callback)
-        callback(this);
-      //  Clean up the DOM
+      modalNode.style.display = 'none';
+
+      //  Clean up
+      modalNode.ontouchmove = null;
+      coherent.View.teardownViewsForNodeTree(modalNode);
       modalNode.parentNode.removeChild(modalNode);
+
+      if (callback) {
+        callback(this);
+      }
     }
 
     var modalNode = this.__modalNode;
-    var transitionHandler = Event.observe(modalNode, "webkitAnimationEnd", Event.handler(this, ontransitionend));
+    var transitionHandler = Event.observe(modalNode, ANIMATION_END_EVENT, Event.handler(this, ontransitionend));
     var firstResponder = coherent.Page.shared.firstResponder;
     if (firstResponder && firstResponder.isDescendantOf(this.view()))
       coherent.Page.shared.makeFirstResponder(null);
@@ -282,3 +291,5 @@ coherent.ViewController = Class.create(coherent.Responder, {
   }
   
 });
+
+})();

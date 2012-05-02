@@ -3,9 +3,7 @@
 coherent.ModalBackdrop = (function(){
 
   var BACKDROP_CLASSNAME = "ui-modal-overlay-backdrop",
-      HIDDEN_CLASSNAME = coherent.Style.kFadingClass,
-      TRANSITION_END_EVENT = 'webkitTransitionEnd',
-      ANIMATION_DURATION = 350;
+      HIDDEN_CLASSNAME = coherent.Style.kFadingClass;
   
   var backdrop,
       visibleCount = 0;
@@ -20,7 +18,6 @@ coherent.ModalBackdrop = (function(){
       backdrop= document.createElement('div');
       backdrop.className= [BACKDROP_CLASSNAME, HIDDEN_CLASSNAME].join(' ');
       backdrop.style.display="none";
-      document.body.appendChild(backdrop);
     }
     
     node.parentNode.insertBefore(backdrop, node);
@@ -34,13 +31,7 @@ coherent.ModalBackdrop = (function(){
     if (!backdrop || --visibleCount)
       return;
     
-    function ontransitionend(event)
-    {
-      backdrop.style.display = 'none';
-      Event.stopObserving(backdrop, TRANSITION_END_EVENT, transitionHandler);
-    }
-    
-    var transitionHandler = Event.observe(backdrop, TRANSITION_END_EVENT, Event.handler(this, ontransitionend));
+    backdrop.style.display = 'none';
     Element.addClassName(backdrop, HIDDEN_CLASSNAME);
   }
   
