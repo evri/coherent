@@ -4,8 +4,7 @@
 /*jsl:import ../nib/NIB.js*/
 
 (function() {
-  var TRANSITION_END_EVENT = 'webkitTransitionEnd',
-      ANIMATION_END_EVENT = 'webkitAnimationEnd';
+  var ANIMATION_END_EVENT = 'webkitAnimationEnd';
 
 coherent.ModalPresentation = {
   /**
@@ -255,7 +254,7 @@ coherent.ViewController = Class.create(coherent.Responder, {
       modalNode.style.display = 'none';
 
       //  Clean up
-      modalNode.ontouchmove = null;
+      modalNode.ontouchmove = null;  // removing it here explicitly because it is set explicitly in __presentModally method
       coherent.View.teardownViewsForNodeTree(modalNode);
       modalNode.parentNode.removeChild(modalNode);
 
