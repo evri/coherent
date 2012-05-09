@@ -222,7 +222,7 @@ coherent.ViewController = Class.create(coherent.Responder, {
     viewController.__presentModally();
   },
 
-  __dismissSelf: function(callback)
+  __dismissSelf: function(animated, callback)
   {
     //  Walk up the chain of modal view controllers. Only the last one is animated
     if (this.modalViewController)
@@ -240,7 +240,7 @@ coherent.ViewController = Class.create(coherent.Responder, {
         if (callback)
           callback(this);
       }
-      this.modalViewController.__dismissSelf(dismissed.bind(this));
+      this.modalViewController.__dismissSelf(animated, dismissed.bind(this));
       return;
     }
 
@@ -248,7 +248,9 @@ coherent.ViewController = Class.create(coherent.Responder, {
     {
       if (event && event.target != modalNode)
         return;
-      Event.stopObserving(modalNode, ANIMATION_END_EVENT, transitionHandler);
+      if (transitionHandler) {
+        Event.stopObserving(modalNode, ANIMATION_END_EVENT, transitionHandler);
+      }
       var transitionStyle = this.modalTransitionStyle || coherent.ModalTransitionStyle.CoverVertical;
       Element.updateClass(modalNode, [], [transitionStyle, "reverse", "in"]);
       modalNode.style.display = 'none';
@@ -264,20 +266,27 @@ coherent.ViewController = Class.create(coherent.Responder, {
     }
 
     var modalNode = this.__modalNode;
-    var transitionHandler = Event.observe(modalNode, ANIMATION_END_EVENT, Event.handler(this, ontransitionend));
     var firstResponder = coherent.Page.shared.firstResponder;
-    if (firstResponder && firstResponder.isDescendantOf(this.view()))
+    if (firstResponder && firstResponder.isDescendantOf(this.view())) {
       coherent.Page.shared.makeFirstResponder(null);
-    Element.addClassName(modalNode, "reverse");
+    }
     
     coherent.ModalBackdrop.hide();
+    if (animated) {
+      var transitionHandler = Event.observe(modalNode, ANIMATION_END_EVENT, Event.handler(this, ontransitionend));
+      Element.addClassName(modalNode, "reverse");
+    } else {
+      ontransitionend.call(this, {target:modalNode});
+    }
   },
 
   dismissModalViewController: function(animated, callback)
   {
     if (this.modalViewController)
     {
-      this.modalViewController.__dismissSelf(callback);
+      callback = typeof animated === 'function' ? animated : callback;
+      animated = typeof animated === 'boolean' ? animated : true;
+      this.modalViewController.__dismissSelf(animated, callback);
       this.modalViewController = null;
     }
   },
