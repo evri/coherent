@@ -23,7 +23,12 @@ coherent.TextField= Class.create(coherent.FormControl, {
       exposes a binding for an error message. This error message is intended
       to allow servers to send back validation messages.
    */
-  exposedBindings: ['errorMessage'],
+  /**
+   * If a text field is a single input field on the form, such as a search,
+   * it is possible to submit that form just by pressing the "enter" key.
+   * We want to handle that action through the use of submitAction binding.
+   */
+  exposedBindings: ['errorMessage', 'submitAction'],
 
   maskedBindings: ['text', 'html'],
   
@@ -370,14 +375,19 @@ coherent.TextField= Class.create(coherent.FormControl, {
     if (this.accessoryView && Event.KEY_TAB===keyCode)
       this.hideAccessoryView();
       
-    if (this.action && Event.KEY_ENTER===keyCode)
-    {
+    if (Event.KEY_ENTER===keyCode && (this.submitAction || this.action)) {
       // Ensure we have the most up-to-date value from the field.
       this.onchange(null);
       
       if (this.validationError)
         return;
-      this.sendAction();
+
+      if (this.submitAction) {
+        // Do a submit on enter key, if possible
+        this.sendAction(this.submitAction);
+      } else {
+        this.sendAction();
+      }
       Event.stop(event);
     }
   },
